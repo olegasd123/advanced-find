@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+
+@layer base {
+  .custom-color-gray {
+    color: #777;
+  }
+}
+
+@theme {
+  /* --radius-5xl: 3rem;  */
+}
