@@ -9,9 +9,10 @@ function App() {
   const [appConfig, setAppConfig] = useState<IAppConfig | null>(null)
 
   useEffect(() => {
-
+    
     const getAppConfig = async () => {
-      const response = await fetch('/WebResources/mso_/advanced-find/app.config.json')
+      const path = import.meta.env.PROD ? `/WebResources/${import.meta.env.VITE_CRM_SOLUTION_PREFIX}/advanced-find/app.config.json` : `assets/app.config.json`
+      const response = await fetch(path)
       setAppConfig(await response.json())
     }
     getAppConfig()
@@ -21,7 +22,7 @@ function App() {
 
   return (
     <>
-      <div>asd asd asd asd </div>
+      <div>asd asd asd asd</div>
       <div>{appConfig?.EntityName}</div>
     </>
   )
