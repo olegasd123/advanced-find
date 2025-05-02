@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   .custom-color-gray {
@@ -8,5 +9,5 @@
 }
 
 @theme {
-  /* --radius-5xl: 3rem;  */
+  --font-sans: Inter, sans-serif;
 }

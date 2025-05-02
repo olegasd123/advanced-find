@@ -1,0 +1,76 @@
+{
+  "@odata.context": "https://synergiedev.api.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('account')/Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata(LogicalName,OptionSet(Options))/$entity",
+  "MetadataId": "118771ca-6fb9-4f60-8fd4-99b6124b63ad",
+  "LogicalName": "accountcategorycode",
+  "OptionSet": {
+    "MetadataId": "b994cdd8-5ce9-4ab9-bdd3-8888ebdb0407",
+    "Options": [
+      {
+        "Value": 1,
+        "Color": null,
+        "IsManaged": true,
+        "ExternalValue": null,
+        "ParentValues": [],
+        "Tag": null,
+        "IsHidden": false,
+        "MetadataId": null,
+        "HasChanged": null,
+        "Label": {
+          "LocalizedLabels": [
+            {
+              "Label": "Client favorit",
+              "LanguageCode": 1036,
+              "IsManaged": true,
+              "MetadataId": "0bd8a218-2341-db11-898a-0007e9e17ebd",
+              "HasChanged": null
+            }
+          ],
+          "UserLocalizedLabel": {
+            "Label": "Client favorit",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "0bd8a218-2341-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        },
+        "Description": {
+          "LocalizedLabels": [],
+          "UserLocalizedLabel": null
+        }
+      },
+      {
+        "Value": 2,
+        "Color": null,
+        "IsManaged": true,
+        "ExternalValue": null,
+        "ParentValues": [],
+        "Tag": null,
+        "IsHidden": false,
+        "MetadataId": null,
+        "HasChanged": null,
+        "Label": {
+          "LocalizedLabels": [
+            {
+              "Label": "Standard",
+              "LanguageCode": 1036,
+              "IsManaged": true,
+              "MetadataId": "0dd8a218-2341-db11-898a-0007e9e17ebd",
+              "HasChanged": null
+            }
+          ],
+          "UserLocalizedLabel": {
+            "Label": "Standard",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "0dd8a218-2341-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        },
+        "Description": {
+          "LocalizedLabels": [],
+          "UserLocalizedLabel": null
+        }
+      }
+    ]
+  }
+}

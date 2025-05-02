@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       fs: {
-        allow: [searchForWorkspaceRoot(process.cwd()), 'assets/app.config.json']
+        allow: [searchForWorkspaceRoot(process.cwd()), 'assets', 'design-data']
       }
     }
   }

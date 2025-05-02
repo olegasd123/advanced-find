@@ -1,3 +1,48 @@
 {
-    "EntityName": "contact"
+  "SearchScheme": {
+    "Entities": [
+      {
+        "LogicalName": "account",
+        "View": [ "name", "createby" ],
+        "FilterOptions": [
+          {
+            "AttributeLogicalName": "accountcategorycode",
+            "EntityLogicalName": "account",
+            "AttributeDisplayName": "Account code",
+            "Default": { "IsShowed": true, "Values": [ "1" ], "IsDisabled": false, "CannotRemove": false, "OrderedBy": 1 },
+            "DropdownList": { "CategoryName": "Special cat", "OrderBy": 1 },
+            "Selection": { "Multi": true, "MinItems": 1, "MaxItems": 2 },
+            "Control": ""
+          },
+          {
+            "AttributeLogicalName": "name",
+            "Default": { "IsShowed": true }
+          },
+          {
+            "AttributeLogicalName": "email",
+            "EntityLogicalName": "systemuser",
+            "AttributeDisplayName": " N:1 ",
+            "Relation": { "FromAttribute": "owner" },
+            "Default": { "IsShowed": true }
+          },
+          {
+            "AttributeLogicalName": "name",
+            "EntityLogicalName": "lead",
+            "AttributeDisplayName": " N:N ",
+            "Relation": { "FromAttribute": "accountid", "Entity": "accountleads_association", "ToAttribute": "leadid" }
+          },
+          {
+            "AttributeLogicalName": "name",
+            "EntityLogicalName": "team",
+            "AttributeDisplayName": " N:1:N ",
+            "Relation": { "FromAttribute": "accountid", "Entity": "account_systemuser", "ToAttribute": "systemuserid",
+              "RelateTo": { "FromAttribute": "systemuserid", "Entity": "team", "ToAttribute": "teamid" }}
+          }
+        ]
+      }
+    ]
+  },
+  "N:1 [account].createby -> [systemuser].systemuserid (email)": "",
+  "N:N [account].accountid -> accountid.[accountleads_association].leadid -> [lead].leadid (name)": "",
+  "N:1:N [account].accountid -> accountid.[account_systemuser].systemuserid -> systemuserid.[team].teamid (name)": ""
 }

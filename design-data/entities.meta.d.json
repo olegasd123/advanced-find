@@ -1,0 +1,210 @@
+{
+  "@odata.context": "https://synergiedev.api.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions(LogicalName,EntitySetName,DisplayName,DisplayCollectionName)",
+  "value": [
+    {
+      "MetadataId": "70816501-edb9-4740-a16c-6a5efbc05d84",
+      "LogicalName": "account",
+      "EntitySetName": "accounts",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Entreprises",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "2b4901bf-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Entreprises",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "2b4901bf-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Entreprise",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "2a4901bf-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Entreprise",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "2a4901bf-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "30b0cd7e-0081-42e1-9a48-688442277fae",
+      "LogicalName": "opportunity",
+      "EntitySetName": "opportunities",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Opportunities",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "33dd01b9-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Opportunities",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "33dd01b9-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Opportunity",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "32dd01b9-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Opportunity",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "32dd01b9-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "608861bc-50a4-4c5f-a02c-21fe1943e2cf",
+      "LogicalName": "contact",
+      "EntitySetName": "contacts",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Contacts",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "bb9709b3-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Contacts",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "bb9709b3-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Contact",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "ba9709b3-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Contact",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "ba9709b3-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "dc6574cb-92ce-446c-a5d6-885a75107d52",
+      "LogicalName": "lead",
+      "EntitySetName": "leads",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Leads",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "30dd01b9-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Leads",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "30dd01b9-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Lead",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "2fdd01b9-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Lead",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "2fdd01b9-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "60696d5d-4d78-4712-b4e0-6cbef3df4906",
+      "LogicalName": "systemuser",
+      "EntitySetName": "systemusers",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "System users",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "829609b3-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "System users",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "829609b3-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "System user",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "819609b3-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "System user",
+          "LanguageCode": 1036,
+          "IsManaged": true,
+          "MetadataId": "819609b3-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      }
+    }
+  ]
+}
