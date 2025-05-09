@@ -1,30 +1,38 @@
-import React, { createContext, useState, useEffect } from "react"
-import { AppConfig } from "./data/configuration"
-import CrmData, { CrmRepository } from "./data/crm-repository"
-import CrmDesignData from "./data/crm-design"
+import * as React from "react"
+import { AppConfig } from "./config/app"
+import CrmData, { CrmRepository } from "./api/crm-repository"
+import CrmDesignData from "./api/crm-design"
 
-export const AppConfigurationContext = createContext<AppConfig | null>(null)
-export const CrmRepositoryContext = createContext<CrmRepository | null>(null)
+const AppConfigurationContext = React.createContext<AppConfig | null>(null)
+const CrmRepositoryContext = React.createContext<CrmRepository | null>(null)
 
-export default function Providers({ children } : { children: React.ReactNode }) {
-  const [ appConfig, setAppConfig ] = useState<AppConfig | null>(null)
+export const useAppConfiguration = () => React.useContext(AppConfigurationContext)
+export const useCrmRepository = () => React.useContext(CrmRepositoryContext)
+
+export type ProvidersProps = {
+  children: React.ReactNode
+}
+
+export const Providers = ({
+  children
+}: ProvidersProps) => {
+  const [appConfig, setAppConfig] = React.useState<AppConfig | null>(null)
 
   const crmRepository: CrmRepository = import.meta.env.PROD ? new CrmData() : new CrmDesignData()
 
-  useEffect(() => {
+  React.useEffect(() => {
     const getAppConfig = async () => {
       const path = import.meta.env.PROD ? `/WebResources/${import.meta.env.VITE_CRM_SOLUTION_PREFIX}/advanced-find/app.config.json` : `assets/app.config.json`
       const response = await fetch(path)
       setAppConfig(await response.json())
     }
-
     getAppConfig()
   }, [])
 
   return (
     <CrmRepositoryContext value={crmRepository}>
       <AppConfigurationContext value={appConfig}>
-          { children }
+        {children}
       </AppConfigurationContext>
     </CrmRepositoryContext>
   )

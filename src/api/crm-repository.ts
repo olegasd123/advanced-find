@@ -53,7 +53,7 @@ export interface PicklistAttributeMetadata {
   OptionSet: OptionSet
 }
 
-export function findAttributes(entityLogicalName: string, source: AttributeMetadata[], attributesLogicalNames: string[]): AttributeMetadata[] {
+export const findAttributes = (entityLogicalName: string, source: AttributeMetadata[], attributesLogicalNames: string[]): AttributeMetadata[] => {
   const attributes: AttributeMetadata[] = []
   for (const attributeLogicalName of attributesLogicalNames) {
     const attribute = source.find(i => i.LogicalName === attributeLogicalName)

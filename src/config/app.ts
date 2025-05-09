@@ -6,11 +6,6 @@ interface FilterOptionsDefaultConfig {
   Values?: string[]
 }
 
-interface FilterOprionsDropdownListConfig {
-  CategoryName?: string,
-  OrderBy?: number
-}
-
 interface SearchSchemeConfig {
   Entities: EntityConfig[]
 }
@@ -33,10 +28,10 @@ export interface EntityConfig {
 
 export interface FilterOptionConfig {
   AttributeDisplayName?: string,
-  AttributeLogicalName: string,
+  AttributeLogicalName?: string,
+  CategoryDisplayName?: string,
   Control?: string,
+  EntityLogicalName?: string,
   Default?: FilterOptionsDefaultConfig,
-  DropdownList?: FilterOprionsDropdownListConfig,
-  EntityLogicalName: string,
   Selection?: SelectionConfig
 }
