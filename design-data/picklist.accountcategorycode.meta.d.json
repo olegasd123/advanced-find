@@ -1,5 +1,5 @@
 {
-  "@odata.context": "https://synergiedev.api.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('account')/Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata(LogicalName,OptionSet(Options))/$entity",
+  "@odata.context": "https://rd-d365-sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('account')/Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata(LogicalName,OptionSet(Options))/$entity",
   "MetadataId": "118771ca-6fb9-4f60-8fd4-99b6124b63ad",
   "LogicalName": "accountcategorycode",
   "OptionSet": {
@@ -18,16 +18,23 @@
         "Label": {
           "LocalizedLabels": [
             {
-              "Label": "Client favorit",
-              "LanguageCode": 1036,
+              "Label": "Preferred Customer",
+              "LanguageCode": 1033,
               "IsManaged": true,
               "MetadataId": "0bd8a218-2341-db11-898a-0007e9e17ebd",
+              "HasChanged": null
+            },
+            {
+              "Label": "Client favori",
+              "LanguageCode": 1036,
+              "IsManaged": true,
+              "MetadataId": "f14e8247-1ab7-4048-9ea5-63a993cb31a8",
               "HasChanged": null
             }
           ],
           "UserLocalizedLabel": {
-            "Label": "Client favorit",
-            "LanguageCode": 1036,
+            "Label": "Preferred Customer",
+            "LanguageCode": 1033,
             "IsManaged": true,
             "MetadataId": "0bd8a218-2341-db11-898a-0007e9e17ebd",
             "HasChanged": null
@@ -52,15 +59,22 @@
           "LocalizedLabels": [
             {
               "Label": "Standard",
-              "LanguageCode": 1036,
+              "LanguageCode": 1033,
               "IsManaged": true,
               "MetadataId": "0dd8a218-2341-db11-898a-0007e9e17ebd",
+              "HasChanged": null
+            },
+            {
+              "Label": "Standard",
+              "LanguageCode": 1036,
+              "IsManaged": true,
+              "MetadataId": "432a6b64-1985-4f42-a682-660b78dd57c1",
               "HasChanged": null
             }
           ],
           "UserLocalizedLabel": {
             "Label": "Standard",
-            "LanguageCode": 1036,
+            "LanguageCode": 1033,
             "IsManaged": true,
             "MetadataId": "0dd8a218-2341-db11-898a-0007e9e17ebd",
             "HasChanged": null

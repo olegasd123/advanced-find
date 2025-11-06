@@ -2,52 +2,101 @@ import * as React from "react";
 import { Button } from "../../components/controls/catalyst/button";
 import { TrashIcon } from "@heroicons/react/16/solid";
 import { Combobox, ComboboxLabel, ComboboxOption } from "../../components/controls/catalyst/combobox";
+import { Listbox, ListboxLabel, ListboxOption } from "../../components/controls/catalyst/listbox";
+import { ComboboxOptionCategory } from "../../components/controls/combobox-option-category";
 import { FilterOption } from "./filter";
-
-export type FilterItemProps = {
-  availableOptions: FilterOption[],
-  currentOption: FilterOption
-}
+import { useAppConfiguration } from "../../providers";
+import { CrmFilterConditionOption, getCrmFilterConditionsOptions, getTargetFilterOption } from "../../utils/filter";
 
 export const FilterItem = ({
-  availableOptions,
+  options,
   currentOption
-}: FilterItemProps) => {
-  const [ currentAttribute, setCurrentAttribute ] = React.useState<FilterOption | null>()
+}: {
+  options: FilterOption[],
+  currentOption?: FilterOption
+}) => {
+  const [ selectedAttribute, setSelectedAttribute ] = React.useState<FilterOption | undefined>(currentOption)
+  const [ filterConditions, setFilterConditions ] = React.useState<CrmFilterConditionOption[] | undefined>()
+  const [ selectedFilterCondition, setSelectedFilterCondition ] = React.useState<string | null>()
+
+  const [ cannotRemove, setCannotRemove ] = React.useState<boolean | undefined>(true)
+
+  const localization = useAppConfiguration()?.SearchScheme?.Localization
 
   React.useEffect(() => {
+    const targetFilterOption = getTargetFilterOption(currentOption?.FilterOptionConfig)
+    setCannotRemove(targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotRemove)
 
+    const filterOptions = getCrmFilterConditionsOptions(targetFilterOption?.AttributeType, localization?.CrmFilterConditions)
+    setFilterConditions(filterOptions)
+
+    const conditionDefaultValue = targetFilterOption?.Default?.Condition ?? filterOptions?.at(0)?.value
+    setSelectedFilterCondition(conditionDefaultValue)
   }, [ currentOption ])
+
+  const handleAttributeChanged = (value: FilterOption | null): void => {
+    const targetFilterOptionValue = getTargetFilterOption(value?.FilterOptionConfig)
+
+    setSelectedAttribute({ ...value })
+
+    const filterOptions = getCrmFilterConditionsOptions(targetFilterOptionValue?.AttributeType, localization?.CrmFilterConditions)
+    setFilterConditions(filterOptions)
+    setSelectedFilterCondition(filterOptions?.at(0)?.value ?? "")
+  }
+
+  const handleConditionOptionChanged = (value: string | null): void => {
+    setSelectedFilterCondition(value)
+  }
 
   return (
     <div className="flex flex-row gap-4 py-4 border-b border-b-gray-300">
-      <div className="grow-0">
-        <Button outline disabled={currentOption?.FilterOptionConfig?.Default?.IsDisabled || currentOption?.FilterOptionConfig?.Default?.CannotRemove}>
+      <div className="w-8 grow-0">
+        <Button
+          outline
+          disabled={cannotRemove}>
           <TrashIcon />
         </Button>
       </div>
-      <div className="grow-2">
-        <Combobox options={availableOptions}
-          defaultValue={currentOption}
-          displayValue={(option: FilterOption | null) => option?.FilterOptionConfig?.AttributeDisplayName}
-          value={currentAttribute ?? undefined}
-          onChange={setCurrentAttribute}>
+      <div className="w-36 grow-3">
+        <Combobox
+          options={options}
+          displayValue={(option: FilterOption | null) => getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName}
+          value={selectedAttribute ?? undefined}
+          onChange={handleAttributeChanged}>
           {(option) => (
             option?.FilterOptionConfig?.CategoryDisplayName ? (
-              <div className="group/option grid w-full cursor-default grid-cols-[1fr_--spacing(5)] items-baseline text-base/6 font-bold gap-x-2 py-2.5 pr-2 pl-1.5 sm:grid-cols-[1fr_--spacing(4)] sm:py-1.5 sm:pr-2 sm:pl-1 sm:text-sm/6 text-blue-500 dark:text-white outline-hidden data-disabled:opacity-50">
+              <ComboboxOptionCategory className="bg-zinc-200/60 dark:text-white"> 
                 {option?.FilterOptionConfig?.CategoryDisplayName}
-              </div>
+              </ComboboxOptionCategory>
             )
             : (
               <ComboboxOption value={option}>
-                <ComboboxLabel>{option?.FilterOptionConfig?.AttributeDisplayName}</ComboboxLabel>
+                <ComboboxLabel>{getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName}</ComboboxLabel>
               </ComboboxOption>
             )
           )}
         </Combobox>
       </div>
-      <div className="grow-2">03</div>
-      <div className="grow-6">04</div>
+      <div className="w-24 grow-2">
+        {filterConditions && (
+          <Listbox
+            value={selectedFilterCondition}
+            onChange={handleConditionOptionChanged}>
+            {filterConditions?.map(condition => {
+              return (
+                <ListboxOption
+                  key={condition.value}
+                  value={condition.value}>
+                  <ListboxLabel>{condition.displayName}</ListboxLabel>
+                </ListboxOption>
+              )
+            })}
+          </Listbox>
+        )}
+      </div>
+      <div className="w-64 grow-8">
+        
+      </div>
     </div>
   )
 }

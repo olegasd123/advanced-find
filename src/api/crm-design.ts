@@ -3,7 +3,7 @@ import { AttributeMetadata, CrmRepository, EntityMetadata, LookupAttributeMetada
 export default class CrmDesignData implements CrmRepository {
 
   async getAttributesMetadata(entityLogicalName: string, attributesLogicalNames: string[]): Promise<AttributeMetadata[]> {
-    const allAttributes = await fetch('design-data/entity.account.meta.d.json').then(async result => {
+    const allAttributes = await fetch(`design-data/entity.${entityLogicalName}.meta.d.json`).then(async result => {
       const data = await result.json()
       return <AttributeMetadata[]>data.value
     }, error => {
@@ -23,8 +23,8 @@ export default class CrmDesignData implements CrmRepository {
     return entities.filter(i => logicalNames?.includes(i.LogicalName))
   }
   
-  getLookupAttributeMetadata(entityLogicalName: string, attributeLogicalNames: string): Promise<LookupAttributeMetadata> {
-    return fetch('design-data/attribute.lookup.meta.d.json').then(async result => {
+  getLookupAttributeMetadata(entityLogicalName: string, attributeLogicalName: string): Promise<LookupAttributeMetadata> {
+    return fetch(`design-data/lookup.${attributeLogicalName}.meta.d.json`).then(async result => {
       const data = await result.json()
       return <LookupAttributeMetadata>data
     }, error => {
@@ -32,8 +32,8 @@ export default class CrmDesignData implements CrmRepository {
     })
   }
   
-  getPicklistAttributeMetadata(entityLogicalName: string, attributeLogicalNames: string): Promise<PicklistAttributeMetadata> {
-    return fetch('design-data/attribute.picklist.meta.d.json').then(async result => {
+  getPicklistAttributeMetadata(entityLogicalName: string, attributeLogicalName: string): Promise<PicklistAttributeMetadata> {
+    return fetch(`design-data/picklist.${attributeLogicalName}.meta.d.json`).then(async result => {
       const data = await result.json()
       return <PicklistAttributeMetadata>data
     }, error => {

@@ -1,0 +1,3144 @@
+{
+  "@odata.context": "https://rd-d365-sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('invoice')/Attributes(LogicalName,AttributeType,DisplayName)",
+  "value": [
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "a2422476-4d20-4ab5-8a48-3d40518eb1ff",
+      "AttributeType": "Lookup",
+      "LogicalName": "accountid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Account",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "d88cb17d-906c-4684-9025-05b3c4dfa643",
+            "HasChanged": null
+          },
+          {
+            "Label": "Compte",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "25c61f0f-c4a6-435a-a8e0-3f5c2acf0b36",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Account",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "d88cb17d-906c-4684-9025-05b3c4dfa643",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "5157fb44-9a1a-433d-96d8-04bc4ec611ec",
+      "AttributeType": "String",
+      "LogicalName": "accountidname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "7cb4de0e-9754-47bb-bc19-b4b31012f6c0",
+      "AttributeType": "String",
+      "LogicalName": "accountidyominame",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "39f753b3-3472-4f58-98ae-a4f70ec72e5d",
+      "AttributeType": "String",
+      "LogicalName": "billto_city",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To City",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "168e94fc-41fc-4f3b-8b16-4cf8c8d9b44d",
+            "HasChanged": null
+          },
+          {
+            "Label": "Ville de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "db135f48-c855-4eb3-b941-8d00265849c0",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To City",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "168e94fc-41fc-4f3b-8b16-4cf8c8d9b44d",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+      "MetadataId": "c4055986-d5cb-4324-ba98-08cc063fbbf2",
+      "AttributeType": "Memo",
+      "LogicalName": "billto_composite",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To Address",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "e5a6e22f-d21a-4bd7-b4a5-fc4122c09577",
+            "HasChanged": null
+          },
+          {
+            "Label": "Adresse de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "a241fe2e-041f-4147-938e-69b6f007a85b",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To Address",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "e5a6e22f-d21a-4bd7-b4a5-fc4122c09577",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "4de124c1-2294-4d02-9633-506163f6a66a",
+      "AttributeType": "String",
+      "LogicalName": "billto_country",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To Country/Region",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "14523d38-18b8-4ffa-b6d1-ff48ca1488fe",
+            "HasChanged": null
+          },
+          {
+            "Label": "Pays/région de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "aaf7ce9d-9668-4b60-b5e4-9ac05467cbd7",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To Country/Region",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "14523d38-18b8-4ffa-b6d1-ff48ca1488fe",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "e3e4cd61-288a-4177-ba92-c82573a9be1c",
+      "AttributeType": "String",
+      "LogicalName": "billto_fax",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To Fax",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "c1b10fdd-13f9-490a-9078-ee826db2749e",
+            "HasChanged": null
+          },
+          {
+            "Label": "Télécopie de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "990ee783-1743-4cde-9a3b-60b961778538",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To Fax",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "c1b10fdd-13f9-490a-9078-ee826db2749e",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "bcfd7ebf-61ac-49d7-b3fa-478bfcd554f2",
+      "AttributeType": "String",
+      "LogicalName": "billto_line1",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To Street 1",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "1326b8f0-e096-48bb-8a47-7d23d101a4c4",
+            "HasChanged": null
+          },
+          {
+            "Label": "Rue 1 de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "56905998-d0ac-41a2-9d32-8d391da105e2",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To Street 1",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "1326b8f0-e096-48bb-8a47-7d23d101a4c4",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "5a2416e1-08b7-4f60-a59b-4bc32039f1c0",
+      "AttributeType": "String",
+      "LogicalName": "billto_line2",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To Street 2",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "84826902-2952-4ef9-a495-53ae0378a4e1",
+            "HasChanged": null
+          },
+          {
+            "Label": "Rue 2 de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "cf67fe53-92d7-40a8-94f1-7e368c7b1bc4",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To Street 2",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "84826902-2952-4ef9-a495-53ae0378a4e1",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "9c1c66fd-f774-47cb-a7a5-06b22252918c",
+      "AttributeType": "String",
+      "LogicalName": "billto_line3",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To Street 3",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "5e110b13-1f0b-4f98-958c-c523dcf23f32",
+            "HasChanged": null
+          },
+          {
+            "Label": "Rue 3 de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "78c56912-4fef-4ac8-a40c-c77eb43d58a5",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To Street 3",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "5e110b13-1f0b-4f98-958c-c523dcf23f32",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "68974341-7fd5-41eb-be50-82d8ba5ea2b7",
+      "AttributeType": "String",
+      "LogicalName": "billto_name",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To Name",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "9944b9ec-0d4d-4bab-a9b4-59abed60a07b",
+            "HasChanged": null
+          },
+          {
+            "Label": "Nom de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "e20d38df-95c4-4778-b0ce-988c23010123",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To Name",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "9944b9ec-0d4d-4bab-a9b4-59abed60a07b",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "4b0c0581-95e6-4b05-8b13-382bbaf5ab6b",
+      "AttributeType": "String",
+      "LogicalName": "billto_postalcode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To ZIP/Postal Code",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "d0afcdcb-06fc-4d05-afc4-61b560be0d0a",
+            "HasChanged": null
+          },
+          {
+            "Label": "Code postal de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "a16fabae-44db-4c7c-8348-854cac275a3f",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To ZIP/Postal Code",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "d0afcdcb-06fc-4d05-afc4-61b560be0d0a",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "fe16f631-743e-4f47-ba6c-288abba6e3d7",
+      "AttributeType": "String",
+      "LogicalName": "billto_stateorprovince",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To State/Province",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "34efc6c2-7ab8-4f9e-b280-22e8990d233f",
+            "HasChanged": null
+          },
+          {
+            "Label": "Département/province de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "f058d70e-1bbf-441b-86fb-0b9a43d1b286",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To State/Province",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "34efc6c2-7ab8-4f9e-b280-22e8990d233f",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "1af04cf5-669a-45a9-9eac-002a46fd86c4",
+      "AttributeType": "String",
+      "LogicalName": "billto_telephone",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Bill To Phone",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "c04ecb9d-ed1d-490f-9d0e-a816bd8200ed",
+            "HasChanged": null
+          },
+          {
+            "Label": "Téléphone de facturation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "0c1d3100-f6f0-43a8-8620-a31f016ddb38",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Bill To Phone",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "c04ecb9d-ed1d-490f-9d0e-a816bd8200ed",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "dd15598d-6ab4-4a99-ae27-d11cc144821c",
+      "AttributeType": "Lookup",
+      "LogicalName": "contactid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Contact",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "a743a6d3-906d-441f-a9a4-01a63338712e",
+            "HasChanged": null
+          },
+          {
+            "Label": "Contact",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "2d176a02-fbb1-490e-896e-72150571f90d",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Contact",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "a743a6d3-906d-441f-a9a4-01a63338712e",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "eaefd6bf-ba8a-4d3d-86b1-97c4bd4df6db",
+      "AttributeType": "String",
+      "LogicalName": "contactidname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "de2889e6-3bb8-4072-8713-b37538e0adce",
+      "AttributeType": "String",
+      "LogicalName": "contactidyominame",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "2f74f3a3-1326-4ec8-b3cc-602520086394",
+      "AttributeType": "Lookup",
+      "LogicalName": "createdby",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Created By",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "f052669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Créé par",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "48078e9f-99f3-419c-8983-f001cee6bd20",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Created By",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "f052669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "dfe5ad62-daaa-457d-9af2-92554715577e",
+      "AttributeType": "String",
+      "LogicalName": "createdbyname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "543e74c0-edf4-4ab9-9e56-cc8d1ab36616",
+      "AttributeType": "String",
+      "LogicalName": "createdbyyominame",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+      "MetadataId": "8985f864-18b0-402f-bf01-7c31340da5e4",
+      "AttributeType": "DateTime",
+      "LogicalName": "createdon",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Created On",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "ee52669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Créé le",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "cb3a1183-fe9b-4d04-a7b5-671f497cd472",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Created On",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "ee52669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "002b99ed-46d7-4586-bce1-a8858a8f92b4",
+      "AttributeType": "Lookup",
+      "LogicalName": "createdonbehalfby",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Created By (Delegate)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "f652669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Créé par (délégué)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "493679ef-4651-4c43-9686-c19ce1797213",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Created By (Delegate)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "f652669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "a5b8382c-6a76-4d23-a425-00863ecc1244",
+      "AttributeType": "String",
+      "LogicalName": "createdonbehalfbyname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "b9f12136-2584-4607-8435-3748ed3b79e6",
+      "AttributeType": "String",
+      "LogicalName": "createdonbehalfbyyominame",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "cf6d6b2c-ec4a-4cf6-b8ca-3d5a53343c2c",
+      "AttributeType": "Customer",
+      "LogicalName": "customerid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Customer",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "6f8565b7-7d95-4fa9-ab57-fadf5c395db1",
+            "HasChanged": null
+          },
+          {
+            "Label": "Client",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "b21bbd89-fc02-4d59-92eb-ac5a3d2dd8ab",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Customer",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "6f8565b7-7d95-4fa9-ab57-fadf5c395db1",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "509ac22b-8414-4cdc-90fd-7c0d6ba8aaa3",
+      "AttributeType": "String",
+      "LogicalName": "customeridname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.EntityNameAttributeMetadata",
+      "MetadataId": "5c4bfca8-6d25-4d23-a43f-5c926e59214f",
+      "AttributeType": "EntityName",
+      "LogicalName": "customeridtype",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Customer Type",
+            "LanguageCode": 1033,
+            "IsManaged": false,
+            "MetadataId": "3dcf403c-bff3-4260-8f4c-f46a56d287a8",
+            "HasChanged": null
+          },
+          {
+            "Label": "Type de client",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "25130160-f404-40e5-bd8d-a61e08ba3d65",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Customer Type",
+          "LanguageCode": 1033,
+          "IsManaged": false,
+          "MetadataId": "3dcf403c-bff3-4260-8f4c-f46a56d287a8",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "b37f30c0-d897-4a10-a6cd-48f127a8bda0",
+      "AttributeType": "String",
+      "LogicalName": "customeridyominame",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+      "MetadataId": "679da090-0aff-45e2-8bad-9a6fec4fce16",
+      "AttributeType": "DateTime",
+      "LogicalName": "datedelivered",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Date Delivered",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "24722b67-8cba-4b9d-89a8-d6df7a8db101",
+            "HasChanged": null
+          },
+          {
+            "Label": "Date de livraison",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "e5d79ae1-5631-4b3d-b45d-905e62f70b51",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Date Delivered",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "24722b67-8cba-4b9d-89a8-d6df7a8db101",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+      "MetadataId": "db686c38-d6a7-4e8f-a404-7989875e16bd",
+      "AttributeType": "Memo",
+      "LogicalName": "description",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Description",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "52b973ee-b009-4a73-bd09-0f80e2ef475e",
+            "HasChanged": null
+          },
+          {
+            "Label": "Description",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "c1f53609-aae9-46f1-ba93-33d1685dccc7",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Description",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "52b973ee-b009-4a73-bd09-0f80e2ef475e",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "0cfb6b11-9d5f-4599-b9a4-af6988c26ad4",
+      "AttributeType": "Money",
+      "LogicalName": "discountamount",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoice Discount Amount",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "2c5d334f-32f5-4719-b394-e104867130c7",
+            "HasChanged": null
+          },
+          {
+            "Label": "Montant de la remise sur facture",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "a35907e0-e01a-41b5-a16a-13ce311c8754",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoice Discount Amount",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "2c5d334f-32f5-4719-b394-e104867130c7",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "fe16c402-f628-4561-a32e-82bd629205a9",
+      "AttributeType": "Money",
+      "LogicalName": "discountamount_base",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoice Discount Amount (Base)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "7653669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "{0} (de base)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "34ffd667-7f42-40d6-ae85-e9e510e3ce3f",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoice Discount Amount (Base)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "7653669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DecimalAttributeMetadata",
+      "MetadataId": "005b956a-4c90-498d-8f7a-1f5e0d171669",
+      "AttributeType": "Decimal",
+      "LogicalName": "discountpercentage",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoice Discount (%)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "99d3a018-49b5-4e98-ab2f-2dff1de50e66",
+            "HasChanged": null
+          },
+          {
+            "Label": "Remise sur facture (%)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "ca99b444-7626-4c3b-9d39-378c259ba59a",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoice Discount (%)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "99d3a018-49b5-4e98-ab2f-2dff1de50e66",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+      "MetadataId": "f609a388-49b7-4503-a220-ec7fc14ab6f9",
+      "AttributeType": "DateTime",
+      "LogicalName": "duedate",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Due Date",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "2a7ffb58-231b-44ac-88de-f1cef6be895c",
+            "HasChanged": null
+          },
+          {
+            "Label": "Date d’échéance",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "8c5bb793-0b2a-45e0-9bc7-e9707a48ffde",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Due Date",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "2a7ffb58-231b-44ac-88de-f1cef6be895c",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "52fe0eaa-fe8b-47a9-b278-aec1d251b65b",
+      "AttributeType": "String",
+      "LogicalName": "emailaddress",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Email Address",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3453669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Adresse de messagerie",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "650284f6-643f-44bd-a750-ef8848efe2ae",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Email Address",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3453669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.ImageAttributeMetadata",
+      "MetadataId": "21f938c1-0bb2-45c4-a577-19a8c5e0c0f1",
+      "AttributeType": "Virtual",
+      "LogicalName": "entityimage",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Entity Image",
+            "LanguageCode": 1033,
+            "IsManaged": false,
+            "MetadataId": "edac16df-c482-4551-bbad-f2b288f24427",
+            "HasChanged": null
+          },
+          {
+            "Label": "Image de l'entité",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "fd9bd7b6-66e5-40cb-8055-adda3f571486",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Entity Image",
+          "LanguageCode": 1033,
+          "IsManaged": false,
+          "MetadataId": "edac16df-c482-4551-bbad-f2b288f24427",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.BigIntAttributeMetadata",
+      "MetadataId": "7c09569f-7682-4eaf-84fe-c84c9c50a48a",
+      "AttributeType": "BigInt",
+      "LogicalName": "entityimage_timestamp",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "f523a4da-c1ec-45ff-bb12-d495d16bcfbf",
+      "AttributeType": "String",
+      "LogicalName": "entityimage_url",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "MetadataId": "6df76143-f22a-4a6e-ad17-a16d3c75adf6",
+      "AttributeType": "Uniqueidentifier",
+      "LogicalName": "entityimageid",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DecimalAttributeMetadata",
+      "MetadataId": "8ccbba12-eed8-4c40-ac52-57288b93ca98",
+      "AttributeType": "Decimal",
+      "LogicalName": "exchangerate",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Exchange Rate",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "7253669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Taux de change",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "e8d428d9-b069-4ebb-b6d7-f6cacb89df94",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Exchange Rate",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "7253669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "33cae498-adb9-4d27-b7a8-9e70deb706a3",
+      "AttributeType": "Money",
+      "LogicalName": "freightamount",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Freight Amount",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "294c7de6-7ff4-4ca9-a7ef-52fca90c43b5",
+            "HasChanged": null
+          },
+          {
+            "Label": "Frais de port",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "6796bf89-a23f-4110-98ea-998137b11b14",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Freight Amount",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "294c7de6-7ff4-4ca9-a7ef-52fca90c43b5",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "a0d840d1-3a36-4616-977a-2a3c7cff4f34",
+      "AttributeType": "Money",
+      "LogicalName": "freightamount_base",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Freight Amount (Base)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "7a53669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "{0} (de base)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "601ccab3-e1e2-492c-9a81-f0cf312be854",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Freight Amount (Base)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "7a53669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.IntegerAttributeMetadata",
+      "MetadataId": "1eeb8750-4412-4b94-a929-56366d6eee5d",
+      "AttributeType": "Integer",
+      "LogicalName": "importsequencenumber",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Import Sequence Number",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3653669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Numéro séquentiel d’importation",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "35c04dc9-8077-4914-a10f-262d889c1171",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Import Sequence Number",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3653669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "890475b0-7ea2-4554-bd56-077860f39a5c",
+      "AttributeType": "Uniqueidentifier",
+      "LogicalName": "invoiceid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoice",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "addac7c6-c7f0-4f75-83d0-60bf4eab2e9e",
+            "HasChanged": null
+          },
+          {
+            "Label": "Facture",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "4d138e3b-795f-4d8f-9171-1ef12f3eded3",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoice",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "addac7c6-c7f0-4f75-83d0-60bf4eab2e9e",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "fdb411a5-f27e-4e6e-b131-9e4506061779",
+      "AttributeType": "String",
+      "LogicalName": "invoicenumber",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoice ID",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "92cbdf99-73f0-4d06-883a-38f62e952985",
+            "HasChanged": null
+          },
+          {
+            "Label": "Réf. facture",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "92bbd0d5-877b-4712-9b33-6b91e8734c36",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoice ID",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "92cbdf99-73f0-4d06-883a-38f62e952985",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.BooleanAttributeMetadata",
+      "MetadataId": "db7b55ac-fda9-4198-816f-af6c62c18b66",
+      "AttributeType": "Boolean",
+      "LogicalName": "ispricelocked",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Prices Locked",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "119e02ce-f51f-46f5-aa02-7666d6e9a889",
+            "HasChanged": null
+          },
+          {
+            "Label": "Tarifs bloqués",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "a76a05cd-227f-420c-b00e-8b5df86be8cd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Prices Locked",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "119e02ce-f51f-46f5-aa02-7666d6e9a889",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "239a1c5f-33bd-469b-855c-4a752ad93583",
+      "AttributeType": "Virtual",
+      "LogicalName": "ispricelockedname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+      "MetadataId": "14652c85-b6ec-41c6-b375-68a5d353c268",
+      "AttributeType": "DateTime",
+      "LogicalName": "lastbackofficesubmit",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Last Submitted to Back Office",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "27db142c-44d1-4625-9617-214028a14116",
+            "HasChanged": null
+          },
+          {
+            "Label": "Dernier envoi à l'arrière-guichet",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "0f76d418-ef6a-48fb-8cc3-d3fc8c8396e9",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Last Submitted to Back Office",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "27db142c-44d1-4625-9617-214028a14116",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+      "MetadataId": "a9ece5c3-decf-4ffa-a409-f708cf2b4387",
+      "AttributeType": "DateTime",
+      "LogicalName": "lastonholdtime",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Last On Hold Time",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3a09f387-dfcc-409f-8a5a-96f06e1dca4e",
+            "HasChanged": null
+          },
+          {
+            "Label": "Dernière durée de suspension",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "1c83a3b5-2868-47fd-9c18-cab7b0f534fb",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Last On Hold Time",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3a09f387-dfcc-409f-8a5a-96f06e1dca4e",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "6a01adec-5815-4085-844d-caafe914011f",
+      "AttributeType": "Lookup",
+      "LogicalName": "modifiedby",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Modified By",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "f452669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Modifié par",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "ffe77b30-0419-4b7b-9eab-3bb5aeb15486",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Modified By",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "f452669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "5e60ca73-733b-41c7-81fa-c61efc11d7b4",
+      "AttributeType": "String",
+      "LogicalName": "modifiedbyname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "53c4106f-6d93-4e12-a03c-b939214b93d5",
+      "AttributeType": "String",
+      "LogicalName": "modifiedbyyominame",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+      "MetadataId": "87097a9f-f65f-4db0-885a-fae759e4ba18",
+      "AttributeType": "DateTime",
+      "LogicalName": "modifiedon",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Modified On",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "f252669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Modifié le",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "84b4133c-b7ba-48eb-a7b6-82c4dd1a761e",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Modified On",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "f252669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "e2836ef8-2b55-495c-880a-d96a1b90ab5f",
+      "AttributeType": "Lookup",
+      "LogicalName": "modifiedonbehalfby",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Modified By (Delegate)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "f852669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Modifié par (délégué)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "fcaaeb8c-1519-41e8-b5c8-6f471c636697",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Modified By (Delegate)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "f852669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "c5788676-0d51-4493-978f-b3444498db82",
+      "AttributeType": "String",
+      "LogicalName": "modifiedonbehalfbyname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "2dee214d-d3b2-4c40-a599-b8cd818af139",
+      "AttributeType": "String",
+      "LogicalName": "modifiedonbehalfbyyominame",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "f5a054aa-8421-ea11-a810-000d3ab55fea",
+      "AttributeType": "String",
+      "LogicalName": "mso_customnumber",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Custom Number",
+            "LanguageCode": 1033,
+            "IsManaged": false,
+            "MetadataId": "51ad165a-565c-45ea-a474-fee8c18feecc",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Custom Number",
+          "LanguageCode": 1033,
+          "IsManaged": false,
+          "MetadataId": "51ad165a-565c-45ea-a474-fee8c18feecc",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "baad7799-c0e2-445d-baba-57d67cd4bb5f",
+      "AttributeType": "String",
+      "LogicalName": "name",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Name",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "7224d3e1-0e8c-4b73-a570-8134d8814318",
+            "HasChanged": null
+          },
+          {
+            "Label": "Nom",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "6c86ad64-642f-40c6-8e44-af0174be9ffc",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Name",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "7224d3e1-0e8c-4b73-a570-8134d8814318",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.IntegerAttributeMetadata",
+      "MetadataId": "152922e0-7bbf-406a-9698-b722d08867f6",
+      "AttributeType": "Integer",
+      "LogicalName": "onholdtime",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "On Hold Time (Minutes)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "300c4095-b06e-46a2-923b-c50f435d7cc5",
+            "HasChanged": null
+          },
+          {
+            "Label": "Durée de la suspension (minutes)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "6119a189-de88-450d-9a4b-a95012c4fea7",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "On Hold Time (Minutes)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "300c4095-b06e-46a2-923b-c50f435d7cc5",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "d54d996f-1774-4eb1-9bdf-05ef46960f31",
+      "AttributeType": "Lookup",
+      "LogicalName": "opportunityid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Opportunity",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "47499b10-27e9-42b7-af75-6675a0ff5f53",
+            "HasChanged": null
+          },
+          {
+            "Label": "Opportunité",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "1fe8cef6-949a-4a3c-a312-a6dcbdeb6601",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Opportunity",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "47499b10-27e9-42b7-af75-6675a0ff5f53",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "0954fd3a-a165-4fc5-abcb-12d9d6464719",
+      "AttributeType": "String",
+      "LogicalName": "opportunityidname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+      "MetadataId": "8a01d055-963f-4199-8190-3a8d3911998f",
+      "AttributeType": "DateTime",
+      "LogicalName": "overriddencreatedon",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Record Created On",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3853669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Enregistrement créé le",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "3bd420f7-096b-403a-85fa-abf9fb12583c",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Record Created On",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3853669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "ea9d5cf7-6333-4425-8e0e-7b6d585c9b83",
+      "AttributeType": "Owner",
+      "LogicalName": "ownerid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Owner",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "1253669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Propriétaire",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "e23d5541-0d22-42d3-a07d-d050becb7ff5",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Owner",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "1253669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "03e3b85b-f36f-41ab-a575-70902682bf5b",
+      "AttributeType": "String",
+      "LogicalName": "owneridname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.EntityNameAttributeMetadata",
+      "MetadataId": "10a47b65-bd6d-4731-9798-428c45dc7f4d",
+      "AttributeType": "EntityName",
+      "LogicalName": "owneridtype",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "1753669f-5dda-e911-a97e-000d3ab3f524",
+      "AttributeType": "String",
+      "LogicalName": "owneridyominame",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "b460eace-0c07-4f82-9171-7884c0f81772",
+      "AttributeType": "Lookup",
+      "LogicalName": "owningbusinessunit",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Owning Business Unit",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "1a53669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Division propriétaire",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "c3031217-058d-4dc2-b39f-a7a3e61d68e4",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Owning Business Unit",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "1a53669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "841e2156-5cae-47d1-a8fc-7fd9f13264aa",
+      "AttributeType": "String",
+      "LogicalName": "owningbusinessunitname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "7c3375c2-eebf-4aa1-a6cb-1cfcfe96118c",
+      "AttributeType": "Lookup",
+      "LogicalName": "owningteam",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Owning Team",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "2353669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Équipe propriétaire",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "e06d33a3-0b6b-429e-9e67-537223ea566d",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Owning Team",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "2353669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "76596bbc-0466-4f61-96bf-5b573dcb20e0",
+      "AttributeType": "Lookup",
+      "LogicalName": "owninguser",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Owning User",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "1c53669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Utilisateur propriétaire",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "94dff4b0-081d-410a-8258-3a0b50c3e4a2",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Owning User",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "1c53669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
+      "MetadataId": "fb818831-1b8d-42ad-853c-8ccae203dcf6",
+      "AttributeType": "Picklist",
+      "LogicalName": "paymenttermscode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Payment Terms",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "98cfb73e-859f-47a9-80d2-1c7344b64269",
+            "HasChanged": null
+          },
+          {
+            "Label": "Conditions de paiement",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "49c482c7-93bd-4509-b143-42dba18924ec",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Payment Terms",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "98cfb73e-859f-47a9-80d2-1c7344b64269",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "ce9ed3a9-c286-4d28-b58a-6a415f175b2b",
+      "AttributeType": "Virtual",
+      "LogicalName": "paymenttermscodename",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "2d37824f-2f68-4ef8-b63e-a8dd2fa6eef7",
+      "AttributeType": "Lookup",
+      "LogicalName": "pricelevelid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Price List",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "129f31d5-76ba-475a-a6c5-a80e78547254",
+            "HasChanged": null
+          },
+          {
+            "Label": "Tarifs",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "7f0cc9c2-7840-4e11-86dc-94afa845eda8",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Price List",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "129f31d5-76ba-475a-a6c5-a80e78547254",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "793d3ccb-4865-4f5a-bdb1-582911830b90",
+      "AttributeType": "String",
+      "LogicalName": "pricelevelidname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
+      "MetadataId": "217c4285-8503-43cf-aa51-939dfcc1fcaf",
+      "AttributeType": "Picklist",
+      "LogicalName": "pricingerrorcode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Pricing Error ",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "58cc2ea2-76f9-43d4-98d1-f0c9ba8723d6",
+            "HasChanged": null
+          },
+          {
+            "Label": "Erreur de tarification ",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "68dd91ad-92d2-4bb3-9cac-d7cfc7aa283b",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Pricing Error ",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "58cc2ea2-76f9-43d4-98d1-f0c9ba8723d6",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "e57682d2-1719-4d03-a1fa-ed42e0ba0766",
+      "AttributeType": "Virtual",
+      "LogicalName": "pricingerrorcodename",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
+      "MetadataId": "92c3aadb-f21b-491f-a407-836d3778d8ca",
+      "AttributeType": "Picklist",
+      "LogicalName": "prioritycode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Priority",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "0167cf13-c605-4403-b334-b50e64b06d1a",
+            "HasChanged": null
+          },
+          {
+            "Label": "Priorité",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "14de6029-777b-4115-bd39-88dc8603fdb5",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Priority",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "0167cf13-c605-4403-b334-b50e64b06d1a",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "2494b4b2-4760-481f-8289-356366b74e40",
+      "AttributeType": "Virtual",
+      "LogicalName": "prioritycodename",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "MetadataId": "fa3175f0-7604-4316-aa7c-28f1e3571ea1",
+      "AttributeType": "Uniqueidentifier",
+      "LogicalName": "processid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Process Id",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "6253669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "ID de processus",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "dd18831f-cdf7-47e4-a3b4-c249e3471156",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Process Id",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "6253669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "ddaf1c6c-1ab8-4e57-92de-2f532d6620da",
+      "AttributeType": "Lookup",
+      "LogicalName": "salesorderid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Order",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "89c0fe57-7190-478a-9f1a-b3752317d4dc",
+            "HasChanged": null
+          },
+          {
+            "Label": "Commande",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "f32c36c5-03c7-47ed-abcb-9cfaef317795",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Order",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "89c0fe57-7190-478a-9f1a-b3752317d4dc",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "42b854b3-cfc5-4c80-bd43-fb6b1ba2c54e",
+      "AttributeType": "String",
+      "LogicalName": "salesorderidname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
+      "MetadataId": "0f3bb3cf-4123-42e2-b74b-313ec9a0fa3b",
+      "AttributeType": "Picklist",
+      "LogicalName": "shippingmethodcode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Shipping Method",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "8d9b33aa-8f41-4a94-9b50-3cb4dbd16769",
+            "HasChanged": null
+          },
+          {
+            "Label": "Mode de livraison",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "3abb03d7-13cc-40fa-a1de-2fc7b907b605",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Shipping Method",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "8d9b33aa-8f41-4a94-9b50-3cb4dbd16769",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "7c9383c7-220c-43cf-b0b5-7f45a2fbc6f6",
+      "AttributeType": "Virtual",
+      "LogicalName": "shippingmethodcodename",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "fd2e451c-7b62-4031-9cd0-2d7a5be7c4f1",
+      "AttributeType": "String",
+      "LogicalName": "shipto_city",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To City",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "a816b966-b1d6-43eb-a9b5-a2a28d23a8d0",
+            "HasChanged": null
+          },
+          {
+            "Label": "Ville d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "1724e016-da85-44dc-afdb-5065907ff441",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To City",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "a816b966-b1d6-43eb-a9b5-a2a28d23a8d0",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+      "MetadataId": "42d140a6-512d-4604-a9b9-5772c3d41b06",
+      "AttributeType": "Memo",
+      "LogicalName": "shipto_composite",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Address",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "a53d136a-ebd0-493d-ba02-20b83442bf35",
+            "HasChanged": null
+          },
+          {
+            "Label": "Adresse d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "b1e279f6-f77d-4b70-8748-9841d0ff50f0",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Address",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "a53d136a-ebd0-493d-ba02-20b83442bf35",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "6094a97f-9e25-40ea-ae0a-d504e7d9b7a6",
+      "AttributeType": "String",
+      "LogicalName": "shipto_country",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Country/Region",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "27d8cb13-2e57-4ede-8cc4-17bab8ee288c",
+            "HasChanged": null
+          },
+          {
+            "Label": "Pays/région d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "9ee0f04f-56cd-4829-b5db-e1536ab1708c",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Country/Region",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "27d8cb13-2e57-4ede-8cc4-17bab8ee288c",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "36e96760-0e33-4f18-9f0c-b0421af93e57",
+      "AttributeType": "String",
+      "LogicalName": "shipto_fax",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Fax",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "fe8b7166-8433-4424-9b1b-755b6ac3c682",
+            "HasChanged": null
+          },
+          {
+            "Label": "Télécopie d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "458180e6-01d7-42ec-8d27-9e3732c87142",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Fax",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "fe8b7166-8433-4424-9b1b-755b6ac3c682",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
+      "MetadataId": "3177a73f-3315-44c0-a5fb-174e9e07a5d0",
+      "AttributeType": "Picklist",
+      "LogicalName": "shipto_freighttermscode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Freight Terms",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "ef9f9b94-ef64-4dff-9260-d08ae92516cc",
+            "HasChanged": null
+          },
+          {
+            "Label": "Conditions de transport d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "34a64103-e5a0-4aa9-84f2-942ee95954c2",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Freight Terms",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "ef9f9b94-ef64-4dff-9260-d08ae92516cc",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "6c2329be-ca4b-46b6-bdf9-40bcbfbc867b",
+      "AttributeType": "Virtual",
+      "LogicalName": "shipto_freighttermscodename",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "2076968c-d674-476b-8514-e9c02f8f2912",
+      "AttributeType": "String",
+      "LogicalName": "shipto_line1",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Street 1",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3067876d-caf8-4dc3-9abe-5e32b44ecc7a",
+            "HasChanged": null
+          },
+          {
+            "Label": "Rue 1 d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "6e6ed754-764e-403d-93b7-4a943cc46d2f",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Street 1",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3067876d-caf8-4dc3-9abe-5e32b44ecc7a",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "4724636a-000d-4174-95d8-9f09825f8a30",
+      "AttributeType": "String",
+      "LogicalName": "shipto_line2",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Street 2",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "0b1d57f5-d095-4e70-98ef-10dc433a998f",
+            "HasChanged": null
+          },
+          {
+            "Label": "Rue 2 d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "d14d0647-d38d-41a3-9986-173fd678a722",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Street 2",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "0b1d57f5-d095-4e70-98ef-10dc433a998f",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "9d24d93d-4b01-4cc8-9501-8a4a0d82ee49",
+      "AttributeType": "String",
+      "LogicalName": "shipto_line3",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Street 3",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "c54eb912-2551-421f-bf80-55d56bcc524d",
+            "HasChanged": null
+          },
+          {
+            "Label": "Rue 3 d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "afda9e85-6a02-4a72-bcc1-748630594ffa",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Street 3",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "c54eb912-2551-421f-bf80-55d56bcc524d",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "dba69c91-5ea3-4bda-bfec-c036cda758e7",
+      "AttributeType": "String",
+      "LogicalName": "shipto_name",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Name",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "07eaf5cf-1e53-400b-8aaa-ac4843792f65",
+            "HasChanged": null
+          },
+          {
+            "Label": "Nom d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "b01e95b8-a279-4234-8a67-8692c8eef843",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Name",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "07eaf5cf-1e53-400b-8aaa-ac4843792f65",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "f9ae14df-c706-4817-988b-31426485304e",
+      "AttributeType": "String",
+      "LogicalName": "shipto_postalcode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To ZIP/Postal Code",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "c0d70a2a-8b6c-400f-b8d8-57e5acad6431",
+            "HasChanged": null
+          },
+          {
+            "Label": "Code postal d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "17fcc8f9-cb1f-4858-a766-643ca14bd49a",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To ZIP/Postal Code",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "c0d70a2a-8b6c-400f-b8d8-57e5acad6431",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "7ee91b12-1d65-410a-8441-67227fc512ba",
+      "AttributeType": "String",
+      "LogicalName": "shipto_stateorprovince",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To State/Province",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "dda29dce-d7d7-4632-8bcd-e13c86c9e02e",
+            "HasChanged": null
+          },
+          {
+            "Label": "Département/province d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "10359403-9724-41a4-89cf-dc026aefa02a",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To State/Province",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "dda29dce-d7d7-4632-8bcd-e13c86c9e02e",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "9ea59b2b-7c51-4c5e-acd8-67e16a642d78",
+      "AttributeType": "String",
+      "LogicalName": "shipto_telephone",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To Phone",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "9b924713-47d3-4e06-8a9b-80b8539b84a2",
+            "HasChanged": null
+          },
+          {
+            "Label": "Téléphone d'expédition",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "746189eb-4e34-4816-813c-a37b0d01a664",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To Phone",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "9b924713-47d3-4e06-8a9b-80b8539b84a2",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
+      "MetadataId": "804dc099-45f1-4076-98c8-ece306029c68",
+      "AttributeType": "Picklist",
+      "LogicalName": "skippricecalculation",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Skip Price Calculation",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "84cc966b-c37d-47b3-9e67-05d094644f7d",
+            "HasChanged": null
+          },
+          {
+            "Label": "Ignorer le calcul du prix",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "3b7743bb-9be0-4f99-aed7-58139579f2e6",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Skip Price Calculation",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "84cc966b-c37d-47b3-9e67-05d094644f7d",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "c2191703-651a-4aa2-8bb6-9133fa7c4271",
+      "AttributeType": "Virtual",
+      "LogicalName": "skippricecalculationname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "ad95548a-edb3-4567-b90e-237adc2895cc",
+      "AttributeType": "Lookup",
+      "LogicalName": "slaid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "SLA",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "c640c5c2-e2ff-4f18-9fa3-52b4dd635092",
+            "HasChanged": null
+          },
+          {
+            "Label": "Contrat SLA",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "5a21a104-ad13-4bad-8f47-f26acfe4dce3",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "SLA",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "c640c5c2-e2ff-4f18-9fa3-52b4dd635092",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "6b374b42-ce67-458b-bfa2-1039bc68f935",
+      "AttributeType": "Lookup",
+      "LogicalName": "slainvokedid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Last SLA applied",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "c97b0ea3-bdd8-49be-a11e-def00ffe0cd6",
+            "HasChanged": null
+          },
+          {
+            "Label": "Dernier contrat SLA appliqué",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "f166e304-a5cb-4849-9449-7937de1f3957",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Last SLA applied",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "c97b0ea3-bdd8-49be-a11e-def00ffe0cd6",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "51d18215-4463-4357-8a13-916ae25a817f",
+      "AttributeType": "String",
+      "LogicalName": "slainvokedidname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "d8169bde-88c9-4709-bb0f-e9bff51be0d9",
+      "AttributeType": "String",
+      "LogicalName": "slaname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "MetadataId": "5a5ae6f1-ae01-47e2-9885-b5c5efd2e13f",
+      "AttributeType": "Uniqueidentifier",
+      "LogicalName": "stageid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "(Deprecated) Stage Id",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "6453669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "(Déconseillé) ID de phase",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "ffc6454c-5450-4887-915f-560ab73f5e28",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "(Deprecated) Stage Id",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "6453669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StateAttributeMetadata",
+      "MetadataId": "eb697b59-5dfa-42e8-ae5f-f6e027fc4bbc",
+      "AttributeType": "State",
+      "LogicalName": "statecode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Status",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "284921eb-2c5b-41cf-a516-5fe2dc2d174a",
+            "HasChanged": null
+          },
+          {
+            "Label": "Statut",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "9e9d7240-fe7d-4b94-a024-7e8cd8b5333d",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Status",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "284921eb-2c5b-41cf-a516-5fe2dc2d174a",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "cf82e200-6440-4249-96e9-898732f3ff9a",
+      "AttributeType": "Virtual",
+      "LogicalName": "statecodename",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StatusAttributeMetadata",
+      "MetadataId": "8f24d4e8-22f9-4cf1-b53f-a5cdc9b69acd",
+      "AttributeType": "Status",
+      "LogicalName": "statuscode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Status Reason",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "1e87ddc5-8f48-428e-925b-abceeacf1def",
+            "HasChanged": null
+          },
+          {
+            "Label": "Raison du statut",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "0507b003-4d0a-4910-be3c-dc550739da77",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Status Reason",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "1e87ddc5-8f48-428e-925b-abceeacf1def",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "ed194ca3-00b6-4e58-b7a6-c28f95029273",
+      "AttributeType": "Virtual",
+      "LogicalName": "statuscodename",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.IntegerAttributeMetadata",
+      "MetadataId": "5c8a1748-8509-49c7-a8ed-e9f471436c50",
+      "AttributeType": "Integer",
+      "LogicalName": "timezoneruleversionnumber",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Time Zone Rule Version Number",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3a53669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Numéro de version de la règle du fuseau horaire",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "19a800b3-7b14-4100-8584-ca1bfd535c01",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Time Zone Rule Version Number",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3a53669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "3e81f84f-0e27-4545-9cdd-11d04e1ebe36",
+      "AttributeType": "Money",
+      "LogicalName": "totalamount",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Amount",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "8e85ccb3-6207-415f-96cc-ff07e9c54f5a",
+            "HasChanged": null
+          },
+          {
+            "Label": "Montant total",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "18807115-27c4-4458-ab8c-b62d3d02b62c",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Amount",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "8e85ccb3-6207-415f-96cc-ff07e9c54f5a",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "e6491fa7-544d-4b89-b35e-b58ccf2d840a",
+      "AttributeType": "Money",
+      "LogicalName": "totalamount_base",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Amount (Base)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "9353669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "{0} (de base)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "bb52ea44-239f-4096-95d6-71ad4fbf5545",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Amount (Base)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "9353669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "0a55d4e3-8cae-4d1c-ad93-724bc5e01f9d",
+      "AttributeType": "Money",
+      "LogicalName": "totalamountlessfreight",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Pre-Freight Amount",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "39256a07-8f21-4d98-b5ca-3150fd39173e",
+            "HasChanged": null
+          },
+          {
+            "Label": "Total hors frais de port",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "ed46915a-6bae-45f0-929d-2ba6d76cf454",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Pre-Freight Amount",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "39256a07-8f21-4d98-b5ca-3150fd39173e",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "4c8c8b03-34ee-461d-aa89-e5ad364da721",
+      "AttributeType": "Money",
+      "LogicalName": "totalamountlessfreight_base",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Pre-Freight Amount (Base)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "9753669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "{0} (de base)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "c4f455b7-424b-429e-9302-48738b6bdc0a",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Pre-Freight Amount (Base)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "9753669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "393dee69-12c5-48ed-a9e4-5c7c2f289652",
+      "AttributeType": "Money",
+      "LogicalName": "totaldiscountamount",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Discount Amount",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "a9549a11-4203-42bf-a359-12140799ea46",
+            "HasChanged": null
+          },
+          {
+            "Label": "Total de la remise",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "9425f8c4-0f3b-4d06-b47b-ce9b985f29fe",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Discount Amount",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "a9549a11-4203-42bf-a359-12140799ea46",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "66925278-4aad-4ebf-9b5d-743225901690",
+      "AttributeType": "Money",
+      "LogicalName": "totaldiscountamount_base",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Discount Amount (Base)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "9b53669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "{0} (de base)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "54c07c03-adcd-4bb3-814b-e38ebdd61a63",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Discount Amount (Base)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "9b53669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "f1934341-c07f-4df6-b406-b597c242690d",
+      "AttributeType": "Money",
+      "LogicalName": "totallineitemamount",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Detail Amount",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "72060a0f-40bc-44b8-86ea-2a392d4c82fb",
+            "HasChanged": null
+          },
+          {
+            "Label": "Total détaillé",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "b7df2848-bd8d-4dd0-94c9-7c1647073680",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Detail Amount",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "72060a0f-40bc-44b8-86ea-2a392d4c82fb",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "1b01324e-fd25-4ca3-b785-36d4ea9ae916",
+      "AttributeType": "Money",
+      "LogicalName": "totallineitemamount_base",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Detail Amount (Base)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "9f53669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "{0} (de base)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "e723a504-8d36-4d25-8289-7d452225b560",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Detail Amount (Base)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "9f53669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "f215e9be-fd3d-4546-87b4-2da7dc9bfbbd",
+      "AttributeType": "Money",
+      "LogicalName": "totallineitemdiscountamount",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Line Item Discount Amount",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "4b6dd5a8-ee99-42a7-86ba-6fa513139df2",
+            "HasChanged": null
+          },
+          {
+            "Label": "Remise totale sur les lignes",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "c31c05a5-efd0-4b82-8f85-ad49215d7b6b",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Line Item Discount Amount",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "4b6dd5a8-ee99-42a7-86ba-6fa513139df2",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "009e9417-5cc3-49a6-aecd-9e816df2de36",
+      "AttributeType": "Money",
+      "LogicalName": "totallineitemdiscountamount_base",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Line Item Discount Amount (Base)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "a353669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "{0} (de base)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "6ce57337-01bb-42ee-bd0f-aa4d3443d5dc",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Line Item Discount Amount (Base)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "a353669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "6f4c5550-4967-42a5-8b5b-f6e6467c1372",
+      "AttributeType": "Money",
+      "LogicalName": "totaltax",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Tax",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "163ff428-31d6-4dab-84b3-f7b874693520",
+            "HasChanged": null
+          },
+          {
+            "Label": "Total des taxes",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "9d16814e-059e-4e9d-a288-cdff5cb5556f",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Tax",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "163ff428-31d6-4dab-84b3-f7b874693520",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.MoneyAttributeMetadata",
+      "MetadataId": "c95d3159-9f94-461b-88f0-bb3aa3ad4c59",
+      "AttributeType": "Money",
+      "LogicalName": "totaltax_base",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Total Tax (Base)",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "a753669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "{0} (de base)",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "97740ddb-766e-48a4-babc-6191c334440c",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Total Tax (Base)",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "a753669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+      "MetadataId": "91dd1e65-3030-4b47-9fd8-fc1fe7ba9e87",
+      "AttributeType": "Lookup",
+      "LogicalName": "transactioncurrencyid",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Currency",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "6c53669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Devise",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "61f09dee-7788-4a5c-9854-dfd6c58a1131",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Currency",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "6c53669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "4a7dcefc-cfd3-4822-bc72-aed578281d2f",
+      "AttributeType": "String",
+      "LogicalName": "transactioncurrencyidname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "MetadataId": "b1e8e538-c4be-468c-9af6-fb9c3af59141",
+      "AttributeType": "String",
+      "LogicalName": "traversedpath",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "(Deprecated) Traversed Path",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "6653669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "(Déconseillé) Chemin d’accès traversé",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "a36bb145-2fa2-4371-8739-259aa64b10cb",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "(Deprecated) Traversed Path",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "6653669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.IntegerAttributeMetadata",
+      "MetadataId": "3a2eef72-85a4-40ef-ba2a-8b0286e1631e",
+      "AttributeType": "Integer",
+      "LogicalName": "utcconversiontimezonecode",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "UTC Conversion Time Zone Code",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3c53669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Code de fuseau horaire pour la conversion UTC",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "949cbae3-722a-4c32-b4c8-ca679b7027f3",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "UTC Conversion Time Zone Code",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3c53669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.BigIntAttributeMetadata",
+      "MetadataId": "40cdde8b-2f7b-460e-a66c-5484f65f5b53",
+      "AttributeType": "BigInt",
+      "LogicalName": "versionnumber",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Version Number",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3253669f-5dda-e911-a97e-000d3ab3f524",
+            "HasChanged": null
+          },
+          {
+            "Label": "Numéro de version",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "210b04a9-0d62-4dd3-9944-a7272b6d0590",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Version Number",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3253669f-5dda-e911-a97e-000d3ab3f524",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "@odata.type": "#Microsoft.Dynamics.CRM.BooleanAttributeMetadata",
+      "MetadataId": "a90d2471-bb85-47f8-8bce-c9c5835d3960",
+      "AttributeType": "Boolean",
+      "LogicalName": "willcall",
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Ship To",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "d65ab62c-5383-4604-9310-3f3edd49bd54",
+            "HasChanged": null
+          },
+          {
+            "Label": "Expédier vers",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "08458a93-b89f-458d-9353-259b201215ba",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Ship To",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "d65ab62c-5383-4604-9310-3f3edd49bd54",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "fc0f8d72-c367-4f87-8396-0201e2208222",
+      "AttributeType": "Virtual",
+      "LogicalName": "willcallname",
+      "DisplayName": {
+        "LocalizedLabels": [],
+        "UserLocalizedLabel": null
+      }
+    }
+  ]
+}

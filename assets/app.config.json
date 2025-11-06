@@ -2,52 +2,96 @@
   "SearchScheme": {
     "Entities": [
       {
-        "LogicalName": "account",
+        "LogicalName": "invoice",
         "View": [ "name", "createby" ],
         "FilterOptions": [
           {
             "CategoryDisplayName": "General"
           },
           {
-            "AttributeLogicalName": "accountcategorycode",
-            "EntityLogicalName": "account",
-            "AttributeDisplayName": "Account code",
-            "Default": { "IsShowed": true, "Values": [ "1" ], "IsDisabled": false, "CannotRemove": false },
+            "AttributeName": "invoicenumber",
+            "EntityName": "invoice",
+            "DisplayName": "Invoice number",
+            "Default": { "IsShowed": true, "Condition": "ne", "Values": [ "1" ], "IsDisabled": false, "CannotRemove": false },
             "Selection": { "Multi": true, "MinItems": 1, "MaxItems": 2 },
             "Control": ""
           },
           {
-            "AttributeLogicalName": "name",
-            "EntityLogicalName": "account",
-            "AttributeDisplayName": "Some name",
-            "Default": { "IsShowed": true }
-          },
-          {
-            "AttributeLogicalName": "email",
-            "EntityLogicalName": "systemuser",
-            "AttributeDisplayName": "N:1",
-            "Relation": { "FromAttribute": "owner" },
+            "AttributeName": "name",
+            "DisplayName11111111": "Some name",
             "Default": { "IsShowed": true }
           },
           {
             "CategoryDisplayName": "Misc"
           },
           {
-            "AttributeLogicalName": "name",
-            "EntityLogicalName": "lead",
-            "AttributeDisplayName": "N:N",
-            "Relation": { "FromAttribute": "accountid", "Entity": "accountleads_association", "ToAttribute": "leadid" }
+            "EntityName": "invoice",
+            "FromAttribute": "invoiceid",
+            "RelatedTo": {
+              "ToAttribute": "invoiceid",
+              "EntityName": "invoicedetail",
+              "AttributeName": "priceperunit",
+              "Default": { "IsShowed": true }
+            }
           },
           {
-            "AttributeLogicalName": "name",
-            "EntityLogicalName": "team",
-            "AttributeDisplayName": "N:1:N",
-            "Relation": { "FromAttribute": "accountid", "Entity": "account_systemuser", "ToAttribute": "systemuserid",
-              "RelateTo": { "FromAttribute": "systemuserid", "Entity": "team", "ToAttribute": "teamid" }}
+            "EntityName": "invoice",
+            "FromAttribute": "invoiceid",
+            "RelatedTo": {
+              "ToAttribute": "invoiceid",
+              "EntityName": "invoicedetail",
+              "AttributeName": "priceperunit",
+              "DisplayName": "Custom unit price"
+            }
+          },
+          {
+            "EntityName": "invoice",
+            "FromAttribute": "invoiceid",
+            "RelatedTo": {
+              "ToAttribute": "invoiceid",
+              "EntityName": "invoicedetail",
+              "FromAttribute": "productid",
+              "RelatedTo": {
+                "ToAttribute": "productid",
+                "EntityName": "product",
+                "AttributeName": "name",
+                "DisplayName": "Product name"
+              }
+            }
+          },
+          {
+            "Group": {
+              "Type": "and",
+              "Items": [
+                
+              ]
+            }
           }
         ]
       }
-    ]
+    ],
+    "Localization": {
+      "CrmFilterConditions": {
+        "eq": "Equal",
+        "ne": "Not equal",
+        "in": "In",
+        "null": "Does not contain data",
+        "not-null": "Contains data",
+        "begins-with": "Begins with",
+        "not-begin-with": "Does not begin with",
+        "ends-with": "Ends with",
+        "not-end-with": "Does not end with",
+        "gt": "Greater than",
+        "ge": "Greater than or equal",
+        "lt": "Less than",
+        "le": "Less than or equal",
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "yesterday": "Yesterday",
+        "like": "Contains",
+        "not-like": "Does not contain"
+      }
+    }
   },
   "N:1 [account].createby -> [systemuser].systemuserid (email)": "",
   "N:N [account].accountid -> accountid.[accountleads_association].leadid -> [lead].leadid (name)": "",

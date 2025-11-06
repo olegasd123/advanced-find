@@ -1,33 +1,80 @@
-import { FilterOptionConfig } from "../config/app"
+import { FilterOptionConfig } from "../config/app-config"
 import { AttributeMetadata } from "../api/crm-repository"
 
-export const fillOutMissedDisplayNames = async (
-  filterOption? : FilterOptionConfig[],
-  getAttributeMetadata?: (entityLogicalName: string, groupedMissedDisplayNames: any) => Promise<AttributeMetadata[]> | undefined
+export interface CrmFilterConditionOption {
+  value: string,
+  displayName: string
+}
+
+export const getTargetFilterOption = (option?: FilterOptionConfig): FilterOptionConfig | undefined => {
+  if (option?.RelatedTo) {
+    return getTargetFilterOption(option?.RelatedTo)
+  }
+  return option
+}
+
+export const fillOptionsWithMetadataInfo = async (
+  currentEntity?: string,
+  filterOptions? : FilterOptionConfig[],
+  getAttributeMetadata?: (entityLogicalName: string, attributesLogicalNames: any) => Promise<AttributeMetadata[]> | undefined
 ) => {
-  const missedDisplayNames = filterOption?.map(i => {
-    if (i.EntityLogicalName && i.AttributeLogicalName && !i.AttributeDisplayName) {
-      return { EntityLogicalName: i.EntityLogicalName, AttributeLogicalName: i.AttributeLogicalName }
+  const attributesNames = filterOptions?.map(i => {
+    if (!i.CategoryDisplayName) {
+      const option = getTargetFilterOption(i)
+      if (option && option.AttributeName && !option.EntityName) {
+        option.EntityName = currentEntity
+      }
+      return option
     }
   }).filter(i => typeof i !== 'undefined')
 
-  if (missedDisplayNames?.length ?? 0 > 0) {
-    const groupedMissedDisplayNames = missedDisplayNames?.reduce((p, c) => {
-      p[c.EntityLogicalName] = p[c.EntityLogicalName] || []
-      p[c.EntityLogicalName].push(c.AttributeLogicalName)
+  if (attributesNames?.length ?? 0 > 0) {
+    const groupedAttributesNames = attributesNames?.reduce((p, c) => {
+      p[c.EntityName!] = p[c.EntityName!] || []
+      p[c.EntityName!].push(c.AttributeName)
       return p
     }, Object.create(null))
 
-    for (const entityLogicalName of Object.keys(groupedMissedDisplayNames)) {
-      const attributesMetadata = await getAttributeMetadata?.(entityLogicalName, groupedMissedDisplayNames[entityLogicalName])
-
-      for (const attributeLogicalName of groupedMissedDisplayNames[entityLogicalName]) {
-        const option = filterOption?.find(i =>
-          i.EntityLogicalName === entityLogicalName &&
-          i.AttributeLogicalName === attributeLogicalName &&
-          !i.AttributeDisplayName)
-          option!.AttributeDisplayName = attributesMetadata?.find(i => i.LogicalName === attributeLogicalName)?.DisplayName.UserLocalizedLabel?.Label
+    for (const entityName of Object.keys(groupedAttributesNames)) {
+      const attributesMetadata = await getAttributeMetadata?.(entityName, groupedAttributesNames[entityName])
+      for (const attributeName of groupedAttributesNames[entityName]) {
+        for (const filterOption of filterOptions!) {
+          const attributeInfo = getTargetFilterOption(filterOption)
+          if (attributeInfo?.EntityName === entityName &&
+            attributeInfo?.AttributeName === attributeName) {
+            const attributeMetadata = attributesMetadata?.find(i => i.LogicalName === attributeName)
+            attributeInfo.AttributeType = attributeMetadata?.AttributeType
+            if (!attributeInfo.DisplayName) {
+              attributeInfo.DisplayName = attributeMetadata?.DisplayName.UserLocalizedLabel?.Label
+            }
+          }
+        }
       }
     }
   }
+}
+
+export const getCrmFilterConditionsOptions = (
+  type: string | undefined,
+  localizationInfo: any
+): CrmFilterConditionOption[] => {
+
+  const filters: string[] = []
+
+  filters.push(...[ 'eq', 'ne', 'null', 'not-null' ])
+
+  if (type === 'String') {
+    filters.push(...[ 'in', 'begins-with', 'not-begin-with', 'ends-with', 'not-end-with', 'like', 'not-like' ])
+  }
+  else if (type === 'Number' || type === 'Money' || type === 'Picklist') {
+    filters.push(...[ 'in', 'ge', 'gt', 'le', 'lt' ])
+  }
+  else if (type === 'Datetime') {
+    filters.push(...[ 'ge', 'gt', 'le', 'lt', 'today', 'tomorrow', 'yesterday' ])
+  }
+  else {
+    console.error(`Type '${type}' doesn't support`)
+  }
+
+  return filters.map(i => { return { value: i, displayName: localizationInfo[i] }})
 }

@@ -1,5 +1,7 @@
+
 interface FilterOptionsDefaultConfig {
   CannotRemove?: boolean,
+  Condition?: string,
   OrderedBy?: number,
   IsDisabled?: boolean,
   IsShowed?: boolean,
@@ -7,7 +9,12 @@ interface FilterOptionsDefaultConfig {
 }
 
 interface SearchSchemeConfig {
-  Entities: EntityConfig[]
+  Entities: EntityConfig[],
+  Localization: LocalizationConfig,
+}
+
+interface LocalizationConfig {
+  CrmFilterConditions: any
 }
 
 interface SelectionConfig {
@@ -27,11 +34,15 @@ export interface EntityConfig {
 }
 
 export interface FilterOptionConfig {
-  AttributeDisplayName?: string,
-  AttributeLogicalName?: string,
+  DisplayName?: string,
+  AttributeName?: string,
+  FromAttribute?: string,
+  ToAttribute?: string,
+  AttributeType?: string,
   CategoryDisplayName?: string,
   Control?: string,
-  EntityLogicalName?: string,
+  EntityName?: string,
   Default?: FilterOptionsDefaultConfig,
-  Selection?: SelectionConfig
+  Selection?: SelectionConfig,
+  RelatedTo?: FilterOptionConfig
 }

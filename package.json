@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --port 8989"
+    "preview": "vite preview --port 8989",
+    "build:crm": "vite build --mode crm",
+    "build:crm:dev": "vite build --mode crm-dev",
+    "package:webresource": "npm run build:crm && node scripts/package-webresource.mjs",
+    "package:webresource:dev": "npm run build:crm:dev && node scripts/package-webresource.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.2",
@@ -25,6 +29,7 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/xrm": "^9.0.86",
+    "@vitejs/plugin-react-swc": "^3.5.0",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.22.0",
     "eslint-plugin-react-hooks": "^5.2.0",

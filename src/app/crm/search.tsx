@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useCrmRepository, useAppConfiguration } from "../../providers"
 import { EntityMetadata } from "../../api/crm-repository"
-import { EntityConfig } from "../../config/app"
+import { EntityConfig } from "../../config/app-config"
 import { Select } from "../../components/controls/catalyst/select"
 import { Filter } from "./filter"
 

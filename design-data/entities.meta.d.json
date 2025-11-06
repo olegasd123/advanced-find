@@ -1,6 +1,61 @@
 {
-  "@odata.context": "https://synergiedev.api.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions(LogicalName,EntitySetName,DisplayName,DisplayCollectionName)",
+  "@odata.context": "https://rd-d365-sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions(LogicalName,EntitySetName,DisplayName,DisplayCollectionName)",
   "value": [
+{
+      "MetadataId": "30b0cd7e-0081-42e1-9a48-688442277fae",
+      "LogicalName": "opportunity",
+      "EntitySetName": "opportunities",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Opportunities",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "0674ae6e-bd90-48e8-af53-38996d5f6613",
+            "HasChanged": null
+          },
+          {
+            "Label": "Opportunités",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "f34aa4f7-4621-4a49-9359-a45d3ac14337",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Opportunities",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "0674ae6e-bd90-48e8-af53-38996d5f6613",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Opportunity",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "72d2e3df-2f29-4c18-aeec-d7e9079003ce",
+            "HasChanged": null
+          },
+          {
+            "Label": "Opportunité",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "c9475949-80ea-44f0-9902-c4e926e35d7e",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Opportunity",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "72d2e3df-2f29-4c18-aeec-d7e9079003ce",
+          "HasChanged": null
+        }
+      }
+    },
     {
       "MetadataId": "70816501-edb9-4740-a16c-6a5efbc05d84",
       "LogicalName": "account",
@@ -8,16 +63,23 @@
       "DisplayCollectionName": {
         "LocalizedLabels": [
           {
-            "Label": "Entreprises",
-            "LanguageCode": 1036,
+            "Label": "Accounts",
+            "LanguageCode": 1033,
             "IsManaged": true,
             "MetadataId": "2b4901bf-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Comptes",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "6c2b5a98-d155-4503-8540-3e653f7a1b41",
             "HasChanged": null
           }
         ],
         "UserLocalizedLabel": {
-          "Label": "Entreprises",
-          "LanguageCode": 1036,
+          "Label": "Accounts",
+          "LanguageCode": 1033,
           "IsManaged": true,
           "MetadataId": "2b4901bf-2241-db11-898a-0007e9e17ebd",
           "HasChanged": null
@@ -26,59 +88,25 @@
       "DisplayName": {
         "LocalizedLabels": [
           {
-            "Label": "Entreprise",
-            "LanguageCode": 1036,
+            "Label": "Account",
+            "LanguageCode": 1033,
             "IsManaged": true,
             "MetadataId": "2a4901bf-2241-db11-898a-0007e9e17ebd",
             "HasChanged": null
+          },
+          {
+            "Label": "Compte",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "9baf7665-05f1-4634-a650-d08db15d5acd",
+            "HasChanged": null
           }
         ],
         "UserLocalizedLabel": {
-          "Label": "Entreprise",
-          "LanguageCode": 1036,
+          "Label": "Account",
+          "LanguageCode": 1033,
           "IsManaged": true,
           "MetadataId": "2a4901bf-2241-db11-898a-0007e9e17ebd",
-          "HasChanged": null
-        }
-      }
-    },
-    {
-      "MetadataId": "30b0cd7e-0081-42e1-9a48-688442277fae",
-      "LogicalName": "opportunity",
-      "EntitySetName": "opportunities",
-      "DisplayCollectionName": {
-        "LocalizedLabels": [
-          {
-            "Label": "Opportunities",
-            "LanguageCode": 1036,
-            "IsManaged": true,
-            "MetadataId": "33dd01b9-2241-db11-898a-0007e9e17ebd",
-            "HasChanged": null
-          }
-        ],
-        "UserLocalizedLabel": {
-          "Label": "Opportunities",
-          "LanguageCode": 1036,
-          "IsManaged": true,
-          "MetadataId": "33dd01b9-2241-db11-898a-0007e9e17ebd",
-          "HasChanged": null
-        }
-      },
-      "DisplayName": {
-        "LocalizedLabels": [
-          {
-            "Label": "Opportunity",
-            "LanguageCode": 1036,
-            "IsManaged": true,
-            "MetadataId": "32dd01b9-2241-db11-898a-0007e9e17ebd",
-            "HasChanged": null
-          }
-        ],
-        "UserLocalizedLabel": {
-          "Label": "Opportunity",
-          "LanguageCode": 1036,
-          "IsManaged": true,
-          "MetadataId": "32dd01b9-2241-db11-898a-0007e9e17ebd",
           "HasChanged": null
         }
       }
@@ -91,15 +119,22 @@
         "LocalizedLabels": [
           {
             "Label": "Contacts",
-            "LanguageCode": 1036,
+            "LanguageCode": 1033,
             "IsManaged": true,
             "MetadataId": "bb9709b3-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Contacts",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "db9af76b-4bc2-4c05-8af3-9d3c7b1ecc28",
             "HasChanged": null
           }
         ],
         "UserLocalizedLabel": {
           "Label": "Contacts",
-          "LanguageCode": 1036,
+          "LanguageCode": 1033,
           "IsManaged": true,
           "MetadataId": "bb9709b3-2241-db11-898a-0007e9e17ebd",
           "HasChanged": null
@@ -109,15 +144,22 @@
         "LocalizedLabels": [
           {
             "Label": "Contact",
-            "LanguageCode": 1036,
+            "LanguageCode": 1033,
             "IsManaged": true,
             "MetadataId": "ba9709b3-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Contact",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "3882ed5c-d397-43ef-af92-5a3c5128cf53",
             "HasChanged": null
           }
         ],
         "UserLocalizedLabel": {
           "Label": "Contact",
-          "LanguageCode": 1036,
+          "LanguageCode": 1033,
           "IsManaged": true,
           "MetadataId": "ba9709b3-2241-db11-898a-0007e9e17ebd",
           "HasChanged": null
@@ -125,42 +167,56 @@
       }
     },
     {
-      "MetadataId": "dc6574cb-92ce-446c-a5d6-885a75107d52",
-      "LogicalName": "lead",
-      "EntitySetName": "leads",
+      "MetadataId": "107a7272-ebb3-469a-be46-76036d858623",
+      "LogicalName": "quote",
+      "EntitySetName": "quotes",
       "DisplayCollectionName": {
         "LocalizedLabels": [
           {
-            "Label": "Leads",
+            "Label": "Quotes",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3bb46b0e-f4aa-4f80-90d9-5d4615a1da39",
+            "HasChanged": null
+          },
+          {
+            "Label": "Devis",
             "LanguageCode": 1036,
             "IsManaged": true,
-            "MetadataId": "30dd01b9-2241-db11-898a-0007e9e17ebd",
+            "MetadataId": "3efdbe86-c10d-4e21-8ad0-21256ee67c30",
             "HasChanged": null
           }
         ],
         "UserLocalizedLabel": {
-          "Label": "Leads",
-          "LanguageCode": 1036,
+          "Label": "Quotes",
+          "LanguageCode": 1033,
           "IsManaged": true,
-          "MetadataId": "30dd01b9-2241-db11-898a-0007e9e17ebd",
+          "MetadataId": "3bb46b0e-f4aa-4f80-90d9-5d4615a1da39",
           "HasChanged": null
         }
       },
       "DisplayName": {
         "LocalizedLabels": [
           {
-            "Label": "Lead",
+            "Label": "Quote",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "9e190619-d62a-451e-a5a8-32e0b4fb16b9",
+            "HasChanged": null
+          },
+          {
+            "Label": "Devis",
             "LanguageCode": 1036,
             "IsManaged": true,
-            "MetadataId": "2fdd01b9-2241-db11-898a-0007e9e17ebd",
+            "MetadataId": "29681046-f806-413e-b6a0-5857a016eb62",
             "HasChanged": null
           }
         ],
         "UserLocalizedLabel": {
-          "Label": "Lead",
-          "LanguageCode": 1036,
+          "Label": "Quote",
+          "LanguageCode": 1033,
           "IsManaged": true,
-          "MetadataId": "2fdd01b9-2241-db11-898a-0007e9e17ebd",
+          "MetadataId": "9e190619-d62a-451e-a5a8-32e0b4fb16b9",
           "HasChanged": null
         }
       }
@@ -172,16 +228,23 @@
       "DisplayCollectionName": {
         "LocalizedLabels": [
           {
-            "Label": "System users",
-            "LanguageCode": 1036,
+            "Label": "Users",
+            "LanguageCode": 1033,
             "IsManaged": true,
             "MetadataId": "829609b3-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Utilisateurs",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "a109c862-3776-42a6-bcb8-8eb48aae5d26",
             "HasChanged": null
           }
         ],
         "UserLocalizedLabel": {
-          "Label": "System users",
-          "LanguageCode": 1036,
+          "Label": "Users",
+          "LanguageCode": 1033,
           "IsManaged": true,
           "MetadataId": "829609b3-2241-db11-898a-0007e9e17ebd",
           "HasChanged": null
@@ -190,18 +253,520 @@
       "DisplayName": {
         "LocalizedLabels": [
           {
-            "Label": "System user",
-            "LanguageCode": 1036,
+            "Label": "User",
+            "LanguageCode": 1033,
             "IsManaged": true,
             "MetadataId": "819609b3-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Utilisateur",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "825f7d12-2ae5-43f1-b24f-8a68c50e0014",
             "HasChanged": null
           }
         ],
         "UserLocalizedLabel": {
-          "Label": "System user",
-          "LanguageCode": 1036,
+          "Label": "User",
+          "LanguageCode": 1033,
           "IsManaged": true,
           "MetadataId": "819609b3-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "e995200c-5fe8-4843-8325-80bd2a429d1e",
+      "LogicalName": "pricelevel",
+      "EntitySetName": "pricelevels",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Price Lists",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "231e9c77-046d-44da-9cb9-6efdb1bd637a",
+            "HasChanged": null
+          },
+          {
+            "Label": "Tarifs",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "51b549e8-f327-40d9-93db-328237a69556",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Price Lists",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "231e9c77-046d-44da-9cb9-6efdb1bd637a",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Price List",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "7ce72810-72ee-4329-93a8-3ed14776d146",
+            "HasChanged": null
+          },
+          {
+            "Label": "Tarifs",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "07297de3-27ad-4293-9216-f96d874fbfd2",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Price List",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "7ce72810-72ee-4329-93a8-3ed14776d146",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "5f2e7ae7-d327-49b5-a343-61d48f1bcd28",
+      "LogicalName": "transactioncurrency",
+      "EntitySetName": "transactioncurrencies",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Currencies",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "52ef5fbd-ea04-4a3d-91df-0680549bb945",
+            "HasChanged": null
+          },
+          {
+            "Label": "Devises",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "060febb4-b06c-45a4-afd9-e92d38759add",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Currencies",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "52ef5fbd-ea04-4a3d-91df-0680549bb945",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Currency",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "d4578591-b916-45fa-988e-a4f48bb8af2d",
+            "HasChanged": null
+          },
+          {
+            "Label": "Devise",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "e9719144-3e25-438f-aed2-a7a63defd735",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Currency",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "d4578591-b916-45fa-988e-a4f48bb8af2d",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "4c0e7f31-a9de-45ea-b983-363b946f18c5",
+      "LogicalName": "invoice",
+      "EntitySetName": "invoices",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoices",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "a2459d27-5196-41a9-ba37-cdf1fc63e441",
+            "HasChanged": null
+          },
+          {
+            "Label": "Factures",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "4552b6c3-64af-44b3-bb27-cd660d95afae",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoices",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "a2459d27-5196-41a9-ba37-cdf1fc63e441",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoice",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "82e57982-5dbb-4582-a0d2-6c4b227df53a",
+            "HasChanged": null
+          },
+          {
+            "Label": "Facture",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "73996e52-6ba0-4728-ad84-ffdcd3db2e71",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoice",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "82e57982-5dbb-4582-a0d2-6c4b227df53a",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "aaf9be65-10c2-415d-8c19-fb1489021330",
+      "LogicalName": "product",
+      "EntitySetName": "products",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Products",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "e9500c30-a662-467f-862d-80f4d6301b80",
+            "HasChanged": null
+          },
+          {
+            "Label": "Produits",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "a507d21d-b5db-443c-8338-95dea839a246",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Products",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "e9500c30-a662-467f-862d-80f4d6301b80",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Product",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "4d9f1eda-d0dc-4b5f-8fb3-f1d285c48a8d",
+            "HasChanged": null
+          },
+          {
+            "Label": "Produit",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "35f8c462-2ca7-44e2-80ac-f8f177d59837",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Product",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "4d9f1eda-d0dc-4b5f-8fb3-f1d285c48a8d",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "a317d38b-b2d5-4663-9a06-44611f27ed50",
+      "LogicalName": "uomschedule",
+      "EntitySetName": "uomschedules",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Unit Groups",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3caa4cfd-5956-45b2-a04d-082c58c2768e",
+            "HasChanged": null
+          },
+          {
+            "Label": "Groupes d’unités",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "e9b06732-d110-41cf-a5dd-af36964888a9",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Unit Groups",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3caa4cfd-5956-45b2-a04d-082c58c2768e",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Unit Group",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "79085218-d02e-4b0c-b0d2-6e26cd96cca7",
+            "HasChanged": null
+          },
+          {
+            "Label": "Groupe d'unités",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "9d8ecbf4-51d3-45a1-865e-c7768c38a2ca",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Unit Group",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "79085218-d02e-4b0c-b0d2-6e26cd96cca7",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "02d5dd55-4cbb-4147-9534-1de9bac6d760",
+      "LogicalName": "uom",
+      "EntitySetName": "uoms",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Units",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "cc429e31-be72-48e9-ac9d-1285451cabcb",
+            "HasChanged": null
+          },
+          {
+            "Label": "Unités",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "d297b723-6833-454a-b804-2b55cf17d25f",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Units",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "cc429e31-be72-48e9-ac9d-1285451cabcb",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Unit",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "3bbf6015-b0d1-4005-a038-2649055b9b77",
+            "HasChanged": null
+          },
+          {
+            "Label": "Unité",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "5acee9f1-9dc3-43f1-8620-4b570c8213b5",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Unit",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "3bbf6015-b0d1-4005-a038-2649055b9b77",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "f01e8baa-c7f5-4ec3-b538-5a3eed8527f6",
+      "LogicalName": "businessunit",
+      "EntitySetName": "businessunits",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Business Units",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "e00a19a7-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Divisions",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "fcc06297-49ce-48da-bfd0-7afd6ecd6de2",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Business Units",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "e00a19a7-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Business Unit",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "df0a19a7-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Division",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "d3681aa1-33a8-4151-a354-aaa139ebc404",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Business Unit",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "df0a19a7-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "eff432f7-2508-44cf-971a-cbe44562dc68",
+      "LogicalName": "team",
+      "EntitySetName": "teams",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Teams",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "254901bf-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Équipes",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "254901bf-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Teams",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "254901bf-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Team",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "244901bf-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          },
+          {
+            "Label": "Équipe",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "244901bf-2241-db11-898a-0007e9e17ebd",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Team",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "244901bf-2241-db11-898a-0007e9e17ebd",
+          "HasChanged": null
+        }
+      }
+    },
+    {
+      "MetadataId": "8d899ec1-c0e4-4f24-82e2-3aff96a1f0ed",
+      "LogicalName": "invoicedetail",
+      "EntitySetName": "invoicedetails",
+      "DisplayCollectionName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoice Products",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "18d708e0-a74c-495e-9548-9b63e0fb8099",
+            "HasChanged": null
+          },
+          {
+            "Label": "Produits de la facture",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "cac0ee22-aa6c-44fa-8cda-6533f367906a",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoice Products",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "18d708e0-a74c-495e-9548-9b63e0fb8099",
+          "HasChanged": null
+        }
+      },
+      "DisplayName": {
+        "LocalizedLabels": [
+          {
+            "Label": "Invoice Product",
+            "LanguageCode": 1033,
+            "IsManaged": true,
+            "MetadataId": "7fbb9e86-a9ff-43ea-a408-7ba548181786",
+            "HasChanged": null
+          },
+          {
+            "Label": "Produit de la facture",
+            "LanguageCode": 1036,
+            "IsManaged": true,
+            "MetadataId": "877b95e9-50df-4275-881a-73e290905f52",
+            "HasChanged": null
+          }
+        ],
+        "UserLocalizedLabel": {
+          "Label": "Invoice Product",
+          "LanguageCode": 1033,
+          "IsManaged": true,
+          "MetadataId": "7fbb9e86-a9ff-43ea-a408-7ba548181786",
           "HasChanged": null
         }
       }
