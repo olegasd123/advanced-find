@@ -37,9 +37,9 @@
 // })
 
 
-import path from 'node:path';
-
-import react from '@vitejs/plugin-react-swc';
+import path from 'node:path'
+import fs from 'node:fs'
+import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, searchForWorkspaceRoot } from 'vite';
 
@@ -48,7 +48,17 @@ export default defineConfig(({ mode }) => {
   const isCrmDevBuild = mode === 'crm-dev';
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(),
+      {
+        name: 'run-script',
+        enforce: 'pre',
+        writeBundle: () => isCrmBuild ? fs.copyFile(
+          `${__dirname}/assets/app.config.json`,
+          `${__dirname}/dist/crm-webresource/app.config.json`,
+          (error: any) => error ?? console.error(error)
+        ) : undefined
+      }
+    ],
     base: isCrmBuild ? './' : '/',
     build: isCrmBuild
       ? {

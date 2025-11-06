@@ -30,8 +30,13 @@ export const fillOptionsWithMetadataInfo = async (
 
   if (attributesNames?.length ?? 0 > 0) {
     const groupedAttributesNames = attributesNames?.reduce((p, c) => {
-      p[c.EntityName!] = p[c.EntityName!] || []
-      p[c.EntityName!].push(c.AttributeName)
+      if (c?.EntityName || c?.AttributeName) {
+        p[c.EntityName!] = p[c.EntityName!] || []
+
+        if (!p[c.EntityName!].includes(c.AttributeName!)) {
+          p[c.EntityName!].push(c.AttributeName)
+        }
+      }
       return p
     }, Object.create(null))
 
