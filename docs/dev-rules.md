@@ -1,6 +1,6 @@
 # Developer Code Style & Rules
 
-This document defines the shared coding standards for the advanced-find project. Every pull request should be reviewed against these rules—treat them as living requirements rather than suggestions.
+This document defines the shared coding standards for the advanced-find project.
 
 ## Guiding Principles
 - Favor clarity over cleverness; prioritize maintainability and explicitness so future contributors can reason about the code quickly.
@@ -11,9 +11,11 @@ This document defines the shared coding standards for the advanced-find project.
 
 ## TypeScript & React
 - Write TypeScript everywhere; never fall back to `any` unless you document why and add a follow-up task to remove it.
+- Prefer TypeScript `interface` declarations for describing object shapes; use `type` when unions or mapped types are needed.
 - Use discriminated unions and branded types for domain concepts instead of raw primitives whenever feasible.
 - Co-locate component-specific types next to the component; share cross-cutting types under `src/types`.
 - Components must be function components with hooks; avoid legacy class components.
+- Declare all components, hooks, and utilities as arrow functions to keep signatures uniform and enable easy binding.
 - Keep hooks pure: the first line of a hook should be another hook call or synchronous logic, not side effects.
 - Derive UI state from props or repositories; avoid duplicating data that can be computed on the fly.
 - Memoize derived values (`useMemo`, `useCallback`) when the dependency list is stable and re-computation is expensive; otherwise, keep things simple.
@@ -31,6 +33,7 @@ This document defines the shared coding standards for the advanced-find project.
 
 ## File, Import, and Naming Conventions
 - Use PascalCase for components, camelCase for functions/variables, SCREAMING_SNAKE_CASE only for runtime constants.
+- Follow kebab-case for directories and filenames (`folder-name/file-name.ext`) so paths remain consistent across platforms.
 - One component per file; auxiliary helpers live next to their consumer with a `.helpers.ts` suffix.
 - Keep public exports at the bottom of the file; export types separately using `export type`.
 - Use absolute imports rooted at `src` to avoid brittle `../../` paths.
@@ -56,5 +59,3 @@ This document defines the shared coding standards for the advanced-find project.
 - [ ] Tests (unit/integration) exist or rationale provided when omitted.
 - [ ] Documentation is updated when behavior changes.
 - [ ] No direct changes were made inside `src/components/controls/catalyst`; custom controls live in `src/components/controls`.
-
-Questions or proposed adjustments to these rules should be discussed during engineering syncs and captured via follow-up PRs to keep this document authoritative.
