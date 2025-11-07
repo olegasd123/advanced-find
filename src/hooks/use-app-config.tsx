@@ -15,7 +15,7 @@ export const AppConfigurationProvider = ({
   React.useEffect(() => {
     const getAppConfig = async () => {
       const path = import.meta.env.MODE === "crm" || import.meta.env.MODE === "crm-dev"
-        ? `/WebResources/${import.meta.env.VITE_CRM_SOLUTION_PREFIX}/advanced-find/app.config.json` : `assets/app.config.json`
+        ? `/WebResources/${import.meta.env.VITE_CRM_SOLUTION_PREFIX}/advanced-find/app-config.json` : `assets/app-config.json`
       const response = await fetch(path)
       setAppConfig(await response.json())
     }

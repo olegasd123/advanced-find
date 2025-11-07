@@ -14,8 +14,8 @@ export default defineConfig(({ mode }) => {
         name: 'run-script',
         enforce: 'pre',
         writeBundle: () => isCrmBuild ? fs.copyFile(
-          `${__dirname}/assets/app.config.json`,
-          `${__dirname}/dist/crm-webresource/app.config.json`,
+          `${__dirname}/assets/app-config.json`,
+          `${__dirname}/dist/crm-webresource/app-config.json`,
           (error: any) => error ?? console.error(error)
         ) : undefined
       }
