@@ -1,8 +1,8 @@
 import * as React from "react";
-import { EntityConfig, FilterOptionConfig } from "../../config/app-config";
+import { EntityConfig, FilterOptionConfig } from "../../libs/config/app-config";
 import { FilterItem } from "./filter-item";
-import { useCrmRepository } from "../../providers";
-import { fillOptionsWithMetadataInfo } from "../../utils/filter";
+import { useCrmRepository } from "../../hooks/use-crm-repository";
+import { fillOptionsWithMetadataInfo } from "../../libs/utils/filter";
 
 export interface FilterOption {
   FilterOptionConfig?: FilterOptionConfig

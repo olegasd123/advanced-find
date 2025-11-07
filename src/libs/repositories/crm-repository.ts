@@ -33,7 +33,7 @@ export interface AttributeMetadata extends Metadata {
   AttributeType: string,
 }
 
-export interface CrmRepository {
+export interface CrmData {
   getEntitiesMetadata(logicalNames: string[] | undefined): Promise<EntityMetadata[]>
   getAttributesMetadata(entityLogicalName: string, attributesLogicalNames: string[]): Promise<AttributeMetadata[]>
   getLookupAttributeMetadata(entityLogicalName: string, attributeLogicalName: string): Promise<LookupAttributeMetadata>
@@ -67,7 +67,7 @@ export const findAttributes = (entityLogicalName: string, source: AttributeMetad
   return attributes
 }
 
-export default class CrmData implements CrmRepository {
+export default class CrmRepository implements CrmData {
 
   // EntityDefinitions(LogicalName='account')/Attributes?$select=LogicalName,AttributeType,DisplayName
   async getAttributesMetadata(entityLogicalName: string, attributesLogicalNames: string[]): Promise<AttributeMetadata[]> {

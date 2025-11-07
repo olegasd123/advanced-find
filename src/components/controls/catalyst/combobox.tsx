@@ -78,9 +78,9 @@ export function Combobox<T>({
             // Invalid state
             'data-invalid:border-red-500 data-invalid:data-hover:border-red-500 dark:data-invalid:border-red-500 dark:data-invalid:data-hover:border-red-500',
             // Disabled state
-            'data-disabled:border-zinc-950/20 dark:data-disabled:border-white/15 dark:data-disabled:bg-white/[2.5%] dark:data-hover:data-disabled:border-white/15',
+            'data-disabled:border-zinc-950/20 dark:data-disabled:border-white/15 dark:data-disabled:bg-white/2.5 dark:data-hover:data-disabled:border-white/15',
             // System icons
-            'dark:[color-scheme:dark]',
+            'dark:scheme-dark',
           ])}
         />
         <Headless.ComboboxButton className="group absolute inset-y-0 right-0 flex items-center px-2">

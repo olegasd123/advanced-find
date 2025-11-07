@@ -5,8 +5,8 @@ import { Combobox, ComboboxLabel, ComboboxOption } from "../../components/contro
 import { Listbox, ListboxLabel, ListboxOption } from "../../components/controls/catalyst/listbox";
 import { ComboboxOptionCategory } from "../../components/controls/combobox-option-category";
 import { FilterOption } from "./filter";
-import { useAppConfiguration } from "../../providers";
-import { CrmFilterConditionOption, getCrmFilterConditionsOptions, getTargetFilterOption } from "../../utils/filter";
+import { useAppConfiguration } from "../../hooks/use-app-config";
+import { CrmFilterConditionOption, getCrmFilterConditionsOptions, getTargetFilterOption } from "../../libs/utils/filter";
 
 export const FilterItem = ({
   options,

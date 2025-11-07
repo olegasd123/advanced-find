@@ -1,5 +1,5 @@
 import { FilterOptionConfig } from "../config/app-config"
-import { AttributeMetadata } from "../api/crm-repository"
+import { AttributeMetadata } from "../repositories/crm-repository"
 
 export interface CrmFilterConditionOption {
   value: string,

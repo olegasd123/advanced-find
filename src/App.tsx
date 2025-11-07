@@ -1,10 +1,13 @@
 import { Layout } from "./app/layout"
-import { Providers } from "./providers"
+import { CrmRepositoryProvider } from "./hooks/use-crm-repository"
+import { AppConfigurationProvider } from "./hooks/use-app-config"
 
 export const App = () => {
   return (
-    <Providers>
-      <Layout />
-    </Providers>
+    <AppConfigurationProvider>
+      <CrmRepositoryProvider>
+          <Layout />
+      </CrmRepositoryProvider>
+    </AppConfigurationProvider>
   )
 }

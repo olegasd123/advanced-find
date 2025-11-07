@@ -1,22 +1,16 @@
 import * as React from "react"
-import { AppConfig } from "./config/app-config"
-import CrmData, { CrmRepository } from "./api/crm-repository"
-import CrmDesignData from "./api/crm-design"
+import { AppConfig } from "../libs/config/app-config"
 
 const AppConfigurationContext = React.createContext<AppConfig | null>(null)
-const CrmRepositoryContext = React.createContext<CrmRepository | null>(null)
 
 export const useAppConfiguration = () => React.useContext(AppConfigurationContext)
-export const useCrmRepository = () => React.useContext(CrmRepositoryContext)
 
-export const Providers = ({
+export const AppConfigurationProvider = ({
   children
 }: {
   children: React.ReactNode
 }) => {
   const [appConfig, setAppConfig] = React.useState<AppConfig | null>(null)
-
-  const crmRepository: CrmRepository = import.meta.env.PROD ? new CrmData() : new CrmDesignData()
 
   React.useEffect(() => {
     const getAppConfig = async () => {
@@ -29,10 +23,8 @@ export const Providers = ({
   }, [])
 
   return (
-    <CrmRepositoryContext value={crmRepository}>
-      <AppConfigurationContext value={appConfig}>
-        {children}
-      </AppConfigurationContext>
-    </CrmRepositoryContext>
+    <AppConfigurationContext value={appConfig}>
+      {children}
+    </AppConfigurationContext>
   )
 }
