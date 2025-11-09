@@ -5,6 +5,9 @@ import { EntityMetadata } from "../../libs/repositories/crm-repository"
 import { EntityConfig } from "../../libs/config/app-config"
 import { Select } from "../../components/controls/catalyst/select"
 import { Filter } from "./filter"
+import { createLogger } from "../../libs/utils/logger"
+
+const logger = createLogger('Search');
 
 export const Search = () => {
   const [ entitiesMetadata, setEntitiesMetadata ] = React.useState<EntityMetadata[] | undefined>([])
@@ -27,7 +30,7 @@ export const Search = () => {
       setEntitiesMetadata(result)
     }
     getData().catch(error => {
-      console.error(error)
+      logger.error(`Failed to load entities metadata: ${error}`)
     })
   }, [ appConfiguration ])
 

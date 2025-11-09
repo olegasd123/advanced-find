@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         writeBundle: () => isCrmBuild ? fs.copyFile(
           `${__dirname}/assets/app-config.json`,
           `${__dirname}/dist/crm-webresource/app-config.json`,
-          (error: any) => error ?? console.error(error)
+          (error: any) => error ?? console.error("Vite config", error)
         ) : undefined
       }
     ],

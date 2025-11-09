@@ -1,3 +1,6 @@
+import { createLogger } from "../utils/logger"
+
+const logger = createLogger('filter-utils')
 
 interface DisplayName {
   UserLocalizedLabel?: UserLocalizedLabel
@@ -61,7 +64,7 @@ export const findAttributes = (entityLogicalName: string, source: AttributeMetad
       attributes.push(attribute)
     }
     else {
-      console.error(`Couldn't find the attribute by name '${attributeLogicalName}' at the entity '${entityLogicalName}'`)
+      logger.error(`Couldn't find the attribute by name '${attributeLogicalName}' at the entity '${entityLogicalName}'`)
     }
   }
   return attributes
@@ -76,7 +79,7 @@ export default class CrmRepository implements CrmData {
       const data = await result.json()
       return <AttributeMetadata[]>data.value
     }, error => {
-      console.error("CrmData.getAttributesMetadata", error)
+      logger.error(`CrmData.getAttributesMetadata: ${error}`)
       throw error
     })
     return findAttributes(entityLogicalName, allAttributes, attributesLogicalNames)
@@ -89,7 +92,7 @@ export default class CrmRepository implements CrmData {
       const data = await result.json()
       return <EntityMetadata[]>data.value
     }, error => {
-      console.error("CrmData.getEntitiesMetadata", error)
+      logger.error(`CrmData.getEntitiesMetadata: ${error}`)
       throw error
     })
 
@@ -103,7 +106,7 @@ export default class CrmRepository implements CrmData {
       const data = await result.json()
       return <LookupAttributeMetadata>data
     }, error => {
-      console.error("CrmData.getLookupAttributeMetadata", error)
+      logger.error(`CrmData.getLookupAttributeMetadata: ${error}`)
       throw error
     })
   }
@@ -115,7 +118,7 @@ export default class CrmRepository implements CrmData {
       const data = await result.json()
       return <PicklistAttributeMetadata>data
     }, error => {
-      console.error("CrmData.getPicklistAttributeMetadata", error)
+      logger.error(`CrmData.getPicklistAttributeMetadata: ${error}`)
       throw error
     })
   }

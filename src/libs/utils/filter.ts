@@ -1,5 +1,8 @@
 import { FilterOptionConfig } from "../config/app-config"
 import { AttributeMetadata } from "../repositories/crm-repository"
+import { createLogger } from "./logger"
+
+const logger = createLogger('filter-utils');
 
 export interface CrmFilterConditionOption {
   value: string,
@@ -78,7 +81,7 @@ export const getCrmFilterConditionsOptions = (
     filters.push(...[ 'ge', 'gt', 'le', 'lt', 'today', 'tomorrow', 'yesterday' ])
   }
   else {
-    console.error(`Type '${type}' doesn't support`)
+    logger.error(`Type '${type}' doesn't support`)
   }
 
   return filters.map(i => { return { value: i, displayName: localizationInfo[i] }})
