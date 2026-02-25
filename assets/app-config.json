@@ -58,7 +58,9 @@
                 "DisplayName": "Product name"
               }
             }
-          },
+          }
+        ],
+        "FilterGrid" : [
           {
             "Group": {
               "Type": "and",

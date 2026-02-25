@@ -59,6 +59,8 @@ export const fillOptionsWithMetadataInfo = async (
         }
       }
     }
+
+    logger.info(`filterOptions`, { filterOptions })
   }
 }
 

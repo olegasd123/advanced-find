@@ -8,7 +8,7 @@ export interface FilterOption {
   FilterOptionConfig?: FilterOptionConfig
 }
 
-export const Filter = ({
+export const FilterGrid = ({
   entityConfig
 }: {
   entityConfig?: EntityConfig

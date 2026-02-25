@@ -4,7 +4,7 @@ import { useAppConfiguration } from "../../hooks/use-app-config"
 import { EntityMetadata } from "../../libs/repositories/crm-repository"
 import { EntityConfig } from "../../libs/config/app-config"
 import { Select } from "../../components/controls/catalyst/select"
-import { Filter } from "./filter"
+import { FilterGrid } from "./filter-grid"
 import { createLogger } from "../../libs/utils/logger"
 
 const logger = createLogger('Search');
@@ -50,7 +50,7 @@ export const Search = () => {
         </Select>
       )}
 
-      <Filter entityConfig={currentEntityConfig} />
+      <FilterGrid entityConfig={currentEntityConfig} />
       
     </div>
   )

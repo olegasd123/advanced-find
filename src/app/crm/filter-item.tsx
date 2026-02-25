@@ -4,7 +4,7 @@ import { TrashIcon } from "@heroicons/react/16/solid";
 import { Combobox, ComboboxLabel, ComboboxOption } from "../../components/controls/catalyst/combobox";
 import { Listbox, ListboxLabel, ListboxOption } from "../../components/controls/catalyst/listbox";
 import { ComboboxOptionCategory } from "../../components/controls/combobox-option-category";
-import { FilterOption } from "./filter";
+import { FilterOption } from "./filter-grid";
 import { useAppConfiguration } from "../../hooks/use-app-config";
 import { CrmFilterConditionOption, getCrmFilterConditionsOptions, getTargetFilterOption } from "../../libs/utils/filter";
 
