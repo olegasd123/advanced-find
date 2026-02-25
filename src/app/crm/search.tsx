@@ -42,7 +42,7 @@ export const Search = () => {
     <div>
       {(configEntities?.length ?? 0) > 1 && (
         <Select defaultValue="" onChange={handleCurrentEntityConfigChanged}>
-          <option value="" disabled>Select entity</option>
+          <option value="" disabled>Select an entity</option>
           {configEntities?.map((entityInfo, index) => (
             <option key={index} value={index}>{entitiesMetadata?.find(entityMetadata =>
               entityInfo.LogicalName === entityMetadata.LogicalName)?.DisplayCollectionName.UserLocalizedLabel.Label}</option>

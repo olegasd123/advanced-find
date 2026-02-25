@@ -68,21 +68,28 @@ export const getCrmFilterConditionsOptions = (
   type: string | undefined,
   localizationInfo: any
 ): CrmFilterConditionOption[] => {
+  const normalizedType = type?.toLowerCase()
 
   const filters: string[] = []
 
   filters.push(...[ 'eq', 'ne', 'null', 'not-null' ])
 
-  if (type === 'String') {
+  if (normalizedType === 'string' || normalizedType === 'memo' || normalizedType === 'lookup' || normalizedType === 'uniqueidentifier') {
     filters.push(...[ 'in', 'begins-with', 'not-begin-with', 'ends-with', 'not-end-with', 'like', 'not-like' ])
   }
-  else if (type === 'Number' || type === 'Money' || type === 'Picklist') {
+  else if (normalizedType === 'number' ||
+    normalizedType === 'integer' ||
+    normalizedType === 'bigint' ||
+    normalizedType === 'decimal' ||
+    normalizedType === 'double' ||
+    normalizedType === 'money' ||
+    normalizedType === 'picklist') {
     filters.push(...[ 'in', 'ge', 'gt', 'le', 'lt' ])
   }
-  else if (type === 'Datetime') {
+  else if (normalizedType === 'datetime') {
     filters.push(...[ 'ge', 'gt', 'le', 'lt', 'today', 'tomorrow', 'yesterday' ])
   }
-  else {
+  else if (type) {
     logger.error(`Type '${type}' doesn't support`)
   }
 
