@@ -3,7 +3,7 @@ import { useCrmRepository } from "../../hooks/use-crm-repository"
 import { useAppConfiguration } from "../../hooks/use-app-config"
 import { EntityMetadata } from "../../libs/repositories/crm-repository"
 import { EntityConfig } from "../../libs/config/app-config"
-import { Select } from "../../components/controls/catalyst/select"
+import { Select } from "../../../vendor/catalyst-ui-kit/typescript/select"
 import { FilterGrid } from "./filter-grid"
 import { createLogger } from "../../libs/utils/logger"
 

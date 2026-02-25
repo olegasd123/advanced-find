@@ -18,7 +18,6 @@
           },
           {
             "AttributeName": "name",
-            "DisplayName11111111": "Some name",
             "Default": { "IsShowed": true }
           },
           {
@@ -94,8 +93,5 @@
         "not-like": "Does not contain"
       }
     }
-  },
-  "N:1 [account].createby -> [systemuser].systemuserid (email)": "",
-  "N:N [account].accountid -> accountid.[accountleads_association].leadid -> [lead].leadid (name)": "",
-  "N:1:N [account].accountid -> accountid.[account_systemuser].systemuserid -> systemuserid.[team].teamid (name)": ""
+  }
 }

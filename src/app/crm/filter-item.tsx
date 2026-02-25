@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Button } from "../../components/controls/catalyst/button";
+import { Button } from "../../../vendor/catalyst-ui-kit/typescript/button";
 import { TrashIcon } from "@heroicons/react/16/solid";
-import { Combobox, ComboboxLabel, ComboboxOption } from "../../components/controls/catalyst/combobox";
-import { Listbox, ListboxLabel, ListboxOption } from "../../components/controls/catalyst/listbox";
+import { Combobox, ComboboxLabel, ComboboxOption } from "../../../vendor/catalyst-ui-kit/typescript/combobox";
+import { Listbox, ListboxLabel, ListboxOption } from "../../../vendor/catalyst-ui-kit/typescript/listbox";
 import { ComboboxOptionCategory } from "../../components/controls/combobox-option-category";
 import { FilterOption } from "./filter-grid";
 import { useAppConfiguration } from "../../hooks/use-app-config";
