@@ -19,13 +19,13 @@ export const FilterItem = ({
   const [ filterConditions, setFilterConditions ] = React.useState<CrmFilterConditionOption[] | undefined>()
   const [ selectedFilterCondition, setSelectedFilterCondition ] = React.useState<string | null>()
 
-  const [ cannotRemove, setCannotRemove ] = React.useState<boolean | undefined>(true)
+  const [ cannotBeRemoved, setCannotBeRemoved ] = React.useState<boolean | undefined>(true)
 
   const localization = useAppConfiguration()?.SearchScheme?.Localization
 
   React.useEffect(() => {
     const targetFilterOption = getTargetFilterOption(currentOption?.FilterOptionConfig)
-    setCannotRemove(targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotRemove)
+    setCannotBeRemoved(targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved)
 
     const filterOptions = getCrmFilterConditionsOptions(targetFilterOption?.AttributeType, localization?.CrmFilterConditions)
     setFilterConditions(filterOptions)
@@ -53,7 +53,7 @@ export const FilterItem = ({
       <div className="w-8 grow-0">
         <Button
           outline
-          disabled={cannotRemove}>
+          disabled={cannotBeRemoved}>
           <TrashIcon />
         </Button>
       </div>
@@ -95,7 +95,7 @@ export const FilterItem = ({
         )}
       </div>
       <div className="w-64 grow-8">
-        
+        // TODO: implement inputs for condition value regarding attribute type
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 
 interface FilterOptionsDefaultConfig {
-  CannotRemove?: boolean,
+  CannotBeRemoved?: boolean,
   Condition?: string,
   OrderedBy?: number,
   IsDisabled?: boolean,

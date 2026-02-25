@@ -12,7 +12,7 @@
             "AttributeName": "invoicenumber",
             "EntityName": "invoice",
             "DisplayName": "Invoice number",
-            "Default": { "IsShowed": true, "Condition": "ne", "Values": [ "1" ], "IsDisabled": false, "CannotRemove": false },
+            "Default": { "IsShowed": true, "Condition": "ne", "Values": [ "1" ], "IsDisabled": false, "CannotBeRemoved": false },
             "Selection": { "Multi": true, "MinItems": 1, "MaxItems": 2 },
             "Control": ""
           },
