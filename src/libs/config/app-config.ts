@@ -5,7 +5,7 @@ interface FilterOptionsDefaultConfig {
   OrderedBy?: number,
   IsDisabled?: boolean,
   IsShowed?: boolean,
-  Values?: string[]
+  Values?: Array<string | number>
 }
 
 interface SearchSchemeConfig {

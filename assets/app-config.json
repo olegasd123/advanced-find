@@ -83,7 +83,7 @@
           },
           {
             "AttributeName": "accountcategorycode",
-            "Default": { "IsShowed": true },
+            "Default": { "IsShowed": true, "Values": [ 1, 2 ] },
             "Selection": { "Multi": true, "MinItems": 1, "MaxItems": 2 }
           }
         ]

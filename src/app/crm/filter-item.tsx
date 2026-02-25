@@ -5,6 +5,7 @@ import { Combobox, ComboboxLabel, ComboboxOption } from "../../../vendor/catalys
 import { Listbox, ListboxLabel, ListboxOption } from "../../../vendor/catalyst-ui-kit/typescript/listbox";
 import { Input } from "../../../vendor/catalyst-ui-kit/typescript/input";
 import { ComboboxOptionCategory } from "../../components/controls/combobox-option-category";
+import { MultiCombobox } from "../../components/controls/multi-combobox";
 import { FilterOption } from "./filter-grid";
 import { useAppConfiguration } from "../../hooks/use-app-config";
 import { useCrmRepository } from "../../hooks/use-crm-repository";
@@ -12,7 +13,7 @@ import { CrmFilterConditionOption, getCrmFilterConditionsOptions, getTargetFilte
 import { createLogger } from "../../libs/utils/logger";
 
 interface ConditionValueOption {
-  value: string,
+  value: string | number,
   displayName: string
 }
 
@@ -24,12 +25,44 @@ const numberAttributeTypes = new Set([ "Number", "Integer", "BigInt", "Decimal",
 
 const dateAttributeTypes = new Set([ "DateTime" ])
 
+type ConditionValue = string | number
+
 const isNoValueCondition = (condition: string | null | undefined): boolean => {
   if (!condition) {
     return false
   }
 
   return noValueConditions.has(condition)
+}
+
+const sanitizePicklistValues = (
+  values: ConditionValue[],
+  options: ConditionValueOption[],
+  maxItems?: number
+): ConditionValue[] => {
+  const optionValueByKey = new Map<string, ConditionValue>()
+  for (const option of options) {
+    const key = String(option.value)
+    if (!optionValueByKey.has(key)) {
+      optionValueByKey.set(key, option.value)
+    }
+  }
+  const uniqueValues: ConditionValue[] = []
+
+  for (const value of values) {
+    const normalizedValue = optionValueByKey.get(String(value))
+    if (normalizedValue !== undefined && !uniqueValues.includes(normalizedValue)) {
+      uniqueValues.push(normalizedValue)
+    }
+  }
+
+  const safeMaxItems = maxItems && maxItems > 0 ? maxItems : undefined
+
+  if (safeMaxItems && uniqueValues.length > safeMaxItems) {
+    uniqueValues.length = safeMaxItems
+  }
+
+  return uniqueValues
 }
 
 export const FilterItem = ({
@@ -42,7 +75,7 @@ export const FilterItem = ({
   const [ selectedAttribute, setSelectedAttribute ] = React.useState<FilterOption | undefined>(currentOption)
   const [ filterConditions, setFilterConditions ] = React.useState<CrmFilterConditionOption[] | undefined>()
   const [ selectedFilterCondition, setSelectedFilterCondition ] = React.useState<string | null>()
-  const [ conditionValues, setConditionValues ] = React.useState<string[]>([])
+  const [ conditionValues, setConditionValues ] = React.useState<ConditionValue[]>([])
   const [ picklistOptions, setPicklistOptions ] = React.useState<ConditionValueOption[]>([])
   const [ isPicklistLoading, setIsPicklistLoading ] = React.useState(false)
 
@@ -54,11 +87,17 @@ export const FilterItem = ({
 
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
   const selectedAttributeType = selectedFilterOption?.AttributeType
+  const picklistSelection = selectedFilterOption?.Selection
+  const picklistMinItems = Math.max(0, picklistSelection?.MinItems ?? 0)
+  const picklistMaxItems = picklistSelection?.MaxItems && picklistSelection.MaxItems > 0
+    ? picklistSelection.MaxItems
+    : undefined
+  const isMultiPicklistSelection = selectedAttributeType === "Picklist" && picklistSelection?.Multi
 
   const loadPicklistOptions = React.useCallback(async (
     targetFilterOption: ReturnType<typeof getTargetFilterOption>,
     defaultCondition: string,
-    defaultValues: string[]
+    defaultValues: ConditionValue[]
   ): Promise<void> => {
     const requestId = ++picklistRequestId.current
 
@@ -74,8 +113,8 @@ export const FilterItem = ({
     try {
       const metadata = await crmRepository?.getPicklistAttributeMetadata(targetFilterOption.EntityName, targetFilterOption.AttributeName)
       const options = metadata?.OptionSet?.Options?.map(option => {
-        const value = option.Value.toString()
-        const displayName = option.Label.UserLocalizedLabel?.Label ?? value
+        const value = option.Value
+        const displayName = option.Label.UserLocalizedLabel?.Label ?? value.toString()
         return { value, displayName }
       }) ?? []
 
@@ -85,12 +124,24 @@ export const FilterItem = ({
 
       setPicklistOptions(options)
 
-      if (defaultValues.length === 0 &&
-        options.length > 0 &&
-        !isNoValueCondition(defaultCondition) &&
-        defaultCondition !== "in") {
-        setConditionValues([ options[0].value ])
+      const targetSelection = targetFilterOption?.Selection
+      const targetMaxItems = targetSelection?.MaxItems && targetSelection.MaxItems > 0
+        ? targetSelection.MaxItems
+        : undefined
+      const isTargetMultiPicklist = targetFilterOption?.AttributeType === "Picklist" && targetSelection?.Multi
+      const sanitizedDefaultValues = sanitizePicklistValues(defaultValues, options, targetMaxItems)
+
+      if (isTargetMultiPicklist && !isNoValueCondition(defaultCondition)) {
+        setConditionValues(sanitizedDefaultValues)
+        return
       }
+
+      if (isNoValueCondition(defaultCondition)) {
+        setConditionValues([])
+        return
+      }
+
+      setConditionValues(sanitizedDefaultValues.slice(0, 1))
     }
     catch (error) {
       if (requestId !== picklistRequestId.current) {
@@ -147,20 +198,26 @@ export const FilterItem = ({
       return
     }
 
-    if (selectedAttributeType === "Picklist" &&
-      value !== "in" &&
-      conditionValues.length === 0 &&
-      picklistOptions.length > 0) {
-      setConditionValues([ picklistOptions[0].value ])
+    if (selectedAttributeType === "Picklist") {
+      const sanitizedValues = sanitizePicklistValues(conditionValues, picklistOptions, picklistMaxItems)
+
+      if (isMultiPicklistSelection) {
+        setConditionValues(sanitizedValues)
+        return
+      }
+
+      setConditionValues(sanitizedValues.slice(0, 1))
+      return
     }
+
   }
 
   const handleConditionValueChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setConditionValues([ event.target.value ])
   }
 
-  const handlePicklistValueChanged = (value: string | null): void => {
-    if (!value) {
+  const handlePicklistValueChanged = (value: ConditionValueOption["value"] | null): void => {
+    if (value === null) {
       setConditionValues([])
       return
     }
@@ -168,14 +225,29 @@ export const FilterItem = ({
     setConditionValues([ value ])
   }
 
+  const handleMultiPicklistValueChanged = (values: ConditionValueOption[]): void => {
+    const nextValues = values.map(value => value.value)
+
+    if (picklistMaxItems && nextValues.length > picklistMaxItems) {
+      return
+    }
+
+    if (nextValues.length < picklistMinItems) {
+      return
+    }
+
+    setConditionValues(nextValues)
+  }
+
   const renderConditionValueInput = (): React.ReactNode => {
     const selectedConditionValue = conditionValues.at(0) ?? ""
+    const selectedPicklistValues = picklistOptions.filter(option => conditionValues.includes(option.value))
 
     if (isNoValueCondition(selectedFilterCondition)) {
       return <span>&nbsp;</span>
     }
 
-    if (selectedAttributeType === "Picklist" && selectedFilterCondition !== "in") {
+    if (selectedAttributeType === "Picklist") {
       if (isPicklistLoading) {
         return (
           <Input
@@ -188,6 +260,42 @@ export const FilterItem = ({
       }
 
       if (picklistOptions.length > 0) {
+        if (isMultiPicklistSelection) {
+          const maxItemsHint = picklistMaxItems ? ` and at most ${picklistMaxItems}` : ""
+
+          return (
+            <div>
+              <MultiCombobox
+                options={picklistOptions}
+                placeholder="Select values"
+                displayValue={(option) => option.displayName}
+                displayInputValue={(values) => values.map(option => option.displayName).join(", ")}
+                value={selectedPicklistValues}
+                onChange={handleMultiPicklistValueChanged}>
+                {(option) => (
+                  <ComboboxOption value={option}>
+                    <ComboboxLabel>{option.displayName}</ComboboxLabel>
+                  </ComboboxOption>
+                )}
+              </MultiCombobox>
+              <span className="mt-1 block text-xs text-zinc-500">
+                Select at least {picklistMinItems}{maxItemsHint} values
+              </span>
+            </div>
+          )
+        }
+
+        if (selectedFilterCondition === "in") {
+          return (
+            <Input
+              type="text"
+              placeholder="Use comma separated values"
+              value={selectedConditionValue.toString()}
+              onChange={handleConditionValueChanged}
+            />
+          )
+        }
+
         return (
           <Listbox
             placeholder="Select value"
