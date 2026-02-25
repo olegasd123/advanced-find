@@ -50,7 +50,10 @@ export const Search = () => {
         </Select>
       )}
 
-      <FilterGrid entityConfig={currentEntityConfig} />
+      <FilterGrid
+        key={currentEntityConfig?.LogicalName ?? "no-entity"}
+        entityConfig={currentEntityConfig}
+      />
       
     </div>
   )

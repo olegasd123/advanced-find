@@ -25,6 +25,8 @@ export const FilterItem = ({
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
 
   React.useEffect(() => {
+    setSelectedAttribute(currentOption ? { ...currentOption } : undefined)
+
     const targetFilterOption = getTargetFilterOption(currentOption?.FilterOptionConfig)
     setCannotBeRemoved(targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved)
 
