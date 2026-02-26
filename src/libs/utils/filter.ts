@@ -6,7 +6,8 @@ const logger = createLogger('filter-utils');
 
 export interface CrmFilterConditionOption {
   value: string,
-  displayName: string
+  displayName: string,
+  isMultiSelection?: boolean
 }
 
 export const getTargetFilterOption = (option?: FilterOptionConfig): FilterOptionConfig | undefined => {
@@ -66,7 +67,8 @@ export const fillOptionsWithMetadataInfo = async (
 
 export const getCrmFilterConditionsOptions = (
   type: string | undefined,
-  localizationInfo: any
+  localizationInfo: any,
+  isMultiSelection?: boolean
 ): CrmFilterConditionOption[] => {
   const normalizedType = type?.toLowerCase()
 
@@ -74,23 +76,23 @@ export const getCrmFilterConditionsOptions = (
 
   filters.push(...[ 'eq', 'ne', 'null', 'not-null' ])
 
-  if (normalizedType === 'string' || normalizedType === 'memo' || normalizedType === 'lookup' || normalizedType === 'uniqueidentifier') {
+  if (normalizedType === 'string' || normalizedType === 'memo' || normalizedType === 'uniqueidentifier') {
     filters.push(...[ 'in', 'begins-with', 'not-begin-with', 'ends-with', 'not-end-with', 'like', 'not-like' ])
+  }
+  else if ((normalizedType === 'picklist' || normalizedType === 'lookup') &&
+    isMultiSelection) {
+    filters.push(...[ 'in' ])
   }
   else if (normalizedType === 'number' ||
     normalizedType === 'integer' ||
     normalizedType === 'bigint' ||
     normalizedType === 'decimal' ||
     normalizedType === 'double' ||
-    normalizedType === 'money' ||
-    normalizedType === 'picklist') {
+    normalizedType === 'money') {
     filters.push(...[ 'in', 'ge', 'gt', 'le', 'lt' ])
   }
   else if (normalizedType === 'datetime') {
     filters.push(...[ 'ge', 'gt', 'le', 'lt', 'today', 'tomorrow', 'yesterday' ])
-  }
-  else if (type) {
-    logger.error(`Type '${type}' doesn't support`)
   }
 
   return filters.map(i => { return { value: i, displayName: localizationInfo[i] }})

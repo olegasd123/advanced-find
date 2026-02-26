@@ -3,6 +3,7 @@ interface FilterOptionsDefaultConfig {
   CannotBeRemoved?: boolean,
   Condition?: string,
   OrderedBy?: number,
+  IsAttributeDisabled?: boolean,
   IsDisabled?: boolean,
   IsShowed?: boolean,
   Values?: Array<string | number>
@@ -20,7 +21,7 @@ interface LocalizationConfig {
 interface SelectionConfig {
   MaxItems?: number,
   MinItems?: number,
-  Multi?: boolean
+  Multiple?: boolean
 }
 
 export interface AppConfig {

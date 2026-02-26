@@ -20,6 +20,8 @@ export const FilterItem = ({
   const [ filterConditions, setFilterConditions ] = React.useState<CrmFilterConditionOption[] | undefined>()
   const [ selectedFilterCondition, setSelectedFilterCondition ] = React.useState<string | null>()
   const [ cannotBeRemoved, setCannotBeRemoved ] = React.useState<boolean | undefined>(true)
+  const [ isAttributeDisabled, setIsAttributeDisabled ] = React.useState<boolean | undefined>(false)
+  const [ isDisabled, setIsDisabled ] = React.useState<boolean | undefined>(false)
 
   const localization = useAppConfiguration()?.SearchScheme?.Localization
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
@@ -29,8 +31,10 @@ export const FilterItem = ({
 
     const targetFilterOption = getTargetFilterOption(currentOption?.FilterOptionConfig)
     setCannotBeRemoved(targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved)
+    setIsAttributeDisabled(targetFilterOption?.Default?.IsAttributeDisabled)
+    setIsDisabled(targetFilterOption?.Default?.IsDisabled)
 
-    const options = getCrmFilterConditionsOptions(targetFilterOption?.AttributeType, localization?.CrmFilterConditions)
+    const options = getCrmFilterConditionsOptions(targetFilterOption?.AttributeType, localization?.CrmFilterConditions, targetFilterOption?.Selection?.Multiple)
     setFilterConditions(options)
 
     const defaultCondition = targetFilterOption?.Default?.Condition ?? options?.at(0)?.value ?? "eq"
@@ -41,7 +45,7 @@ export const FilterItem = ({
     const targetFilterOptionValue = getTargetFilterOption(value?.FilterOptionConfig)
     setSelectedAttribute(value ? { ...value } : undefined)
 
-    const options = getCrmFilterConditionsOptions(targetFilterOptionValue?.AttributeType, localization?.CrmFilterConditions)
+    const options = getCrmFilterConditionsOptions(targetFilterOptionValue?.AttributeType, localization?.CrmFilterConditions, targetFilterOptionValue?.Selection?.Multiple)
     setFilterConditions(options)
 
     const defaultCondition = targetFilterOptionValue?.Default?.Condition ?? options?.at(0)?.value ?? "eq"
@@ -66,6 +70,7 @@ export const FilterItem = ({
           options={options}
           displayValue={(option: FilterOption | null) => getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName}
           value={selectedAttribute ?? undefined}
+          disabled={isDisabled || isAttributeDisabled}
           onChange={handleAttributeChanged}>
           {(option) => (
             option?.FilterOptionConfig?.CategoryDisplayName ? (
@@ -85,6 +90,7 @@ export const FilterItem = ({
         {filterConditions && (
           <Listbox
             value={selectedFilterCondition}
+            disabled={isDisabled}
             onChange={handleConditionOptionChanged}>
             {filterConditions.map(condition => {
               return (
@@ -102,6 +108,7 @@ export const FilterItem = ({
         <FilterItemValue
           filterOption={selectedFilterOption}
           selectedFilterCondition={selectedFilterCondition}
+          isDisabled={isDisabled}
         />
       </div>
     </div>

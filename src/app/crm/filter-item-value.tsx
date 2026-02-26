@@ -75,10 +75,12 @@ const areSameValues = (left: ConditionValue[], right: ConditionValue[]): boolean
 
 export const FilterItemValue = ({
   filterOption,
-  selectedFilterCondition
+  selectedFilterCondition,
+  isDisabled
 }: {
   filterOption?: FilterOptionConfig,
-  selectedFilterCondition?: string | null
+  selectedFilterCondition?: string | null,
+  isDisabled?: boolean
 }) => {
   const [ conditionValues, setConditionValues ] = React.useState<ConditionValue[]>([])
   const [ picklistOptions, setPicklistOptions ] = React.useState<ConditionValueOption[]>([])
@@ -93,7 +95,7 @@ export const FilterItemValue = ({
   const picklistMaxItems = picklistSelection?.MaxItems && picklistSelection.MaxItems > 0
     ? picklistSelection.MaxItems
     : undefined
-  const isMultiPicklistSelection = selectedAttributeType === "Picklist" && picklistSelection?.Multi
+  const isMultiPicklistSelection = selectedAttributeType === "Picklist" && picklistSelection?.Multiple
 
   const loadPicklistOptions = React.useCallback(async (
     targetFilterOption: FilterOptionConfig | undefined,
@@ -129,7 +131,7 @@ export const FilterItemValue = ({
       const targetMaxItems = targetSelection?.MaxItems && targetSelection.MaxItems > 0
         ? targetSelection.MaxItems
         : undefined
-      const isTargetMultiPicklist = targetFilterOption?.AttributeType === "Picklist" && targetSelection?.Multi
+      const isTargetMultiPicklist = targetFilterOption?.AttributeType === "Picklist" && targetSelection?.Multiple
       const sanitizedDefaultValues = sanitizePicklistValues(defaultValues, options, targetMaxItems)
 
       if (isNoValueCondition(condition)) {
@@ -244,6 +246,7 @@ export const FilterItemValue = ({
               displayValue={(option) => option.displayName}
               displayInputValue={(values) => values.map(option => option.displayName).join(", ")}
               value={selectedPicklistValues}
+              disabled={isDisabled}
               onChange={handleMultiPicklistValueChanged}>
               {(option) => (
                 <ComboboxOption value={option}>
@@ -261,6 +264,7 @@ export const FilterItemValue = ({
             type="text"
             placeholder="Use comma separated values"
             value={selectedConditionValue.toString()}
+            disabled={isDisabled}
             onChange={handleConditionValueChanged}
           />
         )
@@ -270,6 +274,7 @@ export const FilterItemValue = ({
         <Listbox
           placeholder="Select value"
           value={selectedConditionValue === "" ? null : selectedConditionValue}
+          disabled={isDisabled}
           onChange={handlePicklistValueChanged}>
           {picklistOptions.map(option => {
             return (
@@ -289,6 +294,7 @@ export const FilterItemValue = ({
     return (
       <Listbox
         value={selectedConditionValue === "" ? null : selectedConditionValue}
+        disabled={isDisabled}
         onChange={handlePicklistValueChanged}>
         <ListboxOption value="true">
           <ListboxLabel>True</ListboxLabel>
@@ -305,6 +311,7 @@ export const FilterItemValue = ({
       <Input
         type="number"
         value={selectedConditionValue.toString()}
+        disabled={isDisabled}
         onChange={handleConditionValueChanged}
       />
     )
@@ -314,6 +321,7 @@ export const FilterItemValue = ({
     return (
       <Input
         type="date"
+        disabled={isDisabled}
         value={selectedConditionValue.toString()}
         onChange={handleConditionValueChanged}
       />
@@ -325,6 +333,7 @@ export const FilterItemValue = ({
       type="text"
       placeholder={selectedFilterCondition === "in" ? "Use comma separated values" : "Value"}
       value={selectedConditionValue.toString()}
+      disabled={isDisabled}
       onChange={handleConditionValueChanged}
     />
   )
