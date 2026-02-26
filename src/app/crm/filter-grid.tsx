@@ -25,6 +25,18 @@ export const FilterGrid = ({
   const requestIdRef = React.useRef(0)
   const optionIdRef = React.useRef(0)
 
+  const getDefaultVisibleFilterOptions = React.useCallback((options?: FilterOption[]): VisibleFilterOption[] => {
+    return options?.filter(filterOption =>
+      filterOption?.FilterOptionConfig?.Default?.IsShowed &&
+      !filterOption?.FilterOptionConfig?.CategoryDisplayName
+    ).map(filterOption => {
+      return {
+        id: ++optionIdRef.current,
+        option: filterOption
+      }
+    }) ?? []
+  }, [])
+
   React.useEffect(() => {
     const requestId = ++requestIdRef.current
     setFilterOptions(undefined)
@@ -47,19 +59,11 @@ export const FilterGrid = ({
 
       if (requestId === requestIdRef.current) {
         setFilterOptions(options)
-        setVisibleFilterOptions(options?.filter(filterOption =>
-          filterOption?.FilterOptionConfig?.Default?.IsShowed &&
-          !filterOption?.FilterOptionConfig?.CategoryDisplayName
-        ).map(filterOption => {
-          return {
-            id: ++optionIdRef.current,
-            option: filterOption
-          }
-        }) ?? [])
+        setVisibleFilterOptions(getDefaultVisibleFilterOptions(options))
       }
     }
     getData()
-  }, [ entityConfig, crm ])
+  }, [ entityConfig, crm, getDefaultVisibleFilterOptions ])
 
   const handleAddCondition = (): void => {
     setVisibleFilterOptions(previous => [
@@ -75,6 +79,10 @@ export const FilterGrid = ({
     setVisibleFilterOptions(previous => previous.filter(item => item.id !== optionId))
   }
 
+  const handleResetFilters = (): void => {
+    setVisibleFilterOptions(getDefaultVisibleFilterOptions(filterOptions))
+  }
+
   return (
     <div>
       {visibleFilterOptions.map(item => {
@@ -87,9 +95,11 @@ export const FilterGrid = ({
       })}
 
       {entityConfig &&
-        <FilterCommandRow onAddCondition={handleAddCondition} />
+        <FilterCommandRow
+          onAddCondition={handleAddCondition}
+          onResetFilters={handleResetFilters}
+        />
       }
-      
     </div>
   )
 }

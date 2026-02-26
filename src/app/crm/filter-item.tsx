@@ -67,6 +67,7 @@ export const FilterItem = ({
           outline
           onClick={onDeleteCondition}
           aria-label="Delete condition"
+          title="Delete condition"
           disabled={cannotBeRemoved}>
           <TrashIcon />
         </Button>
