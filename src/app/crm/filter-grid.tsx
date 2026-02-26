@@ -1,6 +1,7 @@
 import * as React from "react";
 import { EntityConfig, FilterOptionConfig } from "../../libs/config/app-config";
 import { FilterItem } from "./filter-item";
+import { FilterCommandRow } from "./filter-command-row";
 import { useCrmRepository } from "../../hooks/use-crm-repository";
 import { fillOptionsWithMetadataInfo, getTargetFilterOption } from "../../libs/utils/filter";
 
@@ -56,6 +57,8 @@ export const FilterGrid = ({
           />
         }
       })}
+
+      <FilterCommandRow />
     </div>
   )
 }
