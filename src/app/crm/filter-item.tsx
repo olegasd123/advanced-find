@@ -11,10 +11,12 @@ import { CrmFilterConditionOption, getCrmFilterConditionsOptions, getTargetFilte
 
 export const FilterItem = ({
   options,
-  currentOption
+  currentOption,
+  onDeleteCondition
 }: {
   options: FilterOption[],
-  currentOption?: FilterOption
+  currentOption?: FilterOption,
+  onDeleteCondition?: () => void
 }) => {
   const [ selectedAttribute, setSelectedAttribute ] = React.useState<FilterOption | undefined>(currentOption)
   const [ filterConditions, setFilterConditions ] = React.useState<CrmFilterConditionOption[] | undefined>()
@@ -30,6 +32,8 @@ export const FilterItem = ({
     setSelectedAttribute(currentOption ? { ...currentOption } : undefined)
 
     const targetFilterOption = getTargetFilterOption(currentOption?.FilterOptionConfig)
+    // Apply default values from config to the condition only for initialization,
+    // after that the condition values will be controlled by user actions and config default values will be ignored
     setCannotBeRemoved(targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved)
     setIsAttributeDisabled(targetFilterOption?.Default?.IsAttributeDisabled)
     setIsDisabled(targetFilterOption?.Default?.IsDisabled)
@@ -61,6 +65,8 @@ export const FilterItem = ({
       <div className="w-8 grow-0">
         <Button
           outline
+          onClick={onDeleteCondition}
+          aria-label="Delete condition"
           disabled={cannotBeRemoved}>
           <TrashIcon />
         </Button>

@@ -3,10 +3,15 @@ import { EntityConfig, FilterOptionConfig } from "../../libs/config/app-config";
 import { FilterItem } from "./filter-item";
 import { FilterCommandRow } from "./filter-command-row";
 import { useCrmRepository } from "../../hooks/use-crm-repository";
-import { fillOptionsWithMetadataInfo, getTargetFilterOption } from "../../libs/utils/filter";
+import { fillOptionsWithMetadataInfo } from "../../libs/utils/filter";
 
 export interface FilterOption {
   FilterOptionConfig?: FilterOptionConfig
+}
+
+interface VisibleFilterOption {
+  id: number,
+  option: FilterOption
 }
 
 export const FilterGrid = ({
@@ -15,14 +20,16 @@ export const FilterGrid = ({
   entityConfig?: EntityConfig
 }) => {
   const [ filterOptions, setFilterOptions ] = React.useState<FilterOption[]>()
-  const [ visibleFilterOptions, setVisibleFilterOptions ] = React.useState<FilterOption[]>([])
+  const [ visibleFilterOptions, setVisibleFilterOptions ] = React.useState<VisibleFilterOption[]>([])
   const crm = useCrmRepository()
   const requestIdRef = React.useRef(0)
+  const optionIdRef = React.useRef(0)
 
   React.useEffect(() => {
     const requestId = ++requestIdRef.current
     setFilterOptions(undefined)
     setVisibleFilterOptions([])
+    optionIdRef.current = 0
 
     if (!entityConfig) {
       return
@@ -43,29 +50,46 @@ export const FilterGrid = ({
         setVisibleFilterOptions(options?.filter(filterOption =>
           filterOption?.FilterOptionConfig?.Default?.IsShowed &&
           !filterOption?.FilterOptionConfig?.CategoryDisplayName
-        ) ?? [])
+        ).map(filterOption => {
+          return {
+            id: ++optionIdRef.current,
+            option: filterOption
+          }
+        }) ?? [])
       }
     }
     getData()
   }, [ entityConfig, crm ])
 
   const handleAddCondition = (): void => {
-    setVisibleFilterOptions(previous => [ ...previous, {} ])
+    setVisibleFilterOptions(previous => [
+      ...previous,
+      {
+        id: ++optionIdRef.current,
+        option: {}
+      }
+    ])
+  }
+
+  const handleDeleteCondition = (optionId: number): void => {
+    setVisibleFilterOptions(previous => previous.filter(item => item.id !== optionId))
   }
 
   return (
     <div>
-      {visibleFilterOptions.map((filterOption, index) => {
-        const targetFilterOption = getTargetFilterOption(filterOption.FilterOptionConfig)
-        const itemKey = `${entityConfig?.LogicalName ?? "entity"}-${targetFilterOption?.EntityName ?? "entity"}-${targetFilterOption?.AttributeName ?? "attribute"}-${index}`
+      {visibleFilterOptions.map(item => {
         return <FilterItem
-          key={itemKey}
+          key={item.id}
           options={filterOptions ?? []}
-          currentOption={filterOption}
+          currentOption={item.option}
+          onDeleteCondition={() => handleDeleteCondition(item.id)}
         />
       })}
 
-      <FilterCommandRow onAddCondition={handleAddCondition} />
+      {entityConfig &&
+        <FilterCommandRow onAddCondition={handleAddCondition} />
+      }
+      
     </div>
   )
 }
