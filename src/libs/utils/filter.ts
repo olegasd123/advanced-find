@@ -24,7 +24,7 @@ export const fillOptionsWithMetadataInfo = async (
   filterOptions?: FilterOptionConfig[],
   getAttributeMetadata?: (
     entityLogicalName: string,
-    attributesLogicalNames: any
+    attributesLogicalNames: string[]
   ) => Promise<AttributeMetadata[]> | undefined
 ) => {
   const attributesNames = filterOptions
@@ -81,7 +81,7 @@ export const fillOptionsWithMetadataInfo = async (
 
 export const getCrmFilterConditionsOptions = (
   type: string | undefined,
-  localizationInfo: any,
+  localizationInfo?: Record<string, string>,
   isMultiSelection?: boolean
 ): CrmFilterConditionOption[] => {
   const normalizedType = type?.toLowerCase()
@@ -114,6 +114,6 @@ export const getCrmFilterConditionsOptions = (
   }
 
   return filters.map((i) => {
-    return { value: i, displayName: localizationInfo[i] }
+    return { value: i, displayName: localizationInfo?.[i] ?? i }
   })
 }

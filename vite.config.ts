@@ -20,7 +20,11 @@ export default defineConfig(({ mode }) => {
             ? fs.copyFile(
                 `${__dirname}/assets/app-config.json`,
                 `${__dirname}/dist/crm-webresource/app-config.json`,
-                (error: any) => error ?? console.error('Vite config', error)
+                (error: NodeJS.ErrnoException | null) => {
+                  if (error) {
+                    console.error('Vite config', error)
+                  }
+                }
               )
             : undefined,
       },

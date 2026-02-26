@@ -22,19 +22,25 @@ export const Search = () => {
     if ((configEntities?.length ?? 0) === 1) {
       setCurrentEntityConfig(configEntities?.at(0))
     }
-  }, [appConfiguration])
+  }, [configEntities])
 
   React.useEffect(() => {
+    if (!crmRepository || !configEntities) {
+      setEntitiesMetadata([])
+      return
+    }
+
     const getData = async () => {
-      const result = await crmRepository?.getEntitiesMetadata(
-        appConfiguration?.SearchScheme?.Entities.map((i) => i.LogicalName)
+      const result = await crmRepository.getEntitiesMetadata(
+        configEntities.map((i) => i.LogicalName)
       )
       setEntitiesMetadata(result)
     }
+
     getData().catch((error) => {
       logger.error(`Failed to load entities metadata: ${error}`)
     })
-  }, [appConfiguration])
+  }, [configEntities, crmRepository])
 
   const handleCurrentEntityConfigChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     setCurrentEntityConfig(configEntities?.at(parseInt(event.target.value)))

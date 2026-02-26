@@ -14,7 +14,7 @@ interface SearchSchemeConfig {
 }
 
 interface LocalizationConfig {
-  CrmFilterConditions: any
+  CrmFilterConditions?: Record<string, string>
 }
 
 interface SelectionConfig {
