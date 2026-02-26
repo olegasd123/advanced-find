@@ -1,16 +1,18 @@
-import { FilterOptionConfig } from "../config/app-config"
-import { AttributeMetadata } from "../repositories/crm-repository"
-import { createLogger } from "./logger"
+import { FilterOptionConfig } from '../config/app-config'
+import { AttributeMetadata } from '../repositories/crm-repository'
+import { createLogger } from './logger'
 
-const logger = createLogger('filter-utils');
+const logger = createLogger('filter-utils')
 
 export interface CrmFilterConditionOption {
-  value: string,
-  displayName: string,
+  value: string
+  displayName: string
   isMultiSelection?: boolean
 }
 
-export const getTargetFilterOption = (option?: FilterOptionConfig): FilterOptionConfig | undefined => {
+export const getTargetFilterOption = (
+  option?: FilterOptionConfig
+): FilterOptionConfig | undefined => {
   if (option?.RelatedTo) {
     return getTargetFilterOption(option?.RelatedTo)
   }
@@ -19,18 +21,23 @@ export const getTargetFilterOption = (option?: FilterOptionConfig): FilterOption
 
 export const fillOptionsWithMetadataInfo = async (
   currentEntity?: string,
-  filterOptions? : FilterOptionConfig[],
-  getAttributeMetadata?: (entityLogicalName: string, attributesLogicalNames: any) => Promise<AttributeMetadata[]> | undefined
+  filterOptions?: FilterOptionConfig[],
+  getAttributeMetadata?: (
+    entityLogicalName: string,
+    attributesLogicalNames: any
+  ) => Promise<AttributeMetadata[]> | undefined
 ) => {
-  const attributesNames = filterOptions?.map(i => {
-    if (!i.CategoryDisplayName) {
-      const option = getTargetFilterOption(i)
-      if (option && option.AttributeName && !option.EntityName) {
-        option.EntityName = currentEntity
+  const attributesNames = filterOptions
+    ?.map((i) => {
+      if (!i.CategoryDisplayName) {
+        const option = getTargetFilterOption(i)
+        if (option && option.AttributeName && !option.EntityName) {
+          option.EntityName = currentEntity
+        }
+        return option
       }
-      return option
-    }
-  }).filter(i => typeof i !== 'undefined')
+    })
+    .filter((i) => typeof i !== 'undefined')
 
   if (attributesNames?.length ?? 0 > 0) {
     const groupedAttributesNames = attributesNames?.reduce((p, c) => {
@@ -45,13 +52,20 @@ export const fillOptionsWithMetadataInfo = async (
     }, Object.create(null))
 
     for (const entityName of Object.keys(groupedAttributesNames)) {
-      const attributesMetadata = await getAttributeMetadata?.(entityName, groupedAttributesNames[entityName])
+      const attributesMetadata = await getAttributeMetadata?.(
+        entityName,
+        groupedAttributesNames[entityName]
+      )
       for (const attributeName of groupedAttributesNames[entityName]) {
         for (const filterOption of filterOptions!) {
           const attributeInfo = getTargetFilterOption(filterOption)
-          if (attributeInfo?.EntityName === entityName &&
-            attributeInfo?.AttributeName === attributeName) {
-            const attributeMetadata = attributesMetadata?.find(i => i.LogicalName === attributeName)
+          if (
+            attributeInfo?.EntityName === entityName &&
+            attributeInfo?.AttributeName === attributeName
+          ) {
+            const attributeMetadata = attributesMetadata?.find(
+              (i) => i.LogicalName === attributeName
+            )
             attributeInfo.AttributeType = attributeMetadata?.AttributeType
             if (!attributeInfo.DisplayName) {
               attributeInfo.DisplayName = attributeMetadata?.DisplayName.UserLocalizedLabel?.Label
@@ -74,26 +88,32 @@ export const getCrmFilterConditionsOptions = (
 
   const filters: string[] = []
 
-  filters.push(...[ 'eq', 'ne', 'null', 'not-null' ])
+  filters.push(...['eq', 'ne', 'null', 'not-null'])
 
-  if (normalizedType === 'string' || normalizedType === 'memo' || normalizedType === 'uniqueidentifier') {
-    filters.push(...[ 'in', 'begins-with', 'not-begin-with', 'ends-with', 'not-end-with', 'like', 'not-like' ])
-  }
-  else if ((normalizedType === 'picklist' || normalizedType === 'lookup') &&
-    isMultiSelection) {
-    filters.push(...[ 'in' ])
-  }
-  else if (normalizedType === 'number' ||
+  if (
+    normalizedType === 'string' ||
+    normalizedType === 'memo' ||
+    normalizedType === 'uniqueidentifier'
+  ) {
+    filters.push(
+      ...['in', 'begins-with', 'not-begin-with', 'ends-with', 'not-end-with', 'like', 'not-like']
+    )
+  } else if ((normalizedType === 'picklist' || normalizedType === 'lookup') && isMultiSelection) {
+    filters.push(...['in'])
+  } else if (
+    normalizedType === 'number' ||
     normalizedType === 'integer' ||
     normalizedType === 'bigint' ||
     normalizedType === 'decimal' ||
     normalizedType === 'double' ||
-    normalizedType === 'money') {
-    filters.push(...[ 'in', 'ge', 'gt', 'le', 'lt' ])
-  }
-  else if (normalizedType === 'datetime') {
-    filters.push(...[ 'ge', 'gt', 'le', 'lt', 'today', 'tomorrow', 'yesterday' ])
+    normalizedType === 'money'
+  ) {
+    filters.push(...['in', 'ge', 'gt', 'le', 'lt'])
+  } else if (normalizedType === 'datetime') {
+    filters.push(...['ge', 'gt', 'le', 'lt', 'today', 'tomorrow', 'yesterday'])
   }
 
-  return filters.map(i => { return { value: i, displayName: localizationInfo[i] }})
+  return filters.map((i) => {
+    return { value: i, displayName: localizationInfo[i] }
+  })
 }

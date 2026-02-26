@@ -37,9 +37,7 @@
   "ModifiedOn": "1900-01-01T00:00:00Z",
   "SourceType": null,
   "AutoNumberFormat": null,
-  "Targets": [
-    "systemuser"
-  ],
+  "Targets": ["systemuser"],
   "Format": "None",
   "AttributeTypeName": {
     "Value": "LookupType"

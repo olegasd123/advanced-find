@@ -3,7 +3,7 @@
     "Entities": [
       {
         "LogicalName": "invoice",
-        "View": [ "name", "createby" ],
+        "View": ["name", "createby"],
         "FilterOptions": [
           {
             "CategoryDisplayName": "General"
@@ -12,7 +12,14 @@
             "AttributeName": "invoicenumber",
             "EntityName": "invoice",
             "DisplayName": "Invoice number",
-            "Default": { "IsShowed": true, "Condition": "ne", "Values": [ "1" ], "IsAttributeDisabled": false, "IsDisabled": false, "CannotBeRemoved": true },
+            "Default": {
+              "IsShowed": true,
+              "Condition": "ne",
+              "Values": ["1"],
+              "IsAttributeDisabled": false,
+              "IsDisabled": false,
+              "CannotBeRemoved": true
+            },
             "Selection": { "Multiple": true, "MinItems": 1, "MaxItems": 2 },
             "Control": ""
           },
@@ -59,20 +66,18 @@
             }
           }
         ],
-        "FilterGrid" : [
+        "FilterGrid": [
           {
             "Group": {
               "Type": "and",
-              "Items": [
-                
-              ]
+              "Items": []
             }
           }
         ]
       },
       {
         "LogicalName": "account",
-        "View": [ "name", "createby" ],
+        "View": ["name", "createby"],
         "FilterOptions": [
           {
             "CategoryDisplayName": "General"
@@ -83,7 +88,7 @@
           },
           {
             "AttributeName": "accountcategorycode",
-            "Default": { "IsShowed": true, "Values": [ 1, 2 ] },
+            "Default": { "IsShowed": true, "Values": [1, 2] },
             "Selection": { "Multiple": true }
           },
           {

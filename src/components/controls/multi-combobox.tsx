@@ -27,17 +27,23 @@ export function MultiCombobox<T>({
   autoFocus?: boolean
   'aria-label'?: string
   children: (value: NonNullable<T>) => React.ReactElement
-} & Omit<Headless.ComboboxProps<T, true>, 'as' | 'children' | 'multiple' | 'virtual' | 'onClose'> & {
-  anchor?: 'top' | 'bottom'
-  onClose?: () => void
-}) {
-  const [ query, setQuery ] = React.useState('')
+} & Omit<
+  Headless.ComboboxProps<T, true>,
+  'as' | 'children' | 'multiple' | 'virtual' | 'onClose'
+> & {
+    anchor?: 'top' | 'bottom'
+    onClose?: () => void
+  }) {
+  const [query, setQuery] = React.useState('')
 
-  const filteredOptions = query === ''
-    ? options
-    : options.filter((option) =>
-      filter ? filter(option, query) : displayValue(option)?.toLowerCase().includes(query.toLowerCase())
-    )
+  const filteredOptions =
+    query === ''
+      ? options
+      : options.filter((option) =>
+          filter
+            ? filter(option, query)
+            : displayValue(option)?.toLowerCase().includes(query.toLowerCase())
+        )
 
   return (
     <Headless.Combobox
@@ -47,7 +53,8 @@ export function MultiCombobox<T>({
       onClose={() => {
         setQuery('')
         onClose?.()
-      }}>
+      }}
+    >
       <span
         data-slot="control"
         className={clsx([
@@ -70,8 +77,8 @@ export function MultiCombobox<T>({
             }
 
             return values
-              .map(option => displayValue(option) ?? '')
-              .filter(option => option.length > 0)
+              .map((option) => displayValue(option) ?? '')
+              .filter((option) => option.length > 0)
               .join(', ')
           }}
           onChange={(event) => setQuery(event.target.value)}
@@ -96,8 +103,18 @@ export function MultiCombobox<T>({
             aria-hidden="true"
             fill="none"
           >
-            <path d="M5.75 10.75L8 13L10.25 10.75" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M10.25 5.25L8 3L5.75 5.25" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M5.75 10.75L8 13L10.25 10.75"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M10.25 5.25L8 3L5.75 5.25"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </Headless.ComboboxButton>
       </span>

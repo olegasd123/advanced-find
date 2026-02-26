@@ -1,4 +1,4 @@
-import { Search } from "./crm/search"
+import { Search } from './crm/search'
 
 export const Layout = () => {
   return (

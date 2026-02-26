@@ -1,17 +1,17 @@
-import * as React from "react"
-import { useCrmRepository } from "../../hooks/use-crm-repository"
-import { useAppConfiguration } from "../../hooks/use-app-config"
-import { EntityMetadata } from "../../libs/repositories/crm-repository"
-import { EntityConfig } from "../../libs/config/app-config"
-import { Select } from "../../../vendor/catalyst-ui-kit/typescript/select"
-import { FilterGrid } from "./filter-grid"
-import { createLogger } from "../../libs/utils/logger"
+import * as React from 'react'
+import { useCrmRepository } from '../../hooks/use-crm-repository'
+import { useAppConfiguration } from '../../hooks/use-app-config'
+import { EntityMetadata } from '../../libs/repositories/crm-repository'
+import { EntityConfig } from '../../libs/config/app-config'
+import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
+import { FilterGrid } from './filter-grid'
+import { createLogger } from '../../libs/utils/logger'
 
-const logger = createLogger('Search');
+const logger = createLogger('Search')
 
 export const Search = () => {
-  const [ entitiesMetadata, setEntitiesMetadata ] = React.useState<EntityMetadata[] | undefined>([])
-  const [ currentEntityConfig, setCurrentEntityConfig ] = React.useState<EntityConfig | undefined>()
+  const [entitiesMetadata, setEntitiesMetadata] = React.useState<EntityMetadata[] | undefined>([])
+  const [currentEntityConfig, setCurrentEntityConfig] = React.useState<EntityConfig | undefined>()
 
   const appConfiguration = useAppConfiguration()
   const crmRepository = useCrmRepository()
@@ -22,17 +22,19 @@ export const Search = () => {
     if ((configEntities?.length ?? 0) === 1) {
       setCurrentEntityConfig(configEntities?.at(0))
     }
-  }, [ appConfiguration ])
+  }, [appConfiguration])
 
   React.useEffect(() => {
     const getData = async () => {
-      const result = await crmRepository?.getEntitiesMetadata(appConfiguration?.SearchScheme?.Entities.map(i => i.LogicalName))
+      const result = await crmRepository?.getEntitiesMetadata(
+        appConfiguration?.SearchScheme?.Entities.map((i) => i.LogicalName)
+      )
       setEntitiesMetadata(result)
     }
-    getData().catch(error => {
+    getData().catch((error) => {
       logger.error(`Failed to load entities metadata: ${error}`)
     })
-  }, [ appConfiguration ])
+  }, [appConfiguration])
 
   const handleCurrentEntityConfigChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     setCurrentEntityConfig(configEntities?.at(parseInt(event.target.value)))
@@ -42,19 +44,25 @@ export const Search = () => {
     <div>
       {(configEntities?.length ?? 0) > 1 && (
         <Select defaultValue="" onChange={handleCurrentEntityConfigChanged}>
-          <option value="" disabled>Select an entity</option>
+          <option value="" disabled>
+            Select an entity
+          </option>
           {configEntities?.map((entityInfo, index) => (
-            <option key={index} value={index}>{entitiesMetadata?.find(entityMetadata =>
-              entityInfo.LogicalName === entityMetadata.LogicalName)?.DisplayCollectionName.UserLocalizedLabel.Label}</option>
+            <option key={index} value={index}>
+              {
+                entitiesMetadata?.find(
+                  (entityMetadata) => entityInfo.LogicalName === entityMetadata.LogicalName
+                )?.DisplayCollectionName.UserLocalizedLabel.Label
+              }
+            </option>
           ))}
         </Select>
       )}
 
       <FilterGrid
-        key={currentEntityConfig?.LogicalName ?? "no-entity"}
+        key={currentEntityConfig?.LogicalName ?? 'no-entity'}
         entityConfig={currentEntityConfig}
       />
-      
     </div>
   )
 }

@@ -41,5 +41,3 @@ Each command ensures the relevant build has been run and then writes the followi
 - `advanced-find.html` (with an embedded metadata banner)
 - `advanced-find.js`
 - `advanced-find.css`
-
-

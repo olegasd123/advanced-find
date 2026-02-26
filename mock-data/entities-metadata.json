@@ -1,7 +1,7 @@
 {
   "@odata.context": "https://rd-d365-sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions(LogicalName,EntitySetName,DisplayName,DisplayCollectionName)",
   "value": [
-{
+    {
       "MetadataId": "30b0cd7e-0081-42e1-9a48-688442277fae",
       "LogicalName": "opportunity",
       "EntitySetName": "opportunities",
