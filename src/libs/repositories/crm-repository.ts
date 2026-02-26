@@ -85,7 +85,7 @@ export default class CrmRepository implements CrmData {
     return findAttributes(entityLogicalName, allAttributes, attributesLogicalNames)
   }
 
-  // EntityDefinitions(LogicalName='mso_candidat')?$select=DisplayName,LogicalName,EntitySetName
+  // EntityDefinitions(LogicalName='account')?$select=DisplayName,LogicalName,EntitySetName
   async getEntitiesMetadata(logicalNames: string[] | undefined): Promise<EntityMetadata[]> {
     const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions?$select=LogicalName,EntitySetName,DisplayName,DisplayCollectionName`
     const entities = await fetch(url).then(async result => {

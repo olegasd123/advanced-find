@@ -236,8 +236,6 @@ export const FilterItemValue = ({
 
     if (picklistOptions.length > 0) {
       if (isMultiPicklistSelection) {
-        const maxItemsHint = picklistMaxItems ? ` and at most ${picklistMaxItems}` : ""
-
         return (
           <div>
             <MultiCombobox
@@ -253,9 +251,6 @@ export const FilterItemValue = ({
                 </ComboboxOption>
               )}
             </MultiCombobox>
-            <span className="mt-1 block text-xs text-zinc-500">
-              Select at least {picklistMinItems}{maxItemsHint} values
-            </span>
           </div>
         )
       }
