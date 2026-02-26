@@ -15,12 +15,14 @@ export const FilterGrid = ({
   entityConfig?: EntityConfig
 }) => {
   const [ filterOptions, setFilterOptions ] = React.useState<FilterOption[]>()
+  const [ visibleFilterOptions, setVisibleFilterOptions ] = React.useState<FilterOption[]>([])
   const crm = useCrmRepository()
   const requestIdRef = React.useRef(0)
 
   React.useEffect(() => {
     const requestId = ++requestIdRef.current
     setFilterOptions(undefined)
+    setVisibleFilterOptions([])
 
     if (!entityConfig) {
       return
@@ -38,27 +40,32 @@ export const FilterGrid = ({
 
       if (requestId === requestIdRef.current) {
         setFilterOptions(options)
+        setVisibleFilterOptions(options?.filter(filterOption =>
+          filterOption?.FilterOptionConfig?.Default?.IsShowed &&
+          !filterOption?.FilterOptionConfig?.CategoryDisplayName
+        ) ?? [])
       }
     }
     getData()
   }, [ entityConfig, crm ])
 
+  const handleAddCondition = (): void => {
+    setVisibleFilterOptions(previous => [ ...previous, {} ])
+  }
+
   return (
     <div>
-      {filterOptions?.map((filterOption, index) => {
-        if (filterOption?.FilterOptionConfig?.Default?.IsShowed &&
-          !filterOption?.FilterOptionConfig?.CategoryDisplayName) {
-          const targetFilterOption = getTargetFilterOption(filterOption.FilterOptionConfig)
-          const itemKey = `${entityConfig?.LogicalName ?? "entity"}-${targetFilterOption?.EntityName ?? "entity"}-${targetFilterOption?.AttributeName ?? "attribute"}-${index}`
-          return <FilterItem
-            key={itemKey}
-            options={filterOptions}
-            currentOption={filterOption}
-          />
-        }
+      {visibleFilterOptions.map((filterOption, index) => {
+        const targetFilterOption = getTargetFilterOption(filterOption.FilterOptionConfig)
+        const itemKey = `${entityConfig?.LogicalName ?? "entity"}-${targetFilterOption?.EntityName ?? "entity"}-${targetFilterOption?.AttributeName ?? "attribute"}-${index}`
+        return <FilterItem
+          key={itemKey}
+          options={filterOptions ?? []}
+          currentOption={filterOption}
+        />
       })}
 
-      <FilterCommandRow />
+      <FilterCommandRow onAddCondition={handleAddCondition} />
     </div>
   )
 }
