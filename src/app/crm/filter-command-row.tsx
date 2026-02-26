@@ -2,11 +2,16 @@ import * as React from "react";
 import { PlusIcon, MagnifyingGlassIcon, ArrowPathIcon } from "@heroicons/react/16/solid";
 import { Button } from "../../../vendor/catalyst-ui-kit/typescript/button";
 import { Alert, AlertActions, AlertDescription, AlertTitle } from "../../../vendor/catalyst-ui-kit/typescript/alert";
+import clsx from "clsx";
+
+export type CommandRowLocation = "header" | "footer"
 
 export const FilterCommandRow = ({
+  location,
   onAddCondition,
   onResetFilters
 }: {
+  location: CommandRowLocation,
   onAddCondition?: () => void,
   onResetFilters?: () => void
 }) => {
@@ -23,36 +28,49 @@ export const FilterCommandRow = ({
 
   return (
     <>
-      <div className="flex flex-row gap-4 py-4 border-b border-b-gray-300">
+      <div className={clsx("flex flex-row gap-4 py-4", location === "header" ? "border-b border-b-gray-300" : "")}>
         <div className="w-8 grow-0">
-          <Button
-            outline
-            onClick={onAddCondition}
-            aria-label="Add condition"
-            title="Add condition">
-            <PlusIcon />
-          </Button>
+          {location === 'footer' ?
+            (<Button
+              outline
+              onClick={onAddCondition}
+              aria-label="Add condition"
+              title="Add condition">
+              <PlusIcon />
+            </Button>) :
+            (<Button
+              outline
+              onClick={handleResetClick}
+              aria-label="Reset filters"
+              title="Reset filters">
+              <ArrowPathIcon />
+            </Button>)
+          }
         </div>
         <div className="w-36 grow-3">
-          <Button
-            outline
-            onClick={handleResetClick}
-            aria-label="Reset filters"
-            title="Reset filters">
-            <ArrowPathIcon />
-            <span className="font-normal">Reset</span>
-          </Button>
+          {location === 'footer' &&
+            <Button
+              outline
+              onClick={handleResetClick}
+              aria-label="Reset filters"
+              title="Reset filters">
+              <ArrowPathIcon />
+              <span className="font-normal">Reset</span>
+            </Button>
+          }
         </div>
         <div className="w-24 grow-2">
         </div>
         <div className="w-64 grow-8">
-          <Button
-            outline
-            aria-label="Search"
-            title="Search">
-            <MagnifyingGlassIcon />
-            <span className="font-normal">Search</span>
-          </Button>
+          {location === 'footer' &&
+            <Button
+              outline
+              aria-label="Search"
+              title="Search">
+              <MagnifyingGlassIcon />
+              <span className="font-normal">Search</span>
+            </Button>
+          }
         </div>
       </div>
 

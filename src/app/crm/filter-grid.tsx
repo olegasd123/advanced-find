@@ -85,6 +85,14 @@ export const FilterGrid = ({
 
   return (
     <div>
+      {entityConfig &&
+        <FilterCommandRow
+          location="header"
+          onAddCondition={handleAddCondition}
+          onResetFilters={handleResetFilters}
+        />
+      }
+
       {visibleFilterOptions.map(item => {
         return <FilterItem
           key={item.id}
@@ -96,6 +104,7 @@ export const FilterGrid = ({
 
       {entityConfig &&
         <FilterCommandRow
+          location="footer"
           onAddCondition={handleAddCondition}
           onResetFilters={handleResetFilters}
         />
