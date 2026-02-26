@@ -1,5 +1,5 @@
 
-import { PlusIcon } from "@heroicons/react/16/solid";
+import { PlusIcon, MagnifyingGlassIcon, ArrowPathIcon } from "@heroicons/react/16/solid";
 import { Button } from "../../../vendor/catalyst-ui-kit/typescript/button";
 
 export const FilterCommandRow = ({
@@ -18,12 +18,20 @@ export const FilterCommandRow = ({
         </Button>
       </div>
       <div className="w-36 grow-3">
-        // TODO: restore conditions by default
+        <Button
+          outline
+          aria-label="Reset filters">
+          <ArrowPathIcon />Reset
+        </Button>
       </div>
       <div className="w-24 grow-2">
       </div>
       <div className="w-64 grow-8">
-        // TODO: Add a search button
+        <Button
+          outline
+          aria-label="Search">
+          <MagnifyingGlassIcon /> Search
+        </Button>
       </div>
     </div>
   )
