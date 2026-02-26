@@ -24,7 +24,7 @@ export const FilterCommandRow = ({
   return (
     <>
       <div className="flex flex-row gap-4 py-4 border-b border-b-gray-300">
-        <div className="w-8 grow-0 flex justify-end">
+        <div className="w-8 grow-0">
           <Button
             outline
             onClick={onAddCondition}
