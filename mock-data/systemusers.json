@@ -1,0 +1,455 @@
+{
+  "@odata.context": "https://sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#systemusers(fullname,domainname,firstname,lastname)",
+  "value": [
+    {
+      "@odata.etag": "W/\"170177994\"",
+      "ownerid": "b1c4acf4-88ac-ec11-9841-000d3a6518aa",
+      "fullname": "First1 Last1",
+      "systemuserid": "b1c4acf4-88ac-ec11-9841-000d3a6518aa",
+      "firstname": "First1",
+      "lastname": "Last1",
+      "domainname": "first1.last1@example.test"
+    },
+    {
+      "@odata.etag": "W/\"165768687\"",
+      "ownerid": "d78b07b3-d327-ef11-840a-000d3a65b5d1",
+      "fullname": "First2 Last2",
+      "systemuserid": "d78b07b3-d327-ef11-840a-000d3a65b5d1",
+      "firstname": "First2",
+      "lastname": "Last2",
+      "domainname": "first2.last2@example.test"
+    },
+    {
+      "@odata.etag": "W/\"132096812\"",
+      "ownerid": "7e039199-9d28-ef11-840a-000d3a65b5d1",
+      "fullname": "First3 Last3",
+      "systemuserid": "7e039199-9d28-ef11-840a-000d3a65b5d1",
+      "firstname": "First3",
+      "lastname": "Last3",
+      "domainname": "first3.last3@example.test"
+    },
+    {
+      "@odata.etag": "W/\"132097981\"",
+      "ownerid": "458a880d-be28-ef11-840a-000d3a65b5d1",
+      "fullname": "First4 Last4",
+      "systemuserid": "458a880d-be28-ef11-840a-000d3a65b5d1",
+      "firstname": "First4",
+      "lastname": "Last4",
+      "domainname": "first4.last4@example.test"
+    },
+    {
+      "@odata.etag": "W/\"111173980\"",
+      "ownerid": "8935de71-7cb7-ec11-9840-000d3a65ca1a",
+      "fullname": "First5 Last5",
+      "systemuserid": "8935de71-7cb7-ec11-9840-000d3a65ca1a",
+      "firstname": "First5",
+      "lastname": "Last5",
+      "domainname": "first5.last5@example.test"
+    },
+    {
+      "@odata.etag": "W/\"176045148\"",
+      "ownerid": "286525c6-eff7-f011-8406-000d3a699883",
+      "fullname": "First6 Last6",
+      "systemuserid": "286525c6-eff7-f011-8406-000d3a699883",
+      "firstname": "First6",
+      "lastname": "Last6",
+      "domainname": "first6.last6@example.test"
+    },
+    {
+      "@odata.etag": "W/\"155735993\"",
+      "ownerid": "6b6fc915-3ef4-ef11-be1f-000d3ab037e1",
+      "fullname": "First7 Last7",
+      "systemuserid": "6b6fc915-3ef4-ef11-be1f-000d3ab037e1",
+      "firstname": "First7",
+      "lastname": "Last7",
+      "domainname": "first7.last7@example.test"
+    },
+    {
+      "@odata.etag": "W/\"171142278\"",
+      "ownerid": "ffc7052a-52d0-eb11-bacc-000d3ab03843",
+      "fullname": "First8 Last8",
+      "systemuserid": "ffc7052a-52d0-eb11-bacc-000d3ab03843",
+      "firstname": "First8",
+      "lastname": "Last8",
+      "domainname": "first8.last8@example.test"
+    },
+    {
+      "@odata.etag": "W/\"152707573\"",
+      "ownerid": "a166a8a1-d80f-f011-998a-000d3ab07116",
+      "fullname": "First9 Last9",
+      "systemuserid": "a166a8a1-d80f-f011-998a-000d3ab07116",
+      "firstname": "First9",
+      "lastname": "Last9",
+      "domainname": "first9.last9@example.test"
+    },
+    {
+      "@odata.etag": "W/\"152297181\"",
+      "ownerid": "b2c6b624-9e08-f011-bae3-000d3ab07116",
+      "fullname": "First10 Last10",
+      "systemuserid": "b2c6b624-9e08-f011-bae3-000d3ab07116",
+      "firstname": "First10",
+      "lastname": "Last10",
+      "domainname": "first10.last10@example.test"
+    },
+    {
+      "@odata.etag": "W/\"152348955\"",
+      "ownerid": "8e1376aa-8109-f011-bae3-000d3ab07116",
+      "fullname": "First11 Last11",
+      "systemuserid": "8e1376aa-8109-f011-bae3-000d3ab07116",
+      "firstname": "First11",
+      "lastname": "Last11",
+      "domainname": "first11.last11@example.test"
+    },
+    {
+      "@odata.etag": "W/\"155735674\"",
+      "ownerid": "f2491b04-96f3-ef11-be1f-000d3ab07116",
+      "fullname": "First12 Last12",
+      "systemuserid": "f2491b04-96f3-ef11-be1f-000d3ab07116",
+      "firstname": "First12",
+      "lastname": "Last12",
+      "domainname": "first12.last12@example.test"
+    },
+    {
+      "@odata.etag": "W/\"175857343\"",
+      "ownerid": "a97ddc6d-f315-f011-9989-000d3ab07296",
+      "fullname": "First13 Last13",
+      "systemuserid": "a97ddc6d-f315-f011-9989-000d3ab07296",
+      "firstname": "First13",
+      "lastname": "Last13",
+      "domainname": "first13.last13@example.test"
+    },
+    {
+      "@odata.etag": "W/\"151176333\"",
+      "ownerid": "08562294-5dfe-ef11-bae3-000d3ab07296",
+      "fullname": "First14 Last14",
+      "systemuserid": "08562294-5dfe-ef11-bae3-000d3ab07296",
+      "firstname": "First14",
+      "lastname": "Last14",
+      "domainname": "first14.last14@example.test"
+    },
+    {
+      "@odata.etag": "W/\"152362695\"",
+      "ownerid": "61c65aa6-e70a-f011-bae3-000d3ab07296",
+      "fullname": "First15 Last15",
+      "systemuserid": "61c65aa6-e70a-f011-bae3-000d3ab07296",
+      "firstname": "First15",
+      "lastname": "Last15",
+      "domainname": "first15.last15@example.test"
+    },
+    {
+      "@odata.etag": "W/\"152369806\"",
+      "ownerid": "f6e81f53-cb0b-f011-bae3-000d3ab07296",
+      "fullname": "First16 Last16",
+      "systemuserid": "f6e81f53-cb0b-f011-bae3-000d3ab07296",
+      "firstname": "First16",
+      "lastname": "Last16",
+      "domainname": "first16.last16@example.test"
+    },
+    {
+      "@odata.etag": "W/\"170177493\"",
+      "ownerid": "196d8880-0a26-f011-8c4e-000d3ab086ff",
+      "fullname": "First17 Last17",
+      "systemuserid": "196d8880-0a26-f011-8c4e-000d3ab086ff",
+      "firstname": "First17",
+      "lastname": "Last17",
+      "domainname": "first17.last17@example.test"
+    },
+    {
+      "@odata.etag": "W/\"170177286\"",
+      "ownerid": "4e630d87-0a26-f011-8c4e-000d3ab086ff",
+      "fullname": "First18 Last18",
+      "systemuserid": "4e630d87-0a26-f011-8c4e-000d3ab086ff",
+      "firstname": "First18",
+      "lastname": "Last18",
+      "domainname": "first18.last18@example.test"
+    },
+    {
+      "@odata.etag": "W/\"117479971\"",
+      "ownerid": "c696890e-6a21-ee11-9966-000d3ab0ffe8",
+      "fullname": "First19 Last19",
+      "systemuserid": "c696890e-6a21-ee11-9966-000d3ab0ffe8",
+      "firstname": "First19",
+      "lastname": "Last19",
+      "domainname": "first19.last19@example.test"
+    },
+    {
+      "@odata.etag": "W/\"117975078\"",
+      "ownerid": "7cf620c7-7fec-ec11-bb3d-000d3ab2a8cb",
+      "fullname": "First20 Last20",
+      "systemuserid": "7cf620c7-7fec-ec11-bb3d-000d3ab2a8cb",
+      "firstname": "First20",
+      "lastname": "Last20",
+      "domainname": "first20.last20@example.test"
+    },
+    {
+      "@odata.etag": "W/\"144160905\"",
+      "ownerid": "7b9a257f-91a6-ef11-b8e8-000d3ab31366",
+      "fullname": "First21 Last21",
+      "systemuserid": "7b9a257f-91a6-ef11-b8e8-000d3ab31366",
+      "firstname": "First21",
+      "lastname": "Last21",
+      "domainname": "first21.last21@example.test"
+    },
+    {
+      "@odata.etag": "W/\"144571214\"",
+      "ownerid": "6bacd82c-25b3-ef11-b8e8-000d3ab31366",
+      "fullname": "First22 Last22",
+      "systemuserid": "6bacd82c-25b3-ef11-b8e8-000d3ab31366",
+      "firstname": "First22",
+      "lastname": "Last22",
+      "domainname": "first22.last22@example.test"
+    },
+    {
+      "@odata.etag": "W/\"153284509\"",
+      "ownerid": "5fe8f305-44b6-ef11-b8e8-000d3ab31366",
+      "fullname": "First23 Last23",
+      "systemuserid": "5fe8f305-44b6-ef11-b8e8-000d3ab31366",
+      "firstname": "First23",
+      "lastname": "Last23",
+      "domainname": "first23.last23@example.test"
+    },
+    {
+      "@odata.etag": "W/\"174627084\"",
+      "ownerid": "7758d1b5-e1b6-ef11-b8e8-000d3ab31366",
+      "fullname": "First24 Last24",
+      "systemuserid": "7758d1b5-e1b6-ef11-b8e8-000d3ab31366",
+      "firstname": "First24",
+      "lastname": "Last24",
+      "domainname": "first24.last24@example.test"
+    },
+    {
+      "@odata.etag": "W/\"152802008\"",
+      "ownerid": "7f41cb11-a6bb-ef11-b8e8-000d3ab31366",
+      "fullname": "First25 Last25",
+      "systemuserid": "7f41cb11-a6bb-ef11-b8e8-000d3ab31366",
+      "firstname": "First25",
+      "lastname": "Last25",
+      "domainname": "first25.last25@example.test"
+    },
+    {
+      "@odata.etag": "W/\"165768685\"",
+      "ownerid": "73466d62-f9bd-ef11-b8e8-000d3ab31366",
+      "fullname": "First26 Last26",
+      "systemuserid": "73466d62-f9bd-ef11-b8e8-000d3ab31366",
+      "firstname": "First26",
+      "lastname": "Last26",
+      "domainname": "first26.last26@example.test"
+    },
+    {
+      "@odata.etag": "W/\"145795807\"",
+      "ownerid": "dcb45eb0-16c1-ef11-b8e8-000d3ab31366",
+      "fullname": "First27 Last27",
+      "systemuserid": "dcb45eb0-16c1-ef11-b8e8-000d3ab31366",
+      "firstname": "First27",
+      "lastname": "Last27",
+      "domainname": "first27.last27@example.test"
+    },
+    {
+      "@odata.etag": "W/\"175927024\"",
+      "ownerid": "74c18a97-fcf3-f011-8406-000d3ab35627",
+      "fullname": "First28 Last28",
+      "systemuserid": "74c18a97-fcf3-f011-8406-000d3ab35627",
+      "firstname": "First28",
+      "lastname": "Last28",
+      "domainname": "first28.last28@example.test"
+    },
+    {
+      "@odata.etag": "W/\"91850878\"",
+      "ownerid": "5c37188b-18ba-eb11-8236-000d3ab49eee",
+      "fullname": "First29 Last29",
+      "systemuserid": "5c37188b-18ba-eb11-8236-000d3ab49eee",
+      "firstname": "First29",
+      "lastname": "Last29",
+      "domainname": "first29.last29@example.test"
+    },
+    {
+      "@odata.etag": "W/\"108249503\"",
+      "ownerid": "c95af48d-f862-ea11-a811-000d3ab4d306",
+      "fullname": "First30 Last30",
+      "systemuserid": "c95af48d-f862-ea11-a811-000d3ab4d306",
+      "firstname": "First30",
+      "lastname": "Last30",
+      "domainname": "first30.last30@example.test"
+    },
+    {
+      "@odata.etag": "W/\"60458544\"",
+      "ownerid": "7f144adb-9d9a-ea11-a811-000d3ab4d306",
+      "fullname": "First31 Last31",
+      "systemuserid": "7f144adb-9d9a-ea11-a811-000d3ab4d306",
+      "firstname": "First31",
+      "lastname": "Last31",
+      "domainname": "first31.last31@example.test"
+    },
+    {
+      "@odata.etag": "W/\"81391678\"",
+      "ownerid": "223d68c1-23f4-e911-a812-000d3ab4d306",
+      "fullname": "First32 Last32",
+      "systemuserid": "223d68c1-23f4-e911-a812-000d3ab4d306",
+      "firstname": "First32",
+      "lastname": "Last32",
+      "domainname": "first32.last32@example.test"
+    },
+    {
+      "@odata.etag": "W/\"158131745\"",
+      "ownerid": "26814198-e783-ea11-a812-000d3ab4d306",
+      "fullname": "First33 Last33",
+      "systemuserid": "26814198-e783-ea11-a812-000d3ab4d306",
+      "firstname": "First33",
+      "lastname": "Last33",
+      "domainname": "first33.last33@example.test"
+    },
+    {
+      "@odata.etag": "W/\"51946237\"",
+      "ownerid": "b0d382a6-aec6-ea11-a812-000d3ab4d306",
+      "fullname": "First34 Last34",
+      "systemuserid": "b0d382a6-aec6-ea11-a812-000d3ab4d306",
+      "firstname": "First34",
+      "lastname": "Last34",
+      "domainname": "first34.last34@example.test"
+    },
+    {
+      "@odata.etag": "W/\"171141578\"",
+      "ownerid": "bdca7d77-963e-ea11-a813-000d3ab4d306",
+      "fullname": "First35 Last35",
+      "systemuserid": "bdca7d77-963e-ea11-a813-000d3ab4d306",
+      "firstname": "First35",
+      "lastname": "Last35",
+      "domainname": "first35.last35@example.test"
+    },
+    {
+      "@odata.etag": "W/\"171142310\"",
+      "ownerid": "ee07fe8d-ea4b-ea11-a813-000d3ab4d306",
+      "fullname": "First36 Last36",
+      "systemuserid": "ee07fe8d-ea4b-ea11-a813-000d3ab4d306",
+      "firstname": "First36",
+      "lastname": "Last36",
+      "domainname": "first36.last36@example.test"
+    },
+    {
+      "@odata.etag": "W/\"45184537\"",
+      "ownerid": "ee207c9d-b74c-ea11-a813-000d3ab4d306",
+      "fullname": "First37 Last37",
+      "systemuserid": "ee207c9d-b74c-ea11-a813-000d3ab4d306",
+      "firstname": "First37",
+      "lastname": "Last37",
+      "domainname": "first37.last37@example.test"
+    },
+    {
+      "@odata.etag": "W/\"146007940\"",
+      "ownerid": "26a09eab-e3db-ea11-a813-000d3ab4d306",
+      "fullname": "First38 Last38",
+      "systemuserid": "26a09eab-e3db-ea11-a813-000d3ab4d306",
+      "firstname": "First38",
+      "lastname": "Last38",
+      "domainname": "first38.last38@example.test"
+    },
+    {
+      "@odata.etag": "W/\"37198202\"",
+      "ownerid": "dc6decf4-c2f4-e911-a814-000d3ab4d306",
+      "fullname": "First39 Last39",
+      "systemuserid": "dc6decf4-c2f4-e911-a814-000d3ab4d306",
+      "firstname": "First39",
+      "lastname": "Last39",
+      "domainname": "first39.last39@example.test"
+    },
+    {
+      "@odata.etag": "W/\"37198205\"",
+      "ownerid": "e66decf4-c2f4-e911-a814-000d3ab4d306",
+      "fullname": "First40 Last40",
+      "systemuserid": "e66decf4-c2f4-e911-a814-000d3ab4d306",
+      "firstname": "First40",
+      "lastname": "Last40",
+      "domainname": "first40.last40@example.test"
+    },
+    {
+      "@odata.etag": "W/\"117870151\"",
+      "ownerid": "8486b909-921a-ea11-a816-000d3ab4d306",
+      "fullname": "First41 Last41",
+      "systemuserid": "8486b909-921a-ea11-a816-000d3ab4d306",
+      "firstname": "First41",
+      "lastname": "Last41",
+      "domainname": "first41.last41@example.test"
+    },
+    {
+      "@odata.etag": "W/\"64053685\"",
+      "ownerid": "5a16bb7e-e480-eb11-b1ac-000d3ab4d306",
+      "fullname": "First42 Last42",
+      "systemuserid": "5a16bb7e-e480-eb11-b1ac-000d3ab4d306",
+      "firstname": "First42",
+      "lastname": "Last42",
+      "domainname": "first42.last42@example.test"
+    },
+    {
+      "@odata.etag": "W/\"81826066\"",
+      "ownerid": "c1a54668-e537-eb11-bf68-000d3ab4d306",
+      "fullname": "First43 Last43",
+      "systemuserid": "c1a54668-e537-eb11-bf68-000d3ab4d306",
+      "firstname": "First43",
+      "lastname": "Last43",
+      "domainname": "first43.last43@example.test"
+    },
+    {
+      "@odata.etag": "W/\"52557601\"",
+      "ownerid": "a3fdd952-913a-eb11-bf68-000d3ab4d306",
+      "fullname": "First44 Last44",
+      "systemuserid": "a3fdd952-913a-eb11-bf68-000d3ab4d306",
+      "firstname": "First44",
+      "lastname": "Last44",
+      "domainname": "first44.last44@example.test"
+    },
+    {
+      "@odata.etag": "W/\"37198211\"",
+      "ownerid": "6d713e13-41ef-e911-a812-000d3ab4d7a0",
+      "fullname": "First45 Last45",
+      "systemuserid": "6d713e13-41ef-e911-a812-000d3ab4d7a0",
+      "firstname": "First45",
+      "lastname": "Last45",
+      "domainname": "first45.last45@example.test"
+    },
+    {
+      "@odata.etag": "W/\"45543776\"",
+      "ownerid": "8528d86a-226d-ea11-a812-000d3ab4d7a0",
+      "fullname": "First46 Last46",
+      "systemuserid": "8528d86a-226d-ea11-a812-000d3ab4d7a0",
+      "firstname": "First46",
+      "lastname": "Last46",
+      "domainname": "first46.last46@example.test"
+    },
+    {
+      "@odata.etag": "W/\"176246675\"",
+      "ownerid": "5b999c55-6b01-eb11-a812-000d3ab4d7a0",
+      "fullname": "First47 Last47",
+      "systemuserid": "5b999c55-6b01-eb11-a812-000d3ab4d7a0",
+      "firstname": "First47",
+      "lastname": "Last47",
+      "domainname": "first47.last47@example.test"
+    },
+    {
+      "@odata.etag": "W/\"111286417\"",
+      "ownerid": "1a5e5e6c-0105-eb11-a812-000d3ab4d7a0",
+      "fullname": "First48 Last48",
+      "systemuserid": "1a5e5e6c-0105-eb11-a812-000d3ab4d7a0",
+      "firstname": "First48",
+      "lastname": "Last48",
+      "domainname": "first48.last48@example.test"
+    },
+    {
+      "@odata.etag": "W/\"49956987\"",
+      "ownerid": "e919a33c-ff3c-ea11-a813-000d3ab4d7a0",
+      "fullname": "First49 Last49",
+      "systemuserid": "e919a33c-ff3c-ea11-a813-000d3ab4d7a0",
+      "firstname": "First49",
+      "lastname": "Last49",
+      "domainname": "first49.last49@example.test"
+    },
+    {
+      "@odata.etag": "W/\"155735003\"",
+      "ownerid": "7990898c-6b4e-ea11-a813-000d3ab4d7a0",
+      "fullname": "First50 Last50",
+      "systemuserid": "7990898c-6b4e-ea11-a813-000d3ab4d7a0",
+      "firstname": "First50",
+      "lastname": "Last50",
+      "domainname": "first50.last50@example.test"
+    }
+  ]
+}

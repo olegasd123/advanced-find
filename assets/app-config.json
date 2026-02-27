@@ -93,7 +93,8 @@
           },
           {
             "AttributeName": "createdby",
-            "Default": { "IsShowed": true }
+            "Default": { "IsShowed": true },
+            "Selection": { "Multiple": true, "RelatedEntityAttributeNames": ["firstname", "lastname"], "RelatedEntityAttributeFormat": "{0} {1}" }
           }
         ]
       }

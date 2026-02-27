@@ -1,5 +1,5 @@
 {
-  "@odata.context": "https://rd-d365-sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('account')/Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata(LogicalName,OptionSet(Options))/$entity",
+  "@odata.context": "https://sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('account')/Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata(LogicalName,OptionSet(Options))/$entity",
   "MetadataId": "118771ca-6fb9-4f60-8fd4-99b6124b63ad",
   "LogicalName": "accountcategorycode",
   "OptionSet": {

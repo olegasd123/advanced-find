@@ -67,4 +67,16 @@ export default class MockCrmRepository implements CrmData {
       }
     )
   }
+
+  getEntities(entityPluralName: string, _: string[]): Promise<any> {
+    return fetch(`mock-data/${entityPluralName}.json`).then(
+      async (result) => {
+        const data = await result.json()
+        return data.value
+      },
+      (error) => {
+        throw error
+      }
+    )
+  }
 }

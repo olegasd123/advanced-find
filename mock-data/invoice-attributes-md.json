@@ -1,5 +1,5 @@
 {
-  "@odata.context": "https://rd-d365-sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('invoice')/Attributes(LogicalName,AttributeType,DisplayName)",
+  "@odata.context": "https://sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('invoice')/Attributes(LogicalName,AttributeType,DisplayName)",
   "value": [
     {
       "@odata.type": "#Microsoft.Dynamics.CRM.LookupAttributeMetadata",

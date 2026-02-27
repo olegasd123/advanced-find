@@ -1,5 +1,5 @@
 {
-  "@odata.context": "https://synergiedev.api.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('account')/Attributes/Microsoft.Dynamics.CRM.LookupAttributeMetadata/$entity",
+  "@odata.context": "https://sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('account')/Attributes/Microsoft.Dynamics.CRM.LookupAttributeMetadata/$entity",
   "MetadataId": "b863fe8a-6393-42ec-a540-972d3b45bd7b",
   "HasChanged": null,
   "AttributeOf": null,
@@ -36,7 +36,7 @@
   "CreatedOn": "1900-01-01T00:00:00Z",
   "ModifiedOn": "1900-01-01T00:00:00Z",
   "SourceType": null,
-  "AutoNumberFormat": null,
+  "AutoNumberFormat": "",
   "Targets": ["systemuser"],
   "Format": "None",
   "AttributeTypeName": {
@@ -45,36 +45,50 @@
   "Description": {
     "LocalizedLabels": [
       {
+        "Label": "Shows who created the record.",
+        "LanguageCode": 1033,
+        "IsManaged": true,
+        "MetadataId": "c199f6ca-2241-db11-898a-0007e9e17ebd",
+        "HasChanged": null
+      },
+      {
         "Label": "Affiche le créateur de l'enregistrement.",
         "LanguageCode": 1036,
         "IsManaged": true,
-        "MetadataId": "6e3cf9bb-0cbc-4f28-b0a4-37dff6d116e7",
+        "MetadataId": "079a36d6-e7ba-4dfb-98bb-c9fb0270827b",
         "HasChanged": null
       }
     ],
     "UserLocalizedLabel": {
-      "Label": "Affiche le créateur de l'enregistrement.",
-      "LanguageCode": 1036,
+      "Label": "Shows who created the record.",
+      "LanguageCode": 1033,
       "IsManaged": true,
-      "MetadataId": "6e3cf9bb-0cbc-4f28-b0a4-37dff6d116e7",
+      "MetadataId": "c199f6ca-2241-db11-898a-0007e9e17ebd",
       "HasChanged": null
     }
   },
   "DisplayName": {
     "LocalizedLabels": [
       {
+        "Label": "Created By",
+        "LanguageCode": 1033,
+        "IsManaged": true,
+        "MetadataId": "c099f6ca-2241-db11-898a-0007e9e17ebd",
+        "HasChanged": null
+      },
+      {
         "Label": "Créé par",
         "LanguageCode": 1036,
         "IsManaged": true,
-        "MetadataId": "a7b10595-5e76-4c02-8800-75128d04450e",
+        "MetadataId": "d82c0743-447e-4214-92c9-060940ff77ca",
         "HasChanged": null
       }
     ],
     "UserLocalizedLabel": {
-      "Label": "Créé par",
-      "LanguageCode": 1036,
+      "Label": "Created By",
+      "LanguageCode": 1033,
       "IsManaged": true,
-      "MetadataId": "a7b10595-5e76-4c02-8800-75128d04450e",
+      "MetadataId": "c099f6ca-2241-db11-898a-0007e9e17ebd",
       "HasChanged": null
     }
   },

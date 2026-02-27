@@ -50,10 +50,12 @@ export interface CrmData {
     entityLogicalName: string,
     attributeLogicalName: string
   ): Promise<PicklistAttributeMetadata>
+  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<any>
 }
 
 export interface EntityMetadata extends Metadata {
   EntitySetName: string
+  LogicalCollectionName?: string
   DisplayCollectionName: DisplayCollectionName
 }
 
@@ -97,23 +99,23 @@ export default class CrmRepository implements CrmData {
         return <AttributeMetadata[]>data.value
       },
       (error) => {
-        logger.error(`CrmData.getAttributesMetadata: ${error}`)
+        logger.error(`CrmRepository.getAttributesMetadata: ${error}`)
         throw error
       }
     )
     return findAttributes(entityLogicalName, allAttributes, attributesLogicalNames)
   }
 
-  // EntityDefinitions(LogicalName='account')?$select=DisplayName,LogicalName,EntitySetName
+  // EntityDefinitions(LogicalName='account')?$select=LogicalName,LogicalCollectionName,EntitySetName,DisplayName,DisplayCollectionName
   async getEntitiesMetadata(logicalNames: string[] | undefined): Promise<EntityMetadata[]> {
-    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions?$select=LogicalName,EntitySetName,DisplayName,DisplayCollectionName`
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions?$select=LogicalName,LogicalCollectionName,EntitySetName,DisplayName,DisplayCollectionName`
     const entities = await fetch(url).then(
       async (result) => {
         const data = await result.json()
         return <EntityMetadata[]>data.value
       },
       (error) => {
-        logger.error(`CrmData.getEntitiesMetadata: ${error}`)
+        logger.error(`CrmRepository.getEntitiesMetadata: ${error}`)
         throw error
       }
     )
@@ -133,7 +135,7 @@ export default class CrmRepository implements CrmData {
         return <LookupAttributeMetadata>data
       },
       (error) => {
-        logger.error(`CrmData.getLookupAttributeMetadata: ${error}`)
+        logger.error(`CrmRepository.getLookupAttributeMetadata: ${error}`)
         throw error
       }
     )
@@ -151,7 +153,21 @@ export default class CrmRepository implements CrmData {
         return <PicklistAttributeMetadata>data
       },
       (error) => {
-        logger.error(`CrmData.getPicklistAttributeMetadata: ${error}`)
+        logger.error(`CrmRepository.getPicklistAttributeMetadata: ${error}`)
+        throw error
+      }
+    )
+  }
+
+  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<any> {
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/${entityPluralName}?$select=${attributeLogicalNames.join(',')}`
+    return fetch(url).then(
+      async (result) => {
+        const data = await result.json()
+        return <any>data
+      },
+      (error) => {
+        logger.error(`CrmRepository.getEntities: ${error}`)
         throw error
       }
     )
