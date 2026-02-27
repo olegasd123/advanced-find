@@ -50,7 +50,7 @@ export interface CrmData {
     entityLogicalName: string,
     attributeLogicalName: string
   ): Promise<PicklistAttributeMetadata>
-  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<any>
+  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<unknown>
 }
 
 export interface EntityMetadata extends Metadata {
@@ -159,12 +159,12 @@ export default class CrmRepository implements CrmData {
     )
   }
 
-  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<any> {
+  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<unknown> {
     const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/${entityPluralName}?$select=${attributeLogicalNames.join(',')}`
     return fetch(url).then(
       async (result) => {
         const data = await result.json()
-        return <any>data
+        return data as unknown
       },
       (error) => {
         logger.error(`CrmRepository.getEntities: ${error}`)

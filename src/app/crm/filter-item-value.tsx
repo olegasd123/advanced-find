@@ -1,5 +1,9 @@
 import * as React from 'react'
-import { ComboboxLabel, ComboboxOption } from '../../../vendor/catalyst-ui-kit/typescript/combobox'
+import {
+  Combobox,
+  ComboboxLabel,
+  ComboboxOption,
+} from '../../../vendor/catalyst-ui-kit/typescript/combobox'
 import {
   Listbox,
   ListboxLabel,
@@ -34,7 +38,7 @@ const isNoValueCondition = (condition: string | null | undefined): boolean => {
   return noValueConditions.has(condition)
 }
 
-const sanitizePicklistValues = (
+const sanitizeSelectableValues = (
   values: ConditionValue[],
   options: ConditionValueOption[],
   maxItems?: number
@@ -63,6 +67,53 @@ const sanitizePicklistValues = (
   return uniqueValues
 }
 
+const formatLookupDisplayValue = (
+  item: Record<string, unknown>,
+  attributeNames: string[],
+  format: string | undefined,
+  fallbackValue: string
+): string => {
+  const values = attributeNames.map((attributeName) => {
+    const value = item[attributeName]
+    return value === undefined || value === null ? '' : String(value).trim()
+  })
+
+  if (format) {
+    const formattedValue = format.replace(/\{(\d+)\}/g, (_, indexValue: string) => {
+      const index = Number(indexValue)
+      if (!Number.isFinite(index)) {
+        return ''
+      }
+      return values[index] ?? ''
+    })
+
+    const trimmedFormattedValue = formattedValue.replace(/\s+/g, ' ').trim()
+    if (trimmedFormattedValue.length > 0) {
+      return trimmedFormattedValue
+    }
+  }
+
+  const joinedValue = values.filter((value) => value.length > 0).join(' ')
+  return joinedValue.length > 0 ? joinedValue : fallbackValue
+}
+
+const normalizeEntityItems = (data: unknown): Record<string, unknown>[] => {
+  if (Array.isArray(data)) {
+    return data as Record<string, unknown>[]
+  }
+
+  if (
+    data &&
+    typeof data === 'object' &&
+    'value' in data &&
+    Array.isArray((data as { value?: unknown }).value)
+  ) {
+    return (data as { value: Record<string, unknown>[] }).value
+  }
+
+  return []
+}
+
 const areSameValues = (left: ConditionValue[], right: ConditionValue[]): boolean => {
   if (left.length !== right.length) {
     return false
@@ -87,67 +138,116 @@ export const FilterItemValue = ({
   isDisabled?: boolean
 }) => {
   const [conditionValues, setConditionValues] = React.useState<ConditionValue[]>([])
-  const [picklistOptions, setPicklistOptions] = React.useState<ConditionValueOption[]>([])
-  const [isPicklistLoading, setIsPicklistLoading] = React.useState(false)
+  const [selectableOptions, setSelectableOptions] = React.useState<ConditionValueOption[]>([])
+  const [isSelectableOptionsLoading, setIsSelectableOptionsLoading] = React.useState(false)
 
   const crmRepository = useCrmRepository()
-  const picklistRequestId = React.useRef(0)
+  const selectableOptionsRequestId = React.useRef(0)
 
   const selectedAttributeType = filterOption?.AttributeType
-  const picklistSelection = filterOption?.Selection
-  const picklistMinItems = Math.max(0, picklistSelection?.MinItems ?? 0)
-  const picklistMaxItems =
-    picklistSelection?.MaxItems && picklistSelection.MaxItems > 0
-      ? picklistSelection.MaxItems
-      : undefined
-  const isMultiPicklistSelection =
-    selectedAttributeType === 'Picklist' && picklistSelection?.Multiple
+  const selection = filterOption?.Selection
+  const selectionMinItems = Math.max(0, selection?.MinItems ?? 0)
+  const selectionMaxItems =
+    selection?.MaxItems && selection.MaxItems > 0 ? selection.MaxItems : undefined
+  const isPicklistAttribute = selectedAttributeType === 'Picklist'
+  const isLookupAttribute = selectedAttributeType === 'Lookup'
+  const isSelectableAttribute = isPicklistAttribute || isLookupAttribute
+  const isMultiSelection = isSelectableAttribute && Boolean(selection?.Multiple)
 
-  const loadPicklistOptions = React.useCallback(
+  const loadSelectableOptions = React.useCallback(
     async (
       targetFilterOption: FilterOptionConfig | undefined,
       condition: string | null | undefined,
       defaultValues: ConditionValue[]
     ): Promise<void> => {
-      const requestId = ++picklistRequestId.current
+      const requestId = ++selectableOptionsRequestId.current
 
       if (
-        targetFilterOption?.AttributeType !== 'Picklist' ||
+        (targetFilterOption?.AttributeType !== 'Picklist' &&
+          targetFilterOption?.AttributeType !== 'Lookup') ||
         !targetFilterOption?.EntityName ||
         !targetFilterOption?.AttributeName
       ) {
-        setPicklistOptions([])
-        setIsPicklistLoading(false)
+        setSelectableOptions([])
+        setIsSelectableOptionsLoading(false)
         return
       }
 
-      setIsPicklistLoading(true)
+      setIsSelectableOptionsLoading(true)
       try {
-        const metadata = await crmRepository?.getPicklistAttributeMetadata(
-          targetFilterOption.EntityName,
-          targetFilterOption.AttributeName
-        )
-        const options =
-          metadata?.OptionSet?.Options?.map((option) => {
-            const value = option.Value
-            const displayName = option.Label.UserLocalizedLabel?.Label ?? value.toString()
-            return { value, displayName }
-          }) ?? []
+        let options: ConditionValueOption[] = []
 
-        if (requestId !== picklistRequestId.current) {
+        if (targetFilterOption.AttributeType === 'Picklist') {
+          const metadata = await crmRepository?.getPicklistAttributeMetadata(
+            targetFilterOption.EntityName,
+            targetFilterOption.AttributeName
+          )
+          options =
+            metadata?.OptionSet?.Options?.map((option) => {
+              const value = option.Value
+              const displayName = option.Label.UserLocalizedLabel?.Label ?? value.toString()
+              return { value, displayName }
+            }) ?? []
+        }
+
+        if (targetFilterOption.AttributeType === 'Lookup') {
+          const lookupMetadata = await crmRepository?.getLookupAttributeMetadata(
+            targetFilterOption.EntityName,
+            targetFilterOption.AttributeName
+          )
+          const targetEntityLogicalName = lookupMetadata?.Targets?.at(0)
+
+          if (targetEntityLogicalName) {
+            const entitiesMetadata = await crmRepository?.getEntitiesMetadata([
+              targetEntityLogicalName,
+            ])
+            const entityMetadata = entitiesMetadata?.at(0)
+            const entityCollectionName =
+              entityMetadata?.EntitySetName ?? entityMetadata?.LogicalCollectionName
+
+            if (entityCollectionName) {
+              const idAttributeName = `${targetEntityLogicalName}id`
+              const relatedAttributeNames =
+                targetFilterOption.Selection?.RelatedEntityAttributeNames ?? []
+              const attributeNames = [...new Set([idAttributeName, ...relatedAttributeNames])]
+              const entitiesResponse = await crmRepository?.getEntities(
+                entityCollectionName,
+                attributeNames
+              )
+              const entities = normalizeEntityItems(entitiesResponse)
+              options = entities
+                .map((item): ConditionValueOption | null => {
+                  const rawId = item[idAttributeName]
+                  if (rawId === undefined || rawId === null) {
+                    return null
+                  }
+                  const value = String(rawId)
+                  const displayName = formatLookupDisplayValue(
+                    item,
+                    relatedAttributeNames,
+                    targetFilterOption.Selection?.RelatedEntityAttributeFormat,
+                    value
+                  )
+                  return { value, displayName }
+                })
+                .filter((option): option is ConditionValueOption => option !== null)
+            }
+          }
+        }
+
+        if (requestId !== selectableOptionsRequestId.current) {
           return
         }
 
-        setPicklistOptions(options)
+        setSelectableOptions(options)
 
         const targetSelection = targetFilterOption?.Selection
         const targetMaxItems =
           targetSelection?.MaxItems && targetSelection.MaxItems > 0
             ? targetSelection.MaxItems
             : undefined
-        const isTargetMultiPicklist =
-          targetFilterOption?.AttributeType === 'Picklist' && targetSelection?.Multiple
-        const sanitizedDefaultValues = sanitizePicklistValues(
+        const isTargetMultiSelection = Boolean(targetSelection?.Multiple)
+        const sanitizedDefaultValues = sanitizeSelectableValues(
           defaultValues,
           options,
           targetMaxItems
@@ -158,21 +258,21 @@ export const FilterItemValue = ({
           return
         }
 
-        if (isTargetMultiPicklist) {
+        if (isTargetMultiSelection) {
           setConditionValues(sanitizedDefaultValues)
           return
         }
 
         setConditionValues(sanitizedDefaultValues.slice(0, 1))
       } catch (error) {
-        if (requestId !== picklistRequestId.current) {
+        if (requestId !== selectableOptionsRequestId.current) {
           return
         }
-        logger.error(`Failed to load picklist values: ${error}`)
-        setPicklistOptions([])
+        logger.error(`Failed to load selectable values: ${error}`)
+        setSelectableOptions([])
       } finally {
-        if (requestId === picklistRequestId.current) {
-          setIsPicklistLoading(false)
+        if (requestId === selectableOptionsRequestId.current) {
+          setIsSelectableOptionsLoading(false)
         }
       }
     },
@@ -182,15 +282,15 @@ export const FilterItemValue = ({
   React.useEffect(() => {
     if (!filterOption) {
       setConditionValues([])
-      setPicklistOptions([])
-      setIsPicklistLoading(false)
+      setSelectableOptions([])
+      setIsSelectableOptionsLoading(false)
       return
     }
 
     const defaultValues = filterOption.Default?.Values ?? []
     setConditionValues(defaultValues)
-    void loadPicklistOptions(filterOption, filterOption.Default?.Condition, defaultValues)
-  }, [filterOption, loadPicklistOptions])
+    void loadSelectableOptions(filterOption, filterOption.Default?.Condition, defaultValues)
+  }, [filterOption, loadSelectableOptions])
 
   React.useEffect(() => {
     if (isNoValueCondition(selectedFilterCondition)) {
@@ -198,24 +298,24 @@ export const FilterItemValue = ({
       return
     }
 
-    if (selectedAttributeType !== 'Picklist') {
+    if (!isSelectableAttribute) {
       return
     }
 
     setConditionValues((previousValues) => {
-      const sanitizedValues = sanitizePicklistValues(
+      const sanitizedValues = sanitizeSelectableValues(
         previousValues,
-        picklistOptions,
-        picklistMaxItems
+        selectableOptions,
+        selectionMaxItems
       )
-      const nextValues = isMultiPicklistSelection ? sanitizedValues : sanitizedValues.slice(0, 1)
+      const nextValues = isMultiSelection ? sanitizedValues : sanitizedValues.slice(0, 1)
       return areSameValues(previousValues, nextValues) ? previousValues : nextValues
     })
   }, [
-    isMultiPicklistSelection,
-    picklistMaxItems,
-    picklistOptions,
-    selectedAttributeType,
+    isMultiSelection,
+    isSelectableAttribute,
+    selectableOptions,
+    selectionMaxItems,
     selectedFilterCondition,
   ])
 
@@ -223,7 +323,7 @@ export const FilterItemValue = ({
     setConditionValues([event.target.value])
   }
 
-  const handlePicklistValueChanged = (value: ConditionValueOption['value'] | null): void => {
+  const handleSelectionValueChanged = (value: ConditionValueOption['value'] | null): void => {
     if (value === null) {
       setConditionValues([])
       return
@@ -232,14 +332,23 @@ export const FilterItemValue = ({
     setConditionValues([value])
   }
 
-  const handleMultiPicklistValueChanged = (values: ConditionValueOption[]): void => {
-    const nextValues = values.map((value) => value.value)
-
-    if (picklistMaxItems && nextValues.length > picklistMaxItems) {
+  const handleSingleLookupValueChanged = (value: ConditionValueOption | null): void => {
+    if (!value) {
+      setConditionValues([])
       return
     }
 
-    if (nextValues.length < picklistMinItems) {
+    setConditionValues([value.value])
+  }
+
+  const handleMultiSelectionValueChanged = (values: ConditionValueOption[]): void => {
+    const nextValues = values.map((value) => value.value)
+
+    if (selectionMaxItems && nextValues.length > selectionMaxItems) {
+      return
+    }
+
+    if (nextValues.length < selectionMinItems) {
       return
     }
 
@@ -247,16 +356,17 @@ export const FilterItemValue = ({
   }
 
   const selectedConditionValue = conditionValues.at(0) ?? ''
-  const selectedPicklistValues = picklistOptions.filter((option) =>
+  const selectedSelectionValues = selectableOptions.filter((option) =>
     conditionValues.includes(option.value)
   )
+  const selectedSingleLookupValue = selectedSelectionValues.at(0) ?? null
 
   if (isNoValueCondition(selectedFilterCondition)) {
     return <span>&nbsp;</span>
   }
 
-  if (selectedAttributeType === 'Picklist') {
-    if (isPicklistLoading) {
+  if (isSelectableAttribute) {
+    if (isSelectableOptionsLoading) {
       return (
         <Input
           disabled
@@ -267,18 +377,18 @@ export const FilterItemValue = ({
       )
     }
 
-    if (picklistOptions.length > 0) {
-      if (isMultiPicklistSelection) {
+    if (selectableOptions.length > 0) {
+      if (isMultiSelection) {
         return (
           <div>
             <MultiCombobox
-              options={picklistOptions}
+              options={selectableOptions}
               placeholder="Select values"
               displayValue={(option) => option.displayName}
               displayInputValue={(values) => values.map((option) => option.displayName).join(', ')}
-              value={selectedPicklistValues}
+              value={selectedSelectionValues}
               disabled={isDisabled}
-              onChange={handleMultiPicklistValueChanged}
+              onChange={handleMultiSelectionValueChanged}
             >
               {(option) => (
                 <ComboboxOption value={option}>
@@ -290,7 +400,26 @@ export const FilterItemValue = ({
         )
       }
 
-      if (selectedFilterCondition === 'in') {
+      if (isLookupAttribute) {
+        return (
+          <Combobox
+            options={selectableOptions}
+            placeholder="Select value"
+            displayValue={(option) => option?.displayName}
+            value={selectedSingleLookupValue}
+            disabled={isDisabled}
+            onChange={handleSingleLookupValueChanged}
+          >
+            {(option) => (
+              <ComboboxOption value={option}>
+                <ComboboxLabel>{option.displayName}</ComboboxLabel>
+              </ComboboxOption>
+            )}
+          </Combobox>
+        )
+      }
+
+      if (isPicklistAttribute && selectedFilterCondition === 'in') {
         return (
           <Input
             type="text"
@@ -307,9 +436,9 @@ export const FilterItemValue = ({
           placeholder="Select value"
           value={selectedConditionValue === '' ? null : selectedConditionValue}
           disabled={isDisabled}
-          onChange={handlePicklistValueChanged}
+          onChange={handleSelectionValueChanged}
         >
-          {picklistOptions.map((option) => {
+          {selectableOptions.map((option) => {
             return (
               <ListboxOption key={option.value} value={option.value}>
                 <ListboxLabel>{option.displayName}</ListboxLabel>
@@ -326,7 +455,7 @@ export const FilterItemValue = ({
       <Listbox
         value={selectedConditionValue === '' ? null : selectedConditionValue}
         disabled={isDisabled}
-        onChange={handlePicklistValueChanged}
+        onChange={handleSelectionValueChanged}
       >
         <ListboxOption value="true">
           <ListboxLabel>True</ListboxLabel>

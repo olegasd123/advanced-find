@@ -21,8 +21,8 @@ interface SelectionConfig {
   MaxItems?: number
   MinItems?: number
   Multiple?: boolean
-  RelatedEntityAttributeNames: string[]
-  RelatedEntityAttributeFormat: string
+  RelatedEntityAttributeNames?: string[]
+  RelatedEntityAttributeFormat?: string
 }
 
 export interface AppConfig {
