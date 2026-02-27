@@ -12,7 +12,7 @@ export default class MockCrmRepository implements CrmData {
     entityLogicalName: string,
     attributesLogicalNames: string[]
   ): Promise<AttributeMetadata[]> {
-    const allAttributes = await fetch(`mock-data/entity-${entityLogicalName}-metadata.json`).then(
+    const allAttributes = await fetch(`mock-data/${entityLogicalName}-attributes-md.json`).then(
       async (result) => {
         const data = await result.json()
         return <AttributeMetadata[]>data.value
@@ -25,7 +25,7 @@ export default class MockCrmRepository implements CrmData {
   }
 
   async getEntitiesMetadata(logicalNames: string[] | undefined): Promise<EntityMetadata[]> {
-    const entities = await fetch('mock-data/entities-metadata.json').then(
+    const entities = await fetch('mock-data/entities-md.json').then(
       async (result) => {
         const data = await result.json()
         return <EntityMetadata[]>data.value
@@ -42,7 +42,7 @@ export default class MockCrmRepository implements CrmData {
     _: string,
     attributeLogicalName: string
   ): Promise<LookupAttributeMetadata> {
-    return fetch(`mock-data/lookup-${attributeLogicalName}-metadata.json`).then(
+    return fetch(`mock-data/account-${attributeLogicalName}-lookup-md.json`).then(
       async (result) => {
         const data = await result.json()
         return <LookupAttributeMetadata>data
@@ -57,7 +57,7 @@ export default class MockCrmRepository implements CrmData {
     _: string,
     attributeLogicalName: string
   ): Promise<PicklistAttributeMetadata> {
-    return fetch(`mock-data/picklist-${attributeLogicalName}-metadata.json`).then(
+    return fetch(`mock-data/account-${attributeLogicalName}-picklist-md.json`).then(
       async (result) => {
         const data = await result.json()
         return <PicklistAttributeMetadata>data
