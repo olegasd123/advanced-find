@@ -82,7 +82,7 @@ export const ResultGrid = ({
       </div>
 
       <div className="pt-4">
-        <Table striped>
+        <Table striped dense>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
