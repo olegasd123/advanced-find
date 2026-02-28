@@ -3,7 +3,13 @@
     "Entities": [
       {
         "LogicalName": "invoice",
-        "View": ["name", "createby"],
+        "ResultView": { 
+          "TableColumns": [
+            { "AttributeName": "name", "DisplayName": "Name" },
+            { "AttributeName": "invoicenumber" },
+            { "AttributeName": "createdby"}
+          ]
+         },
         "FilterOptions": [
           {
             "CategoryDisplayName": "General"
@@ -77,7 +83,12 @@
       },
       {
         "LogicalName": "account",
-        "View": ["name", "createby"],
+        "ResultView": { 
+          "TableColumns": [
+            { "AttributeName": "name", "DisplayName": "Name" },
+            { "AttributeName": "createdby" }
+          ]
+         },
         "FilterOptions": [
           {
             "CategoryDisplayName": "General"
@@ -99,7 +110,7 @@
               "MinItems": 1,
               "MaxItems": 2,
               "RelatedEntityAttributeNames": ["firstname", "lastname"],
-              "RelatedEntityAttributeFormat": "{0}, {1}"
+              "RelatedEntityAttributeFormat": "{0} {1}"
             }
           }
         ]

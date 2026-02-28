@@ -5,6 +5,7 @@ import { EntityMetadata } from '../../libs/repositories/crm-repository'
 import { EntityConfig } from '../../libs/config/app-config'
 import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
 import { FilterGrid } from './filter-grid'
+import { ResultGrid } from './result-grid'
 import { createLogger } from '../../libs/utils/logger'
 
 const logger = createLogger('Search')
@@ -65,10 +66,18 @@ export const Search = () => {
         </Select>
       )}
 
-      <FilterGrid
-        key={currentEntityConfig?.LogicalName ?? 'no-entity'}
-        entityConfig={currentEntityConfig}
-      />
+
+      {currentEntityConfig && (
+        <>
+          // TODO: hide FilterGrid on the `Search` button click, then show `FilterGrid` with applied filters and `ResultGrid` with search results
+          <FilterGrid
+            key={currentEntityConfig?.LogicalName ?? 'no-entity'}
+            entityConfig={currentEntityConfig}
+          />
+
+          <ResultGrid />
+        </>
+      )}
     </div>
   )
 }

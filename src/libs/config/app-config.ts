@@ -8,6 +8,15 @@ interface FilterOptionsDefaultConfig {
   Values?: Array<string | number>
 }
 
+interface ResultViewConfig {
+  TableColumns: TableColumnConfig[]
+}
+
+interface TableColumnConfig {
+  AttributeName: string
+  DisplayName?: string
+}
+
 interface SearchSchemeConfig {
   Entities: EntityConfig[]
   Localization: LocalizationConfig
@@ -32,7 +41,7 @@ export interface AppConfig {
 export interface EntityConfig {
   FilterOptions: FilterOptionConfig[]
   LogicalName: string
-  View: string[]
+  ResultView: ResultViewConfig
 }
 
 export interface FilterOptionConfig {
