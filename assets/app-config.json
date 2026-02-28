@@ -34,9 +34,7 @@
             "Default": {
               "IsShowed": true,
               "Condition": "ne",
-              "Values": [
-                "1"
-              ],
+              "Values": ["1"],
               "IsAttributeDisabled": false,
               "IsDisabled": false,
               "CannotBeRemoved": true
@@ -137,9 +135,7 @@
             "AttributeName": "accountcategorycode",
             "Default": {
               "IsShowed": true,
-              "Values": [
-                1
-              ]
+              "Values": [1]
             },
             "Selection": {
               "Multiple": false
@@ -154,10 +150,7 @@
               "Multiple": false,
               "MinItems": 1,
               "MaxItems": 2,
-              "RelatedEntityAttributeNames": [
-                "firstname",
-                "lastname"
-              ],
+              "RelatedEntityAttributeNames": ["firstname", "lastname"],
               "RelatedEntityAttributeFormat": "{0} {1}"
             }
           }

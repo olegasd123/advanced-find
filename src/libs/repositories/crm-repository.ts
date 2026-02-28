@@ -1,6 +1,6 @@
 import { createLogger } from '../utils/logger'
 
-const logger = createLogger('filter-utils')
+const logger = createLogger('crm-repository')
 
 interface DisplayName {
   UserLocalizedLabel?: UserLocalizedLabel

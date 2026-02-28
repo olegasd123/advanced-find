@@ -2,8 +2,9 @@
     <entity name="account">
         <attribute name="name" />
         <filter type="and">
+            <condition attribute="name" operator="eq" value="acc name" />
             <condition attribute="accountcategorycode" operator="eq" value="1" />
-            <condition attribute="createdby" operator="eq" value="d78b07b3-d327-ef11-840a-000d3a65b5d1" />
+            <condition attribute="createdby" operator="eq" value="b1c4acf4-88ac-ec11-9841-000d3a6518aa" />
         </filter>
         <link-entity name="systemuser" from="systemuserid" to="createdby" link-type="inner">
             <attribute name="fullname" alias="col_1_fullname" />
