@@ -3,13 +3,20 @@
     "Entities": [
       {
         "LogicalName": "invoice",
-        "ResultView": { 
+        "ResultView": {
           "TableColumns": [
-            { "AttributeName": "name", "DisplayName": "Name" },
-            { "AttributeName": "invoicenumber" },
-            { "AttributeName": "createdby"}
+            {
+              "AttributeName": "name",
+              "DisplayName": "Name"
+            },
+            {
+              "AttributeName": "invoicenumber"
+            },
+            {
+              "AttributeName": "createdby"
+            }
           ]
-         },
+        },
         "FilterOptions": [
           {
             "CategoryDisplayName": "General"
@@ -21,17 +28,25 @@
             "Default": {
               "IsShowed": true,
               "Condition": "ne",
-              "Values": ["1"],
+              "Values": [
+                "1"
+              ],
               "IsAttributeDisabled": false,
               "IsDisabled": false,
               "CannotBeRemoved": true
             },
-            "Selection": { "Multiple": true, "MinItems": 1, "MaxItems": 2 },
+            "Selection": {
+              "Multiple": true,
+              "MinItems": 1,
+              "MaxItems": 2
+            },
             "Control": ""
           },
           {
             "AttributeName": "name",
-            "Default": { "IsShowed": true }
+            "Default": {
+              "IsShowed": true
+            }
           },
           {
             "CategoryDisplayName": "Misc"
@@ -43,7 +58,9 @@
               "ToAttribute": "invoiceid",
               "EntityName": "invoicedetail",
               "AttributeName": "priceperunit",
-              "Default": { "IsShowed": true }
+              "Default": {
+                "IsShowed": true
+              }
             }
           },
           {
@@ -83,33 +100,52 @@
       },
       {
         "LogicalName": "account",
-        "ResultView": { 
+        "ResultView": {
           "TableColumns": [
-            { "AttributeName": "name", "DisplayName": "Name" },
-            { "AttributeName": "createdby" }
+            {
+              "AttributeName": "name",
+              "DisplayName": "Name"
+            },
+            {
+              "AttributeName": "createdby"
+            }
           ]
-         },
+        },
         "FilterOptions": [
           {
             "CategoryDisplayName": "General"
           },
           {
             "AttributeName": "name",
-            "Default": { "IsShowed": true }
+            "Default": {
+              "IsShowed": true
+            }
           },
           {
             "AttributeName": "accountcategorycode",
-            "Default": { "IsShowed": true, "Values": [1] },
-            "Selection": { "Multiple": false }
+            "Default": {
+              "IsShowed": true,
+              "Values": [
+                1
+              ]
+            },
+            "Selection": {
+              "Multiple": false
+            }
           },
           {
             "AttributeName": "createdby",
-            "Default": { "IsShowed": true },
+            "Default": {
+              "IsShowed": true
+            },
             "Selection": {
               "Multiple": false,
               "MinItems": 1,
               "MaxItems": 2,
-              "RelatedEntityAttributeNames": ["firstname", "lastname"],
+              "RelatedEntityAttributeNames": [
+                "firstname",
+                "lastname"
+              ],
               "RelatedEntityAttributeFormat": "{0} {1}"
             }
           }

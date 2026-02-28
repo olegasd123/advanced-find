@@ -13,6 +13,20 @@ import { AppliedFilterCondition } from '../../libs/utils/crm-search'
 
 const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
 
+const hasConditionValue = (condition: AppliedFilterCondition): boolean => {
+  if (noValueConditions.has(condition.condition ?? '')) {
+    return true
+  }
+
+  return condition.values.some((value) => {
+    if (typeof value === 'number') {
+      return true
+    }
+
+    return value.trim().length > 0
+  })
+}
+
 const formatConditionValue = (condition: AppliedFilterCondition): string => {
   const conditionName = condition.condition ?? ''
   if (noValueConditions.has(conditionName)) {
@@ -24,6 +38,7 @@ const formatConditionValue = (condition: AppliedFilterCondition): string => {
 export const ResultGrid = ({
   entityConfig,
   results,
+  tableColumnDisplayNames,
   isLoading,
   errorMessage,
   appliedFilters,
@@ -31,6 +46,7 @@ export const ResultGrid = ({
 }: {
   entityConfig: EntityConfig
   results: Record<string, unknown>[]
+  tableColumnDisplayNames?: Record<string, string>
   isLoading?: boolean
   errorMessage?: string
   appliedFilters: AppliedFilterCondition[]
@@ -38,7 +54,11 @@ export const ResultGrid = ({
 }) => {
   const columns = entityConfig.ResultView.TableColumns
   const appliedFilterDescriptions = appliedFilters
-    .filter((condition) => condition.filterOption?.AttributeName && condition.condition)
+    .filter(
+      (condition) =>
+        Boolean(condition.filterOption?.AttributeName && condition.condition) &&
+        hasConditionValue(condition)
+    )
     .map((condition) => {
       const attributeName =
         condition.filterOption?.DisplayName ?? condition.filterOption?.AttributeName
@@ -56,11 +76,7 @@ export const ResultGrid = ({
         </div>
         <div className="w-36 grow-3"></div>
         <div className="w-24 grow-2"></div>
-        <div className="w-64 grow-8 text-sm text-zinc-600">
-          {appliedFilterDescriptions.length > 0
-            ? `Applied filters: ${appliedFilterDescriptions.join('; ')}`
-            : 'Applied filters: none'}
-        </div>
+        <div className="w-64 grow-8"></div>
       </div>
 
       <div className="pt-4">
@@ -69,7 +85,9 @@ export const ResultGrid = ({
             <TableRow>
               {columns.map((column) => (
                 <TableHeader key={column.AttributeName}>
-                  {column.DisplayName ?? column.AttributeName}
+                  {column.DisplayName ??
+                    tableColumnDisplayNames?.[column.AttributeName] ??
+                    column.AttributeName}
                 </TableHeader>
               ))}
             </TableRow>
@@ -116,6 +134,12 @@ export const ResultGrid = ({
               ))}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="pt-3 text-sm text-zinc-600">
+        {appliedFilterDescriptions.length > 0
+          ? `Applied filters: ${appliedFilterDescriptions.join('; ')}`
+          : 'Applied filters: none'}
       </div>
     </>
   )
