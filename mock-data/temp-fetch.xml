@@ -1,0 +1,18 @@
+<fetch version="1.0" mapping="logical" distinct="false">
+    <entity name="invoice">
+        <attribute name="name" />
+        <attribute name="invoicenumber" />
+        <attribute name="createdby" />
+        <filter type="and">
+            <condition attribute="invoicenumber" operator="ne" value="1" />
+            <condition attribute="name" operator="eq" value="inv nane" />
+        </filter>
+        <link-entity name="invoicedetail" from="invoiceid" to="invoiceid" link-type="inner">
+            <link-entity name="product" from="productid" to="productid" link-type="inner">
+                <filter type="and">
+                    <condition attribute="name" operator="eq" value="pname" />
+                </filter>
+            </link-entity>
+        </link-entity>
+    </entity>
+</fetch>

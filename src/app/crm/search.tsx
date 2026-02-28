@@ -9,7 +9,7 @@ import { ResultGrid } from './result-grid'
 import { createLogger } from '../../libs/utils/logger'
 import {
   AppliedFilterCondition,
-  buildCrmEntitiesFilter,
+  buildCrmFetchXml,
   getSearchSelectColumns,
 } from '../../libs/utils/crm-search'
 
@@ -129,9 +129,14 @@ export const Search = () => {
     }
 
     const selectColumns = getSearchSelectColumns(currentEntityConfig)
-    const filter = buildCrmEntitiesFilter(currentEntityConfig.LogicalName, conditions)
+    const fetchXml = buildCrmFetchXml(currentEntityConfig.LogicalName, selectColumns, conditions)
 
-    logger.info(`Executing search with conditions`, { conditions, filter, selectColumns, entitySetName })
+    logger.info(`Executing search with conditions`, {
+      entitySetName,
+      selectColumns,
+      conditions,
+      fetchXml,
+    })
 
     setIsResultViewVisible(true)
     setAppliedFilters(conditions)
@@ -139,7 +144,7 @@ export const Search = () => {
     setResultsError(undefined)
 
     try {
-      const response = await crmRepository.getEntities(entitySetName, selectColumns, { filter })
+      const response = await crmRepository.getEntities(entitySetName, selectColumns, { fetchXml })
       const items = Array.isArray(response)
         ? response
         : response && typeof response === 'object' && 'value' in response

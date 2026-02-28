@@ -97,7 +97,7 @@ export const FilterItem = ({
 
   React.useEffect(() => {
     onConditionChanged?.(optionId, {
-      filterOption: selectedFilterOption,
+      filterOption: selectedAttribute?.FilterOptionConfig,
       condition: selectedFilterCondition,
       values: selectedConditionValues,
       isDisabled,
@@ -106,9 +106,9 @@ export const FilterItem = ({
     isDisabled,
     optionId,
     onConditionChanged,
+    selectedAttribute,
     selectedConditionValues,
     selectedFilterCondition,
-    selectedFilterOption,
   ])
 
   return (

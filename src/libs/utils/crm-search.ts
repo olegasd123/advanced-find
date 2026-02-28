@@ -1,4 +1,5 @@
 import { EntityConfig, FilterOptionConfig } from '../config/app-config'
+import { getTargetFilterOption } from './filter'
 
 export type ConditionValue = string | number
 
@@ -22,6 +23,13 @@ const isNoValueCondition = (condition: string | null | undefined): boolean => {
 }
 
 const escapeODataString = (value: string): string => value.replace(/'/g, "''")
+const escapeXml = (value: string): string =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
 
 const parseValues = (condition: string, values: ConditionValue[]): ConditionValue[] => {
   if (condition !== 'in') {
@@ -36,6 +44,162 @@ const parseValues = (condition: string, values: ConditionValue[]): ConditionValu
     .split(',')
     .map((item) => item.trim())
     .filter((item) => item.length > 0)
+}
+
+const toFetchValue = (attributeType: string | undefined, value: ConditionValue): string => {
+  const normalizedAttributeType = attributeType?.toLowerCase()
+
+  if (normalizedAttributeType === 'boolean') {
+    return value.toString().toLowerCase() === 'true' ? '1' : '0'
+  }
+
+  if (numberAttributeTypes.has(normalizedAttributeType ?? '')) {
+    const parsed = typeof value === 'number' ? value : Number(value)
+    if (Number.isFinite(parsed)) {
+      return String(parsed)
+    }
+  }
+
+  return String(value)
+}
+
+interface FetchLinkNode {
+  entityName: string
+  fromAttribute: string
+  toAttribute: string
+  conditions: string[]
+  children: Map<string, FetchLinkNode>
+}
+
+const getFilterOptionChain = (filterOption?: FilterOptionConfig): FilterOptionConfig[] => {
+  if (!filterOption) {
+    return []
+  }
+
+  const chain: FilterOptionConfig[] = []
+  let current: FilterOptionConfig | undefined = filterOption
+  while (current) {
+    chain.push(current)
+    current = current.RelatedTo
+  }
+
+  return chain
+}
+
+const hasMeaningfulValues = (values: ConditionValue[]): boolean => {
+  return values.some((value) => {
+    if (typeof value === 'number') {
+      return true
+    }
+    return value.trim().length > 0
+  })
+}
+
+const createFetchConditionXml = (
+  conditionValue: AppliedFilterCondition,
+  targetFilterOption: FilterOptionConfig
+): string | undefined => {
+  const condition = conditionValue.condition ?? undefined
+  const attributeName = targetFilterOption.AttributeName
+  if (!condition || !attributeName || conditionValue.isDisabled) {
+    return undefined
+  }
+
+  const escapedAttributeName = escapeXml(attributeName)
+
+  if (condition === 'null' || condition === 'not-null') {
+    return `<condition attribute="${escapedAttributeName}" operator="${condition}" />`
+  }
+
+  if (condition === 'today' || condition === 'tomorrow' || condition === 'yesterday') {
+    return `<condition attribute="${escapedAttributeName}" operator="${condition}" />`
+  }
+
+  const values = parseValues(condition, conditionValue.values).filter((value) => {
+    if (typeof value === 'number') {
+      return true
+    }
+    return value.trim().length > 0
+  })
+  if (!hasMeaningfulValues(values)) {
+    return undefined
+  }
+
+  const firstValue = values.at(0)
+  if (firstValue === undefined) {
+    return undefined
+  }
+
+  if (condition === 'in') {
+    const valuesXml = values
+      .map(
+        (value) =>
+          `<value>${escapeXml(toFetchValue(targetFilterOption.AttributeType, value))}</value>`
+      )
+      .join('')
+    return `<condition attribute="${escapedAttributeName}" operator="in">${valuesXml}</condition>`
+  }
+
+  const targetValue = toFetchValue(targetFilterOption.AttributeType, firstValue)
+
+  if (
+    condition === 'eq' ||
+    condition === 'ne' ||
+    condition === 'ge' ||
+    condition === 'gt' ||
+    condition === 'le' ||
+    condition === 'lt' ||
+    condition === 'begins-with' ||
+    condition === 'ends-with'
+  ) {
+    return `<condition attribute="${escapedAttributeName}" operator="${condition}" value="${escapeXml(targetValue)}" />`
+  }
+
+  if (condition === 'not-begin-with') {
+    return `<condition attribute="${escapedAttributeName}" operator="not-like" value="${escapeXml(`${targetValue}%`)}" />`
+  }
+  if (condition === 'not-end-with') {
+    return `<condition attribute="${escapedAttributeName}" operator="not-like" value="${escapeXml(`%${targetValue}`)}" />`
+  }
+  if (condition === 'like') {
+    return `<condition attribute="${escapedAttributeName}" operator="like" value="${escapeXml(`%${targetValue}%`)}" />`
+  }
+  if (condition === 'not-like') {
+    return `<condition attribute="${escapedAttributeName}" operator="not-like" value="${escapeXml(`%${targetValue}%`)}" />`
+  }
+
+  return undefined
+}
+
+const getOrCreateLinkNode = (
+  links: Map<string, FetchLinkNode>,
+  entityName: string,
+  fromAttribute: string,
+  toAttribute: string
+): FetchLinkNode => {
+  const key = `${entityName}|${fromAttribute}|${toAttribute}`
+  const existing = links.get(key)
+  if (existing) {
+    return existing
+  }
+
+  const created: FetchLinkNode = {
+    entityName,
+    fromAttribute,
+    toAttribute,
+    conditions: [],
+    children: new Map<string, FetchLinkNode>(),
+  }
+  links.set(key, created)
+  return created
+}
+
+const renderLinkNodeXml = (node: FetchLinkNode): string => {
+  const filterXml =
+    node.conditions.length > 0 ? `<filter type="and">${node.conditions.join('')}</filter>` : ''
+  const childrenXml = Array.from(node.children.values()).map(renderLinkNodeXml).join('')
+
+  return `<link-entity name="${escapeXml(node.entityName)}" from="${escapeXml(node.fromAttribute)}" to="${escapeXml(node.toAttribute)}" link-type="inner">${filterXml}${childrenXml}</link-entity>`
 }
 
 const toODataLiteral = (attributeType: string | undefined, value: ConditionValue): string => {
@@ -84,7 +248,7 @@ const createDateConditionExpression = (
 }
 
 const createFilterExpression = (conditionValue: AppliedFilterCondition): string | undefined => {
-  const filterOption = conditionValue.filterOption
+  const filterOption = getTargetFilterOption(conditionValue.filterOption)
   const condition = conditionValue.condition ?? undefined
   const attributeName = filterOption?.AttributeName
 
@@ -180,4 +344,73 @@ export const buildCrmEntitiesFilter = (
   }
 
   return expressions.map((expression) => `(${expression})`).join(' and ')
+}
+
+export const buildCrmFetchXml = (
+  entityLogicalName: string,
+  selectColumns: string[],
+  conditions: AppliedFilterCondition[]
+): string => {
+  const rootConditions: string[] = []
+  const rootLinks = new Map<string, FetchLinkNode>()
+
+  for (const condition of conditions) {
+    const sourceFilterOption = condition.filterOption
+    const targetFilterOption = getTargetFilterOption(sourceFilterOption)
+    if (!sourceFilterOption || !targetFilterOption) {
+      continue
+    }
+
+    const conditionXml = createFetchConditionXml(condition, targetFilterOption)
+    if (!conditionXml) {
+      continue
+    }
+
+    const optionChain = getFilterOptionChain(sourceFilterOption)
+    if (optionChain.length <= 1) {
+      rootConditions.push(conditionXml)
+      continue
+    }
+
+    let currentParentLinks = rootLinks
+    let currentNode: FetchLinkNode | undefined
+    let canLink = true
+
+    for (let index = 0; index < optionChain.length - 1; index++) {
+      const parentOption = optionChain[index]
+      const childOption = optionChain[index + 1]
+
+      const linkToAttribute = parentOption.FromAttribute
+      const linkFromAttribute = childOption.ToAttribute
+      const childEntityName = childOption.EntityName
+
+      if (!linkToAttribute || !linkFromAttribute || !childEntityName) {
+        canLink = false
+        break
+      }
+
+      currentNode = getOrCreateLinkNode(
+        currentParentLinks,
+        childEntityName,
+        linkFromAttribute,
+        linkToAttribute
+      )
+      currentParentLinks = currentNode.children
+    }
+
+    if (!canLink || !currentNode) {
+      continue
+    }
+
+    currentNode.conditions.push(conditionXml)
+  }
+
+  const attributesXml = selectColumns
+    .map((attributeName) => `<attribute name="${escapeXml(attributeName)}" />`)
+    .join('')
+  const rootFilterXml =
+    rootConditions.length > 0 ? `<filter type="and">${rootConditions.join('')}</filter>` : ''
+  const linksXml = Array.from(rootLinks.values()).map(renderLinkNodeXml).join('')
+
+  return `<fetch version="1.0" mapping="logical" distinct="false"><entity name="${escapeXml(entityLogicalName)}">${attributesXml}${rootFilterXml}${linksXml}</entity></fetch>`
 }

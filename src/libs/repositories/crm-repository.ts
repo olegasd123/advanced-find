@@ -59,6 +59,7 @@ export interface CrmData {
 
 export interface GetEntitiesOptions {
   filter?: string
+  fetchXml?: string
 }
 
 export interface EntityMetadata extends Metadata {
@@ -173,11 +174,16 @@ export default class CrmRepository implements CrmData {
     options?: GetEntitiesOptions
   ): Promise<unknown> {
     const query: string[] = []
-    if (attributeLogicalNames.length > 0) {
-      query.push(`$select=${attributeLogicalNames.join(',')}`)
-    }
-    if (options?.filter) {
-      query.push(`$filter=${encodeURIComponent(options.filter)}`)
+
+    if (options?.fetchXml) {
+      query.push(`fetchXml=${encodeURIComponent(options.fetchXml)}`)
+    } else {
+      if (attributeLogicalNames.length > 0) {
+        query.push(`$select=${attributeLogicalNames.join(',')}`)
+      }
+      if (options?.filter) {
+        query.push(`$filter=${encodeURIComponent(options.filter)}`)
+      }
     }
     const queryPart = query.length > 0 ? `?${query.join('&')}` : ''
     const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/${entityPluralName}${queryPart}`

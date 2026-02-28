@@ -10,6 +10,7 @@ import {
 } from '../../../vendor/catalyst-ui-kit/typescript/table'
 import { EntityConfig } from '../../libs/config/app-config'
 import { AppliedFilterCondition } from '../../libs/utils/crm-search'
+import { getTargetFilterOption } from '../../libs/utils/filter'
 
 const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
 
@@ -56,12 +57,13 @@ export const ResultGrid = ({
   const appliedFilterDescriptions = appliedFilters
     .filter(
       (condition) =>
-        Boolean(condition.filterOption?.AttributeName && condition.condition) &&
-        hasConditionValue(condition)
+        Boolean(
+          getTargetFilterOption(condition.filterOption)?.AttributeName && condition.condition
+        ) && hasConditionValue(condition)
     )
     .map((condition) => {
-      const attributeName =
-        condition.filterOption?.DisplayName ?? condition.filterOption?.AttributeName
+      const targetFilterOption = getTargetFilterOption(condition.filterOption)
+      const attributeName = targetFilterOption?.DisplayName ?? targetFilterOption?.AttributeName
       return `${attributeName} ${condition.condition} ${formatConditionValue(condition)}`
     })
 
