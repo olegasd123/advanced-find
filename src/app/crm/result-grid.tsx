@@ -8,8 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '../../../vendor/catalyst-ui-kit/typescript/table'
-import { EntityConfig } from '../../libs/config/app-config'
-import { AppliedFilterCondition } from '../../libs/utils/crm-search'
+import { AppliedFilterCondition, SearchTableColumn } from '../../libs/utils/crm-search'
 import { getTargetFilterOption } from '../../libs/utils/filter'
 
 const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
@@ -37,23 +36,24 @@ const formatConditionValue = (condition: AppliedFilterCondition): string => {
 }
 
 export const ResultGrid = ({
-  entityConfig,
   results,
+  tableColumns,
   tableColumnDisplayNames,
   isLoading,
   errorMessage,
   appliedFilters,
   onBack,
 }: {
-  entityConfig: EntityConfig
   results: Record<string, unknown>[]
+  tableColumns: SearchTableColumn[]
   tableColumnDisplayNames?: Record<string, string>
   isLoading?: boolean
   errorMessage?: string
   appliedFilters: AppliedFilterCondition[]
   onBack?: () => void
 }) => {
-  const columns = entityConfig.ResultView.TableColumns
+  const columns = tableColumns
+  const columnSpan = Math.max(columns.length, 1)
   const appliedFilterDescriptions = appliedFilters
     .filter(
       (condition) =>
@@ -86,10 +86,10 @@ export const ResultGrid = ({
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableHeader key={column.AttributeName}>
-                  {column.DisplayName ??
-                    tableColumnDisplayNames?.[column.AttributeName] ??
-                    column.AttributeName}
+                <TableHeader key={column.valueKey}>
+                  {column.displayName ??
+                    tableColumnDisplayNames?.[column.valueKey] ??
+                    column.attributeName}
                 </TableHeader>
               ))}
             </TableRow>
@@ -99,7 +99,7 @@ export const ResultGrid = ({
               Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={`skeleton-${index}`}>
                   {columns.map((column) => (
-                    <TableColumn key={`${column.AttributeName}-${index}`}>
+                    <TableColumn key={`${column.valueKey}-${index}`}>
                       <div className="h-4 w-full rounded bg-zinc-200 animate-pulse" />
                     </TableColumn>
                   ))}
@@ -108,13 +108,13 @@ export const ResultGrid = ({
 
             {!isLoading && errorMessage && (
               <TableRow>
-                <TableColumn colSpan={columns.length}>{errorMessage}</TableColumn>
+                <TableColumn colSpan={columnSpan}>{errorMessage}</TableColumn>
               </TableRow>
             )}
 
             {!isLoading && !errorMessage && results.length === 0 && (
               <TableRow>
-                <TableColumn colSpan={columns.length}>No results found.</TableColumn>
+                <TableColumn colSpan={columnSpan}>No results found.</TableColumn>
               </TableRow>
             )}
 
@@ -123,9 +123,9 @@ export const ResultGrid = ({
               results.map((row, index) => (
                 <TableRow key={index}>
                   {columns.map((column) => {
-                    const value = row[column.AttributeName]
+                    const value = row[column.valueKey]
                     return (
-                      <TableColumn key={`${column.AttributeName}-${index}`}>
+                      <TableColumn key={`${column.valueKey}-${index}`}>
                         {value === undefined || value === null || value === ''
                           ? '-'
                           : String(value)}

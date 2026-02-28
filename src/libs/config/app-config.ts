@@ -13,8 +13,12 @@ export interface ResultViewConfig {
 }
 
 export interface TableColumnConfig {
-  AttributeName: string
+  AttributeName?: string
   DisplayName?: string
+  EntityName?: string
+  FromAttribute?: string
+  ToAttribute?: string
+  RelatedTo?: TableColumnConfig
 }
 
 interface SearchSchemeConfig {

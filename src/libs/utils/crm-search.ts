@@ -1,4 +1,4 @@
-import { EntityConfig, FilterOptionConfig } from '../config/app-config'
+import { EntityConfig, FilterOptionConfig, TableColumnConfig } from '../config/app-config'
 import { getTargetFilterOption } from './filter'
 
 export type ConditionValue = string | number
@@ -8,6 +8,36 @@ export interface AppliedFilterCondition {
   condition?: string | null
   values: ConditionValue[]
   isDisabled?: boolean
+}
+
+export interface SearchTableColumn {
+  sourceColumn: TableColumnConfig
+  chain: TableColumnConfig[]
+  attributeName: string
+  entityName: string
+  displayName?: string
+  valueKey: string
+  isRootColumn: boolean
+}
+
+interface LinkPathItem {
+  EntityName?: string
+  FromAttribute?: string
+  ToAttribute?: string
+}
+
+interface FetchAttributeNode {
+  name: string
+  alias?: string
+}
+
+interface FetchLinkNode {
+  entityName: string
+  fromAttribute: string
+  toAttribute: string
+  attributes: Map<string, FetchAttributeNode>
+  conditions: string[]
+  children: Map<string, FetchLinkNode>
 }
 
 const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
@@ -23,6 +53,7 @@ const isNoValueCondition = (condition: string | null | undefined): boolean => {
 }
 
 const escapeODataString = (value: string): string => value.replace(/'/g, "''")
+
 const escapeXml = (value: string): string =>
   value
     .replace(/&/g, '&amp;')
@@ -63,12 +94,33 @@ const toFetchValue = (attributeType: string | undefined, value: ConditionValue):
   return String(value)
 }
 
-interface FetchLinkNode {
-  entityName: string
-  fromAttribute: string
-  toAttribute: string
-  conditions: string[]
-  children: Map<string, FetchLinkNode>
+const toODataLiteral = (attributeType: string | undefined, value: ConditionValue): string => {
+  const normalizedAttributeType = attributeType?.toLowerCase()
+
+  if (normalizedAttributeType === 'boolean') {
+    if (typeof value === 'boolean') {
+      return String(value)
+    }
+    return value.toString().toLowerCase() === 'true' ? 'true' : 'false'
+  }
+
+  if (numberAttributeTypes.has(normalizedAttributeType ?? '')) {
+    const parsed = typeof value === 'number' ? value : Number(value)
+    if (Number.isFinite(parsed)) {
+      return String(parsed)
+    }
+  }
+
+  if (normalizedAttributeType === 'datetime' && typeof value === 'string') {
+    const dateValue = /^\d{4}-\d{2}-\d{2}$/.test(value)
+      ? new Date(`${value}T00:00:00`)
+      : new Date(value)
+    if (!Number.isNaN(dateValue.getTime())) {
+      return `'${dateValue.toISOString()}'`
+    }
+  }
+
+  return `'${escapeODataString(String(value))}'`
 }
 
 const getFilterOptionChain = (filterOption?: FilterOptionConfig): FilterOptionConfig[] => {
@@ -86,6 +138,49 @@ const getFilterOptionChain = (filterOption?: FilterOptionConfig): FilterOptionCo
   return chain
 }
 
+const getTableColumnChain = (column?: TableColumnConfig): TableColumnConfig[] => {
+  if (!column) {
+    return []
+  }
+
+  const chain: TableColumnConfig[] = []
+  let current: TableColumnConfig | undefined = column
+  while (current) {
+    chain.push(current)
+    current = current.RelatedTo
+  }
+
+  return chain
+}
+
+const getTargetTableColumn = (column?: TableColumnConfig): TableColumnConfig | undefined => {
+  if (!column) {
+    return undefined
+  }
+
+  if (column.RelatedTo) {
+    return getTargetTableColumn(column.RelatedTo)
+  }
+
+  return column
+}
+
+const getTableColumnDisplayName = (chain: TableColumnConfig[]): string | undefined => {
+  for (let index = chain.length - 1; index >= 0; index--) {
+    const displayName = chain[index].DisplayName
+    if (displayName && displayName.length > 0) {
+      return displayName
+    }
+  }
+
+  return undefined
+}
+
+const createColumnValueKey = (columnIndex: number, attributeName: string): string => {
+  const normalizedAttributeName = attributeName.replace(/[^a-zA-Z0-9_]/g, '_')
+  return `col_${columnIndex}_${normalizedAttributeName}`
+}
+
 const hasMeaningfulValues = (values: ConditionValue[]): boolean => {
   return values.some((value) => {
     if (typeof value === 'number') {
@@ -93,6 +188,92 @@ const hasMeaningfulValues = (values: ConditionValue[]): boolean => {
     }
     return value.trim().length > 0
   })
+}
+
+const createDateConditionExpression = (
+  condition: string,
+  attributeName: string
+): string | undefined => {
+  if (condition === 'today') {
+    return `Microsoft.Dynamics.CRM.Today(PropertyName='${attributeName}')`
+  }
+  if (condition === 'tomorrow') {
+    return `Microsoft.Dynamics.CRM.Tomorrow(PropertyName='${attributeName}')`
+  }
+  if (condition === 'yesterday') {
+    return `Microsoft.Dynamics.CRM.Yesterday(PropertyName='${attributeName}')`
+  }
+  return undefined
+}
+
+const createFilterExpression = (conditionValue: AppliedFilterCondition): string | undefined => {
+  const filterOption = getTargetFilterOption(conditionValue.filterOption)
+  const condition = conditionValue.condition ?? undefined
+  const attributeName = filterOption?.AttributeName
+
+  if (!filterOption || !condition || !attributeName || conditionValue.isDisabled) {
+    return undefined
+  }
+
+  if (isNoValueCondition(condition)) {
+    if (condition === 'null') {
+      return `${attributeName} eq null`
+    }
+    if (condition === 'not-null') {
+      return `${attributeName} ne null`
+    }
+    return createDateConditionExpression(condition, attributeName)
+  }
+
+  const values = parseValues(condition, conditionValue.values).filter((value) => {
+    if (typeof value === 'number') {
+      return true
+    }
+    return value.trim().length > 0
+  })
+  if (values.length === 0) {
+    return undefined
+  }
+
+  const literals = values.map((value) => toODataLiteral(filterOption.AttributeType, value))
+  const firstLiteral = literals.at(0)
+  if (!firstLiteral) {
+    return undefined
+  }
+
+  if (condition === 'in') {
+    return `${attributeName} in (${literals.join(',')})`
+  }
+  if (condition === 'begins-with') {
+    return `startswith(${attributeName},${firstLiteral})`
+  }
+  if (condition === 'not-begin-with') {
+    return `not startswith(${attributeName},${firstLiteral})`
+  }
+  if (condition === 'ends-with') {
+    return `endswith(${attributeName},${firstLiteral})`
+  }
+  if (condition === 'not-end-with') {
+    return `not endswith(${attributeName},${firstLiteral})`
+  }
+  if (condition === 'like') {
+    return `contains(${attributeName},${firstLiteral})`
+  }
+  if (condition === 'not-like') {
+    return `not contains(${attributeName},${firstLiteral})`
+  }
+  if (
+    condition === 'eq' ||
+    condition === 'ne' ||
+    condition === 'ge' ||
+    condition === 'gt' ||
+    condition === 'le' ||
+    condition === 'lt'
+  ) {
+    return `${attributeName} ${condition} ${firstLiteral}`
+  }
+
+  return undefined
 }
 
 const createFetchConditionXml = (
@@ -187,6 +368,7 @@ const getOrCreateLinkNode = (
     entityName,
     fromAttribute,
     toAttribute,
+    attributes: new Map<string, FetchAttributeNode>(),
     conditions: [],
     children: new Map<string, FetchLinkNode>(),
   }
@@ -194,135 +376,85 @@ const getOrCreateLinkNode = (
   return created
 }
 
+const ensureLinkNodeForChain = (
+  chain: LinkPathItem[],
+  rootLinks: Map<string, FetchLinkNode>
+): { canLink: boolean; node?: FetchLinkNode } => {
+  if (chain.length <= 1) {
+    return { canLink: true }
+  }
+
+  let currentParentLinks = rootLinks
+  let currentNode: FetchLinkNode | undefined
+
+  for (let index = 0; index < chain.length - 1; index++) {
+    const parentItem = chain[index]
+    const childItem = chain[index + 1]
+
+    const linkToAttribute = parentItem.FromAttribute
+    const linkFromAttribute = childItem.ToAttribute
+    const childEntityName = childItem.EntityName
+
+    if (!linkToAttribute || !linkFromAttribute || !childEntityName) {
+      return { canLink: false }
+    }
+
+    currentNode = getOrCreateLinkNode(
+      currentParentLinks,
+      childEntityName,
+      linkFromAttribute,
+      linkToAttribute
+    )
+    currentParentLinks = currentNode.children
+  }
+
+  return { canLink: Boolean(currentNode), node: currentNode }
+}
+
+const renderAttributeNodeXml = (attribute: FetchAttributeNode): string => {
+  if (attribute.alias) {
+    return `<attribute name="${escapeXml(attribute.name)}" alias="${escapeXml(attribute.alias)}" />`
+  }
+
+  return `<attribute name="${escapeXml(attribute.name)}" />`
+}
+
 const renderLinkNodeXml = (node: FetchLinkNode): string => {
+  const attributesXml = Array.from(node.attributes.values()).map(renderAttributeNodeXml).join('')
   const filterXml =
     node.conditions.length > 0 ? `<filter type="and">${node.conditions.join('')}</filter>` : ''
   const childrenXml = Array.from(node.children.values()).map(renderLinkNodeXml).join('')
 
-  return `<link-entity name="${escapeXml(node.entityName)}" from="${escapeXml(node.fromAttribute)}" to="${escapeXml(node.toAttribute)}" link-type="inner">${filterXml}${childrenXml}</link-entity>`
+  return `<link-entity name="${escapeXml(node.entityName)}" from="${escapeXml(node.fromAttribute)}" to="${escapeXml(node.toAttribute)}" link-type="inner">${attributesXml}${filterXml}${childrenXml}</link-entity>`
 }
 
-const toODataLiteral = (attributeType: string | undefined, value: ConditionValue): string => {
-  const normalizedAttributeType = attributeType?.toLowerCase()
+export const resolveSearchTableColumns = (entityConfig: EntityConfig): SearchTableColumn[] => {
+  return entityConfig.ResultView.TableColumns.map((column, index) => {
+    const chain = getTableColumnChain(column)
+    const targetColumn = getTargetTableColumn(column)
 
-  if (normalizedAttributeType === 'boolean') {
-    if (typeof value === 'boolean') {
-      return String(value)
+    const attributeName = targetColumn?.AttributeName ?? column.AttributeName ?? ''
+    const entityName = targetColumn?.EntityName ?? entityConfig.LogicalName
+    const isRootColumn =
+      chain.length <= 1 &&
+      (!targetColumn?.EntityName || targetColumn.EntityName === entityConfig.LogicalName)
+
+    return {
+      sourceColumn: column,
+      chain,
+      attributeName,
+      entityName,
+      displayName: getTableColumnDisplayName(chain),
+      valueKey: isRootColumn ? attributeName : createColumnValueKey(index, attributeName),
+      isRootColumn,
     }
-    return value.toString().toLowerCase() === 'true' ? 'true' : 'false'
-  }
-
-  if (numberAttributeTypes.has(normalizedAttributeType ?? '')) {
-    const parsed = typeof value === 'number' ? value : Number(value)
-    if (Number.isFinite(parsed)) {
-      return String(parsed)
-    }
-  }
-
-  if (normalizedAttributeType === 'datetime' && typeof value === 'string') {
-    const dateValue = /^\d{4}-\d{2}-\d{2}$/.test(value)
-      ? new Date(`${value}T00:00:00`)
-      : new Date(value)
-    if (!Number.isNaN(dateValue.getTime())) {
-      return `'${dateValue.toISOString()}'`
-    }
-  }
-
-  return `'${escapeODataString(String(value))}'`
-}
-
-const createDateConditionExpression = (
-  condition: string,
-  attributeName: string
-): string | undefined => {
-  if (condition === 'today') {
-    return `Microsoft.Dynamics.CRM.Today(PropertyName='${attributeName}')`
-  }
-  if (condition === 'tomorrow') {
-    return `Microsoft.Dynamics.CRM.Tomorrow(PropertyName='${attributeName}')`
-  }
-  if (condition === 'yesterday') {
-    return `Microsoft.Dynamics.CRM.Yesterday(PropertyName='${attributeName}')`
-  }
-  return undefined
-}
-
-const createFilterExpression = (conditionValue: AppliedFilterCondition): string | undefined => {
-  const filterOption = getTargetFilterOption(conditionValue.filterOption)
-  const condition = conditionValue.condition ?? undefined
-  const attributeName = filterOption?.AttributeName
-
-  if (!filterOption || !condition || !attributeName || conditionValue.isDisabled) {
-    return undefined
-  }
-
-  if (isNoValueCondition(condition)) {
-    if (condition === 'null') {
-      return `${attributeName} eq null`
-    }
-    if (condition === 'not-null') {
-      return `${attributeName} ne null`
-    }
-    return createDateConditionExpression(condition, attributeName)
-  }
-
-  const values = parseValues(condition, conditionValue.values).filter((value) => {
-    if (typeof value === 'number') {
-      return true
-    }
-    return value.trim().length > 0
-  })
-  if (values.length === 0) {
-    return undefined
-  }
-
-  const literals = values.map((value) => toODataLiteral(filterOption.AttributeType, value))
-  const firstLiteral = literals.at(0)
-  if (!firstLiteral) {
-    return undefined
-  }
-
-  if (condition === 'in') {
-    return `${attributeName} in (${literals.join(',')})`
-  }
-  if (condition === 'begins-with') {
-    return `startswith(${attributeName},${firstLiteral})`
-  }
-  if (condition === 'not-begin-with') {
-    return `not startswith(${attributeName},${firstLiteral})`
-  }
-  if (condition === 'ends-with') {
-    return `endswith(${attributeName},${firstLiteral})`
-  }
-  if (condition === 'not-end-with') {
-    return `not endswith(${attributeName},${firstLiteral})`
-  }
-  if (condition === 'like') {
-    return `contains(${attributeName},${firstLiteral})`
-  }
-  if (condition === 'not-like') {
-    return `not contains(${attributeName},${firstLiteral})`
-  }
-  if (
-    condition === 'eq' ||
-    condition === 'ne' ||
-    condition === 'ge' ||
-    condition === 'gt' ||
-    condition === 'le' ||
-    condition === 'lt'
-  ) {
-    return `${attributeName} ${condition} ${firstLiteral}`
-  }
-
-  return undefined
+  }).filter((column) => column.attributeName.length > 0)
 }
 
 export const getSearchSelectColumns = (entityConfig: EntityConfig): string[] => {
   const uniqueColumns = new Set<string>()
-  for (const column of entityConfig.ResultView.TableColumns) {
-    if (column.AttributeName) {
-      uniqueColumns.add(column.AttributeName)
-    }
+  for (const column of resolveSearchTableColumns(entityConfig)) {
+    uniqueColumns.add(column.attributeName)
   }
   return Array.from(uniqueColumns)
 }
@@ -348,11 +480,32 @@ export const buildCrmEntitiesFilter = (
 
 export const buildCrmFetchXml = (
   entityLogicalName: string,
-  selectColumns: string[],
+  tableColumns: SearchTableColumn[],
   conditions: AppliedFilterCondition[]
 ): string => {
+  const rootAttributes = new Map<string, FetchAttributeNode>()
   const rootConditions: string[] = []
   const rootLinks = new Map<string, FetchLinkNode>()
+
+  for (const column of tableColumns) {
+    if (column.isRootColumn) {
+      rootAttributes.set(column.valueKey, {
+        name: column.attributeName,
+        alias: column.valueKey === column.attributeName ? undefined : column.valueKey,
+      })
+      continue
+    }
+
+    const linkNode = ensureLinkNodeForChain(column.chain, rootLinks)
+    if (!linkNode.canLink || !linkNode.node) {
+      continue
+    }
+
+    linkNode.node.attributes.set(column.valueKey, {
+      name: column.attributeName,
+      alias: column.valueKey,
+    })
+  }
 
   for (const condition of conditions) {
     const sourceFilterOption = condition.filterOption
@@ -372,42 +525,15 @@ export const buildCrmFetchXml = (
       continue
     }
 
-    let currentParentLinks = rootLinks
-    let currentNode: FetchLinkNode | undefined
-    let canLink = true
-
-    for (let index = 0; index < optionChain.length - 1; index++) {
-      const parentOption = optionChain[index]
-      const childOption = optionChain[index + 1]
-
-      const linkToAttribute = parentOption.FromAttribute
-      const linkFromAttribute = childOption.ToAttribute
-      const childEntityName = childOption.EntityName
-
-      if (!linkToAttribute || !linkFromAttribute || !childEntityName) {
-        canLink = false
-        break
-      }
-
-      currentNode = getOrCreateLinkNode(
-        currentParentLinks,
-        childEntityName,
-        linkFromAttribute,
-        linkToAttribute
-      )
-      currentParentLinks = currentNode.children
-    }
-
-    if (!canLink || !currentNode) {
+    const linkNode = ensureLinkNodeForChain(optionChain, rootLinks)
+    if (!linkNode.canLink || !linkNode.node) {
       continue
     }
 
-    currentNode.conditions.push(conditionXml)
+    linkNode.node.conditions.push(conditionXml)
   }
 
-  const attributesXml = selectColumns
-    .map((attributeName) => `<attribute name="${escapeXml(attributeName)}" />`)
-    .join('')
+  const attributesXml = Array.from(rootAttributes.values()).map(renderAttributeNodeXml).join('')
   const rootFilterXml =
     rootConditions.length > 0 ? `<filter type="and">${rootConditions.join('')}</filter>` : ''
   const linksXml = Array.from(rootLinks.values()).map(renderLinkNodeXml).join('')

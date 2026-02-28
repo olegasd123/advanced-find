@@ -13,7 +13,13 @@
               "AttributeName": "invoicenumber"
             },
             {
-              "AttributeName": "createdby"
+              "EntityName": "systemuser",
+              "FromAttribute": "createdby",
+              "RelatedTo": {
+                "ToAttribute": "systemuserid",
+                "EntityName": "systemuser",
+                "AttributeName": "fullname"
+              }
             }
           ]
         },
@@ -107,7 +113,13 @@
               "DisplayName": "Name"
             },
             {
-              "AttributeName": "createdby"
+              "EntityName": "systemuser",
+              "FromAttribute": "createdby",
+              "RelatedTo": {
+                "ToAttribute": "systemuserid",
+                "EntityName": "systemuser",
+                "AttributeName": "fullname"
+              }
             }
           ]
         },

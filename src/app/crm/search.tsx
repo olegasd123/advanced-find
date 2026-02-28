@@ -10,7 +10,8 @@ import { createLogger } from '../../libs/utils/logger'
 import {
   AppliedFilterCondition,
   buildCrmFetchXml,
-  getSearchSelectColumns,
+  resolveSearchTableColumns,
+  SearchTableColumn,
 } from '../../libs/utils/crm-search'
 
 const logger = createLogger('Search')
@@ -21,6 +22,7 @@ export const Search = () => {
   const [isResultViewVisible, setIsResultViewVisible] = React.useState(false)
   const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilterCondition[]>([])
   const [results, setResults] = React.useState<Record<string, unknown>[]>([])
+  const [searchTableColumns, setSearchTableColumns] = React.useState<SearchTableColumn[]>([])
   const [tableColumnDisplayNames, setTableColumnDisplayNames] = React.useState<
     Record<string, string>
   >({})
@@ -59,39 +61,61 @@ export const Search = () => {
 
   React.useEffect(() => {
     const requestId = ++tableColumnsRequestIdRef.current
+    setSearchTableColumns([])
     setTableColumnDisplayNames({})
 
-    if (!crmRepository || !currentEntityConfig) {
+    if (!currentEntityConfig) {
       return
     }
 
-    const missingDisplayNameColumns = currentEntityConfig.ResultView.TableColumns.filter(
-      (column) => !column.DisplayName
-    ).map((column) => column.AttributeName)
+    const resolvedColumns = resolveSearchTableColumns(currentEntityConfig)
+    setSearchTableColumns(resolvedColumns)
+
+    if (!crmRepository) {
+      return
+    }
+
+    const missingDisplayNameColumns = resolvedColumns.filter((column) => !column.displayName)
 
     if (missingDisplayNameColumns.length === 0) {
       return
     }
 
     const loadColumnDisplayNames = async (): Promise<void> => {
-      const metadata = await crmRepository.getAttributesMetadata(
-        currentEntityConfig.LogicalName,
-        missingDisplayNameColumns
+      const attributeNamesByEntity = missingDisplayNameColumns.reduce<Record<string, string[]>>(
+        (accumulator, column) => {
+          accumulator[column.entityName] = accumulator[column.entityName] ?? []
+          if (!accumulator[column.entityName].includes(column.attributeName)) {
+            accumulator[column.entityName].push(column.attributeName)
+          }
+          return accumulator
+        },
+        {}
+      )
+
+      const metadataByEntity = await Promise.all(
+        Object.entries(attributeNamesByEntity).map(async ([entityName, attributeNames]) => {
+          const metadata = await crmRepository.getAttributesMetadata(entityName, attributeNames)
+          return { entityName, metadata }
+        })
       )
 
       if (requestId !== tableColumnsRequestIdRef.current) {
         return
       }
 
-      const namesByAttribute: Record<string, string> = {}
-      for (const attribute of metadata) {
-        const label = attribute.DisplayName.UserLocalizedLabel?.Label
+      const namesByColumnKey: Record<string, string> = {}
+      for (const column of missingDisplayNameColumns) {
+        const metadata = metadataByEntity
+          .find((item) => item.entityName === column.entityName)
+          ?.metadata.find((item) => item.LogicalName === column.attributeName)
+        const label = metadata?.DisplayName.UserLocalizedLabel?.Label
         if (label) {
-          namesByAttribute[attribute.LogicalName] = label
+          namesByColumnKey[column.valueKey] = label
         }
       }
 
-      setTableColumnDisplayNames(namesByAttribute)
+      setTableColumnDisplayNames(namesByColumnKey)
     }
 
     loadColumnDisplayNames().catch((error) => {
@@ -128,12 +152,13 @@ export const Search = () => {
       return
     }
 
-    const selectColumns = getSearchSelectColumns(currentEntityConfig)
-    const fetchXml = buildCrmFetchXml(currentEntityConfig.LogicalName, selectColumns, conditions)
+    const tableColumns = resolveSearchTableColumns(currentEntityConfig)
+    const fetchXml = buildCrmFetchXml(currentEntityConfig.LogicalName, tableColumns, conditions)
+    setSearchTableColumns(tableColumns)
 
     logger.info(`Executing search with conditions`, {
       entitySetName,
-      selectColumns,
+      tableColumns,
       conditions,
       fetchXml,
     })
@@ -144,7 +169,7 @@ export const Search = () => {
     setResultsError(undefined)
 
     try {
-      const response = await crmRepository.getEntities(entitySetName, selectColumns, { fetchXml })
+      const response = await crmRepository.getEntities(entitySetName, [], { fetchXml })
       const items = Array.isArray(response)
         ? response
         : response && typeof response === 'object' && 'value' in response
@@ -189,8 +214,8 @@ export const Search = () => {
 
       {currentEntityConfig && isResultViewVisible && (
         <ResultGrid
-          entityConfig={currentEntityConfig}
           results={results}
+          tableColumns={searchTableColumns}
           tableColumnDisplayNames={tableColumnDisplayNames}
           isLoading={isResultsLoading}
           errorMessage={resultsError}
