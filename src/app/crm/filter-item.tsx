@@ -20,15 +20,20 @@ import {
   getCrmFilterConditionsOptions,
   getTargetFilterOption,
 } from '../../libs/utils/filter'
+import { AppliedFilterCondition, ConditionValue } from '../../libs/utils/crm-search'
 
 export const FilterItem = ({
+  optionId,
   options,
   currentOption,
   onDeleteCondition,
+  onConditionChanged,
 }: {
+  optionId: number
   options: FilterOption[]
   currentOption?: FilterOption
   onDeleteCondition?: () => void
+  onConditionChanged?: (optionId: number, condition: AppliedFilterCondition) => void
 }) => {
   const [selectedAttribute, setSelectedAttribute] = React.useState<FilterOption | undefined>(
     currentOption
@@ -40,6 +45,7 @@ export const FilterItem = ({
   const [cannotBeRemoved, setCannotBeRemoved] = React.useState<boolean | undefined>(true)
   const [isAttributeDisabled, setIsAttributeDisabled] = React.useState<boolean | undefined>(false)
   const [isDisabled, setIsDisabled] = React.useState<boolean | undefined>(false)
+  const [selectedConditionValues, setSelectedConditionValues] = React.useState<ConditionValue[]>([])
 
   const localization = useAppConfiguration()?.SearchScheme?.Localization
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
@@ -65,6 +71,7 @@ export const FilterItem = ({
 
     const defaultCondition = targetFilterOption?.Default?.Condition ?? options?.at(0)?.value ?? 'eq'
     setSelectedFilterCondition(defaultCondition)
+    setSelectedConditionValues(targetFilterOption?.Default?.Values ?? [])
   }, [currentOption, localization?.CrmFilterConditions])
 
   const handleAttributeChanged = (value: FilterOption | null): void => {
@@ -81,11 +88,28 @@ export const FilterItem = ({
     const defaultCondition =
       targetFilterOptionValue?.Default?.Condition ?? options?.at(0)?.value ?? 'eq'
     setSelectedFilterCondition(defaultCondition)
+    setSelectedConditionValues(targetFilterOptionValue?.Default?.Values ?? [])
   }
 
   const handleConditionOptionChanged = (value: string | null): void => {
     setSelectedFilterCondition(value)
   }
+
+  React.useEffect(() => {
+    onConditionChanged?.(optionId, {
+      filterOption: selectedFilterOption,
+      condition: selectedFilterCondition,
+      values: selectedConditionValues,
+      isDisabled,
+    })
+  }, [
+    isDisabled,
+    optionId,
+    onConditionChanged,
+    selectedConditionValues,
+    selectedFilterCondition,
+    selectedFilterOption,
+  ])
 
   return (
     <div className="flex flex-row gap-4 py-4 border-b border-b-gray-300">
@@ -147,6 +171,7 @@ export const FilterItem = ({
           filterOption={selectedFilterOption}
           selectedFilterCondition={selectedFilterCondition}
           isDisabled={isDisabled}
+          onConditionValuesChanged={setSelectedConditionValues}
         />
       </div>
     </div>

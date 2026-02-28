@@ -2,6 +2,7 @@ import {
   AttributeMetadata,
   CrmData,
   EntityMetadata,
+  GetEntitiesOptions,
   LookupAttributeMetadata,
   PicklistAttributeMetadata,
   findAttributes,
@@ -68,8 +69,13 @@ export default class MockCrmRepository implements CrmData {
     )
   }
 
-  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<unknown> {
+  getEntities(
+    entityPluralName: string,
+    attributeLogicalNames: string[],
+    options?: GetEntitiesOptions
+  ): Promise<unknown> {
     void attributeLogicalNames
+    void options
     return fetch(`mock-data/${entityPluralName}.json`).then(
       async (result) => {
         const data = await result.json()

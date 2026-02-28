@@ -8,11 +8,11 @@ interface FilterOptionsDefaultConfig {
   Values?: Array<string | number>
 }
 
-interface ResultViewConfig {
+export interface ResultViewConfig {
   TableColumns: TableColumnConfig[]
 }
 
-interface TableColumnConfig {
+export interface TableColumnConfig {
   AttributeName: string
   DisplayName?: string
 }

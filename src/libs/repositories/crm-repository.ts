@@ -50,7 +50,15 @@ export interface CrmData {
     entityLogicalName: string,
     attributeLogicalName: string
   ): Promise<PicklistAttributeMetadata>
-  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<unknown>
+  getEntities(
+    entityPluralName: string,
+    attributeLogicalNames: string[],
+    options?: GetEntitiesOptions
+  ): Promise<unknown>
+}
+
+export interface GetEntitiesOptions {
+  filter?: string
 }
 
 export interface EntityMetadata extends Metadata {
@@ -159,8 +167,20 @@ export default class CrmRepository implements CrmData {
     )
   }
 
-  getEntities(entityPluralName: string, attributeLogicalNames: string[]): Promise<unknown> {
-    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/${entityPluralName}?$select=${attributeLogicalNames.join(',')}`
+  getEntities(
+    entityPluralName: string,
+    attributeLogicalNames: string[],
+    options?: GetEntitiesOptions
+  ): Promise<unknown> {
+    const query: string[] = []
+    if (attributeLogicalNames.length > 0) {
+      query.push(`$select=${attributeLogicalNames.join(',')}`)
+    }
+    if (options?.filter) {
+      query.push(`$filter=${encodeURIComponent(options.filter)}`)
+    }
+    const queryPart = query.length > 0 ? `?${query.join('&')}` : ''
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/${entityPluralName}${queryPart}`
     return fetch(url).then(
       async (result) => {
         const data = await result.json()

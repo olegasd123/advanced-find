@@ -14,13 +14,12 @@ import { MultiCombobox } from '../../components/controls/multi-combobox'
 import { FilterOptionConfig } from '../../libs/config/app-config'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
 import { createLogger } from '../../libs/utils/logger'
+import { ConditionValue } from '../../libs/utils/crm-search'
 
 interface ConditionValueOption {
   value: string | number
   displayName: string
 }
-
-type ConditionValue = string | number
 
 const logger = createLogger('FilterItemValue')
 
@@ -132,10 +131,12 @@ export const FilterItemValue = ({
   filterOption,
   selectedFilterCondition,
   isDisabled,
+  onConditionValuesChanged,
 }: {
   filterOption?: FilterOptionConfig
   selectedFilterCondition?: string | null
   isDisabled?: boolean
+  onConditionValuesChanged?: (values: ConditionValue[]) => void
 }) => {
   const [conditionValues, setConditionValues] = React.useState<ConditionValue[]>([])
   const [selectableOptions, setSelectableOptions] = React.useState<ConditionValueOption[]>([])
@@ -318,6 +319,10 @@ export const FilterItemValue = ({
     selectionMaxItems,
     selectedFilterCondition,
   ])
+
+  React.useEffect(() => {
+    onConditionValuesChanged?.(conditionValues)
+  }, [conditionValues, onConditionValuesChanged])
 
   const handleConditionValueChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setConditionValues([event.target.value])

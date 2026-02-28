@@ -15,10 +15,12 @@ export const FilterCommandRow = ({
   location,
   onAddCondition,
   onResetFilters,
+  onSearch,
 }: {
   location: CommandRowLocation
   onAddCondition?: () => void
   onResetFilters?: () => void
+  onSearch?: () => void
 }) => {
   const [isResetDialogOpen, setIsResetDialogOpen] = React.useState(false)
 
@@ -76,7 +78,7 @@ export const FilterCommandRow = ({
         <div className="w-24 grow-2"></div>
         <div className="w-64 grow-8">
           {location === 'footer' && (
-            <Button outline aria-label="Search" title="Search">
+            <Button outline aria-label="Search" title="Search" onClick={onSearch}>
               <MagnifyingGlassIcon />
               <span className="font-normal">Search</span>
             </Button>
