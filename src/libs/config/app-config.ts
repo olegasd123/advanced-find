@@ -9,6 +9,7 @@ interface FilterOptionsDefaultConfig {
 }
 
 export interface ResultViewConfig {
+  Pagination?: number[]
   TableColumns: TableColumnConfig[]
 }
 

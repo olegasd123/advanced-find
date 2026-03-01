@@ -4,6 +4,7 @@
       {
         "LogicalName": "invoice",
         "ResultView": {
+          "Pagination": [10, 25, 100],
           "TableColumns": [
             {
               "AttributeNames": ["name"],
