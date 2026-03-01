@@ -42,11 +42,7 @@ export const FilterCommandRow = ({
         )}
       >
         <div className="w-8 grow-0">
-          <Button
-            outline
-            onClick={handleResetClick}
-            aria-label="Reset filters"
-          >
+          <Button outline onClick={handleResetClick} aria-label="Reset filters">
             <ArrowPathIcon />
           </Button>
         </div>

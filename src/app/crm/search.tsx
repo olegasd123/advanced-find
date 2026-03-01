@@ -113,7 +113,9 @@ export const Search = () => {
         const entityMetadata =
           metadataByEntity.find((item) => item.entityName === column.entityName)?.metadata ?? []
         const labels = column.attributes.map((attribute) => {
-          const metadata = entityMetadata.find((item) => item.LogicalName === attribute.attributeName)
+          const metadata = entityMetadata.find(
+            (item) => item.LogicalName === attribute.attributeName
+          )
           return metadata?.DisplayName.UserLocalizedLabel?.Label ?? attribute.attributeName
         })
         namesByColumnKey[column.columnKey] = labels.join(' | ')

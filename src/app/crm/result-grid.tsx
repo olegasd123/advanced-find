@@ -90,10 +90,13 @@ const getColumnCellValue = (column: SearchTableColumn, row: Record<string, unkno
   }
 
   if (column.attributesFormat && column.attributesFormat.trim().length > 0) {
-    const formattedValue = column.attributesFormat.replace(/\{(\d+)\}/g, (_, indexValue: string) => {
-      const index = Number(indexValue)
-      return values[index] ?? ''
-    })
+    const formattedValue = column.attributesFormat.replace(
+      /\{(\d+)\}/g,
+      (_, indexValue: string) => {
+        const index = Number(indexValue)
+        return values[index] ?? ''
+      }
+    )
     return formattedValue.trim().length === 0 ? '-' : formattedValue
   }
 
@@ -146,7 +149,17 @@ const getVisiblePageItems = (currentPage: number, totalPages: number): VisiblePa
     return [1, 'gap', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
   }
 
-  return [1, 'gap', currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2, 'gap', totalPages]
+  return [
+    1,
+    'gap',
+    currentPage - 2,
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    currentPage + 2,
+    'gap',
+    totalPages,
+  ]
 }
 
 const formatPaginationSummary = (
@@ -388,7 +401,8 @@ export const ResultGrid = ({
             <Select
               className="min-w-18"
               value={selectedPageSizeValue}
-              onChange={handlePageSizeChanged}>
+              onChange={handlePageSizeChanged}
+            >
               {paginationOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -417,7 +431,11 @@ export const ResultGrid = ({
                     }}
                   >
                     <span className="col-span-5 flex items-center gap-2">
-                      <Checkbox checked={isChecked} onChange={() => undefined} className="pointer-events-none" />
+                      <Checkbox
+                        checked={isChecked}
+                        onChange={() => undefined}
+                        className="pointer-events-none"
+                      />
                       <span>{getColumnHeader(column, tableColumnDisplayNames)}</span>
                     </span>
                   </DropdownItem>
@@ -468,10 +486,10 @@ export const ResultGrid = ({
               results.length > 0 &&
               visibleColumns.length > 0 &&
               filteredRows.length === 0 && (
-              <TableRow>
-                <TableColumn colSpan={columnSpan}>No matching results.</TableColumn>
-              </TableRow>
-            )}
+                <TableRow>
+                  <TableColumn colSpan={columnSpan}>No matching results.</TableColumn>
+                </TableRow>
+              )}
 
             {!isLoading && !errorMessage && results.length > 0 && visibleColumns.length === 0 && (
               <TableRow>

@@ -130,7 +130,7 @@ export const FilterGrid = ({
 
     const selected = new Set<FilterOptionConfig>()
     for (const item of visibleFilterOptions) {
-      const hasCondition = Object.hasOwn(conditionsById, item.id)
+      const hasCondition = Object.prototype.hasOwnProperty.call(conditionsById, item.id)
       const selectedFilterOption = hasCondition
         ? conditionsById[item.id]?.filterOption
         : item.option.FilterOptionConfig
