@@ -5,7 +5,7 @@
         "LogicalName": "invoice",
         "ResultView": {
           "Pagination": {
-              "List": [10, 25, 100],
+              "List": [25, 50, 100],
               "ListItemAll": "All"
           },
           "TableColumns": [

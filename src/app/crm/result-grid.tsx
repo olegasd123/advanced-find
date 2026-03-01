@@ -3,6 +3,7 @@ import { ArrowLeftIcon } from '@heroicons/react/16/solid'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
 import {
   Pagination,
+  PaginationGap,
   PaginationList,
   PaginationNext,
   PaginationPage,
@@ -29,6 +30,8 @@ interface PaginationOption {
   label: string
   pageSize?: number
 }
+
+type VisiblePageItem = number | 'gap'
 
 const hasConditionValue = (condition: AppliedFilterCondition): boolean => {
   if (noValueConditions.has(condition.condition ?? '')) {
@@ -121,6 +124,22 @@ const getPaginationOptions = (pagination?: ResultViewPaginationConfig): Paginati
   return options
 }
 
+const getVisiblePageItems = (currentPage: number, totalPages: number): VisiblePageItem[] => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1)
+  }
+
+  if (currentPage <= 4) {
+    return [1, 2, 3, 4, 5, 'gap', totalPages]
+  }
+
+  if (currentPage >= totalPages - 3) {
+    return [1, 'gap', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+  }
+
+  return [1, 'gap', currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2, 'gap', totalPages]
+}
+
 export const ResultGrid = ({
   results,
   tableColumns,
@@ -196,6 +215,11 @@ export const ResultGrid = ({
     setCurrentPage(page)
   }
 
+  const visiblePageItems = React.useMemo(
+    () => getVisiblePageItems(currentPage, totalPages),
+    [currentPage, totalPages]
+  )
+
   const appliedFilterDescriptions = appliedFilters
     .filter(
       (condition) =>
@@ -218,7 +242,6 @@ export const ResultGrid = ({
         </Button>
         {isPaginationEnabled && (
           <div className="ml-auto flex items-center gap-2">
-            <span className="text-sm text-zinc-600">Rows per page</span>
             <Select value={selectedPageSizeValue} onChange={handlePageSizeChanged}>
               {paginationOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -291,16 +314,20 @@ export const ResultGrid = ({
               onClick={() => handlePageButtonClick(Math.max(1, currentPage - 1))}
             />
             <PaginationList className="!flex">
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-                <PaginationPage
-                  key={page}
-                  current={page === currentPage}
-                  disabled={page === currentPage}
-                  onClick={() => handlePageButtonClick(page)}
-                >
-                  {page}
-                </PaginationPage>
-              ))}
+              {visiblePageItems.map((item, index) =>
+                item === 'gap' ? (
+                  <PaginationGap key={`gap-${index}`} />
+                ) : (
+                  <PaginationPage
+                    key={item}
+                    current={item === currentPage}
+                    disabled={item === currentPage}
+                    onClick={() => handlePageButtonClick(item)}
+                  >
+                    {item}
+                  </PaginationPage>
+                )
+              )}
             </PaginationList>
             <PaginationNext
               className="!grow-0 !basis-auto !justify-start"
