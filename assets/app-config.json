@@ -6,7 +6,7 @@
         "ResultView": {
           "Pagination": {
               "List": [10, 25, 100],
-              "doDisplayAll": true
+              "ListItemAll": "All"
           },
           "TableColumns": [
             {

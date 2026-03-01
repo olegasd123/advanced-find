@@ -10,7 +10,7 @@ interface FilterOptionsDefaultConfig {
 
 interface ResultViewPaginationConfig {
   List?: number[]
-  doDisplayAll?: boolean
+  ListItemAll?: string
 }
 
 export interface ResultViewConfig {
