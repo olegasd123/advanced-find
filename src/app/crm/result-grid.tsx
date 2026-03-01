@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ArrowLeftIcon } from '@heroicons/react/16/solid'
-import { ViewColumnsIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, ViewColumnsIcon } from '@heroicons/react/24/outline'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
 import { Checkbox } from '../../../vendor/catalyst-ui-kit/typescript/checkbox'
 import {
@@ -9,6 +9,7 @@ import {
   DropdownItem,
   DropdownMenu,
 } from '../../../vendor/catalyst-ui-kit/typescript/dropdown'
+import { Input, InputGroup } from '../../../vendor/catalyst-ui-kit/typescript/input'
 import {
   Pagination,
   PaginationGap,
@@ -238,6 +239,7 @@ export const ResultGrid = ({
   const isPaginationEnabled = Boolean(pagination && paginationOptions.length > 0)
   const [selectedPageSizeValue, setSelectedPageSizeValue] = React.useState('')
   const [currentPage, setCurrentPage] = React.useState(1)
+  const [tableSearchText, setTableSearchText] = React.useState('')
 
   React.useEffect(() => {
     if (!isPaginationEnabled) {
@@ -253,17 +255,35 @@ export const ResultGrid = ({
   const selectedPageSizeOption = paginationOptions.find(
     (option) => option.value === selectedPageSizeValue
   )
+  const filteredRows = React.useMemo(() => {
+    const normalizedSearchText = tableSearchText.trim().toLowerCase()
+    if (!normalizedSearchText) {
+      return results
+    }
+
+    return results.filter((row) =>
+      visibleColumns.some((column) => {
+        const displayValue = getColumnCellValue(column, row)
+        if (displayValue === '-') {
+          return false
+        }
+
+        return displayValue.toLowerCase().includes(normalizedSearchText)
+      })
+    )
+  }, [results, tableSearchText, visibleColumns])
+
   const totalPages = React.useMemo(() => {
     if (!isPaginationEnabled || !selectedPageSizeOption?.pageSize) {
       return 1
     }
 
-    return Math.max(1, Math.ceil(results.length / selectedPageSizeOption.pageSize))
-  }, [isPaginationEnabled, results.length, selectedPageSizeOption?.pageSize])
+    return Math.max(1, Math.ceil(filteredRows.length / selectedPageSizeOption.pageSize))
+  }, [filteredRows.length, isPaginationEnabled, selectedPageSizeOption?.pageSize])
 
   React.useEffect(() => {
     setCurrentPage(1)
-  }, [results, selectedPageSizeValue, isPaginationEnabled])
+  }, [filteredRows, selectedPageSizeValue, isPaginationEnabled])
 
   React.useEffect(() => {
     if (currentPage > totalPages) {
@@ -273,12 +293,12 @@ export const ResultGrid = ({
 
   const displayedRows = React.useMemo(() => {
     if (!isPaginationEnabled || !selectedPageSizeOption?.pageSize) {
-      return results
+      return filteredRows
     }
 
     const startIndex = (currentPage - 1) * selectedPageSizeOption.pageSize
-    return results.slice(startIndex, startIndex + selectedPageSizeOption.pageSize)
-  }, [currentPage, isPaginationEnabled, results, selectedPageSizeOption?.pageSize])
+    return filteredRows.slice(startIndex, startIndex + selectedPageSizeOption.pageSize)
+  }, [currentPage, filteredRows, isPaginationEnabled, selectedPageSizeOption?.pageSize])
 
   const handlePageSizeChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     setSelectedPageSizeValue(event.target.value)
@@ -286,6 +306,9 @@ export const ResultGrid = ({
 
   const handlePageButtonClick = (page: number): void => {
     setCurrentPage(page)
+  }
+  const handleTableSearchTextChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setTableSearchText(event.target.value)
   }
   const toggleColumnVisibility = (columnKey: string): void => {
     setVisibleColumnKeys((currentKeys) => {
@@ -310,7 +333,7 @@ export const ResultGrid = ({
       return ''
     }
 
-    const totalCount = results.length
+    const totalCount = filteredRows.length
     if (totalCount === 0) {
       return formatPaginationSummary(displaySummaryTemplate, 0, 0, 0)
     }
@@ -325,8 +348,8 @@ export const ResultGrid = ({
   }, [
     currentPage,
     displaySummaryTemplate,
+    filteredRows.length,
     isSummaryVisible,
-    results.length,
     selectedPageSizeOption?.pageSize,
   ])
 
@@ -351,8 +374,21 @@ export const ResultGrid = ({
           <span className="font-normal">Back</span>
         </Button>
         <div className="ml-auto flex items-center gap-2">
+          <InputGroup>
+            <MagnifyingGlassIcon data-slot="icon" />
+            <Input
+              type="search"
+              className="min-w-72"
+              value={tableSearchText}
+              onChange={handleTableSearchTextChanged}
+              placeholder="Search in results"
+            />
+          </InputGroup>
           {isPaginationEnabled && (
-            <Select value={selectedPageSizeValue} onChange={handlePageSizeChanged}>
+            <Select
+              className="min-w-18"
+              value={selectedPageSizeValue}
+              onChange={handlePageSizeChanged}>
               {paginationOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -424,6 +460,16 @@ export const ResultGrid = ({
             {!isLoading && !errorMessage && results.length === 0 && (
               <TableRow>
                 <TableColumn colSpan={columnSpan}>No results found.</TableColumn>
+              </TableRow>
+            )}
+
+            {!isLoading &&
+              !errorMessage &&
+              results.length > 0 &&
+              visibleColumns.length > 0 &&
+              filteredRows.length === 0 && (
+              <TableRow>
+                <TableColumn colSpan={columnSpan}>No matching results.</TableColumn>
               </TableRow>
             )}
 
