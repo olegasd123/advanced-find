@@ -10,13 +10,19 @@ export interface AppliedFilterCondition {
   isDisabled?: boolean
 }
 
+export interface SearchTableColumnAttribute {
+  attributeName: string
+  valueKey: string
+}
+
 export interface SearchTableColumn {
   sourceColumn: TableColumnConfig
+  columnKey: string
   chain: TableColumnConfig[]
-  attributeName: string
+  attributes: SearchTableColumnAttribute[]
+  attributesFormat?: string
   entityName: string
   displayName?: string
-  valueKey: string
   isRootColumn: boolean
 }
 
@@ -38,6 +44,11 @@ interface FetchLinkNode {
   attributes: Map<string, FetchAttributeNode>
   conditions: string[]
   children: Map<string, FetchLinkNode>
+}
+
+interface LegacyTableColumnConfig extends TableColumnConfig {
+  Attributes?: string[]
+  AttributeName?: string
 }
 
 const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
@@ -176,9 +187,79 @@ const getTableColumnDisplayName = (chain: TableColumnConfig[]): string | undefin
   return undefined
 }
 
-const createColumnValueKey = (columnIndex: number, attributeName: string): string => {
+const getLegacyAttributeName = (column?: TableColumnConfig): string | undefined => {
+  const attributeName = (column as LegacyTableColumnConfig | undefined)?.AttributeName
+  if (!attributeName) {
+    return undefined
+  }
+
+  const normalizedAttributeName = attributeName.trim()
+  return normalizedAttributeName.length > 0 ? normalizedAttributeName : undefined
+}
+
+const getTableColumnAttributes = (column?: TableColumnConfig): string[] => {
+  if (!column) {
+    return []
+  }
+
+  const attributeNames =
+    column.AttributeNames ?? (column as LegacyTableColumnConfig | undefined)?.Attributes ?? []
+
+  return attributeNames
+    .filter((attributeName): attributeName is string => typeof attributeName === 'string')
+    .map((attributeName) => attributeName.trim())
+    .filter((attributeName) => attributeName.length > 0)
+}
+
+const getResolvedTableColumnAttributes = (
+  column: TableColumnConfig,
+  targetColumn?: TableColumnConfig
+): string[] => {
+  const targetAttributes = getTableColumnAttributes(targetColumn)
+  if (targetAttributes.length > 0) {
+    return targetAttributes
+  }
+
+  const targetLegacyAttributeName = getLegacyAttributeName(targetColumn)
+  if (targetLegacyAttributeName) {
+    return [targetLegacyAttributeName]
+  }
+
+  const sourceAttributes = getTableColumnAttributes(column)
+  if (sourceAttributes.length > 0) {
+    return sourceAttributes
+  }
+
+  const sourceLegacyAttributeName = getLegacyAttributeName(column)
+  if (sourceLegacyAttributeName) {
+    return [sourceLegacyAttributeName]
+  }
+
+  return []
+}
+
+const getTableColumnAttributesFormat = (chain: TableColumnConfig[]): string | undefined => {
+  for (let index = chain.length - 1; index >= 0; index--) {
+    const attributesFormat = chain[index].AttributesFormat
+    if (attributesFormat && attributesFormat.trim().length > 0) {
+      return attributesFormat
+    }
+  }
+
+  return undefined
+}
+
+const createColumnKey = (columnIndex: number): string => {
+  return `col_${columnIndex}`
+}
+
+const createColumnValueKey = (
+  columnIndex: number,
+  attributeName: string,
+  attributeIndex: number
+): string => {
   const normalizedAttributeName = attributeName.replace(/[^a-zA-Z0-9_]/g, '_')
-  return `col_${columnIndex}_${normalizedAttributeName}`
+  return `col_${columnIndex}_${normalizedAttributeName}_${attributeIndex}`
 }
 
 const hasMeaningfulValues = (values: ConditionValue[]): boolean => {
@@ -432,29 +513,37 @@ export const resolveSearchTableColumns = (entityConfig: EntityConfig): SearchTab
   return entityConfig.ResultView.TableColumns.map((column, index) => {
     const chain = getTableColumnChain(column)
     const targetColumn = getTargetTableColumn(column)
-
-    const attributeName = targetColumn?.AttributeName ?? column.AttributeName ?? ''
+    const attributeNames = getResolvedTableColumnAttributes(column, targetColumn)
     const entityName = targetColumn?.EntityName ?? entityConfig.LogicalName
     const isRootColumn =
       chain.length <= 1 &&
       (!targetColumn?.EntityName || targetColumn.EntityName === entityConfig.LogicalName)
+    const attributes = attributeNames.map((attributeName, attributeIndex) => ({
+      attributeName,
+      valueKey: isRootColumn
+        ? attributeName
+        : createColumnValueKey(index, attributeName, attributeIndex),
+    }))
 
     return {
       sourceColumn: column,
+      columnKey: createColumnKey(index),
       chain,
-      attributeName,
+      attributes,
+      attributesFormat: getTableColumnAttributesFormat(chain),
       entityName,
       displayName: getTableColumnDisplayName(chain),
-      valueKey: isRootColumn ? attributeName : createColumnValueKey(index, attributeName),
       isRootColumn,
     }
-  }).filter((column) => column.attributeName.length > 0)
+  }).filter((column) => column.attributes.length > 0)
 }
 
 export const getSearchSelectColumns = (entityConfig: EntityConfig): string[] => {
   const uniqueColumns = new Set<string>()
   for (const column of resolveSearchTableColumns(entityConfig)) {
-    uniqueColumns.add(column.attributeName)
+    for (const attribute of column.attributes) {
+      uniqueColumns.add(attribute.attributeName)
+    }
   }
   return Array.from(uniqueColumns)
 }
@@ -489,10 +578,12 @@ export const buildCrmFetchXml = (
 
   for (const column of tableColumns) {
     if (column.isRootColumn) {
-      rootAttributes.set(column.valueKey, {
-        name: column.attributeName,
-        alias: column.valueKey === column.attributeName ? undefined : column.valueKey,
-      })
+      for (const attribute of column.attributes) {
+        rootAttributes.set(attribute.valueKey, {
+          name: attribute.attributeName,
+          alias: attribute.valueKey === attribute.attributeName ? undefined : attribute.valueKey,
+        })
+      }
       continue
     }
 
@@ -501,10 +592,12 @@ export const buildCrmFetchXml = (
       continue
     }
 
-    linkNode.node.attributes.set(column.valueKey, {
-      name: column.attributeName,
-      alias: column.valueKey,
-    })
+    for (const attribute of column.attributes) {
+      linkNode.node.attributes.set(attribute.valueKey, {
+        name: attribute.attributeName,
+        alias: attribute.valueKey,
+      })
+    }
   }
 
   for (const condition of conditions) {

@@ -6,11 +6,11 @@
         "ResultView": {
           "TableColumns": [
             {
-              "AttributeName": "name",
+              "AttributeNames": ["name"],
               "DisplayName": "Name"
             },
             {
-              "AttributeName": "invoicenumber"
+              "AttributeNames": ["invoicenumber"]
             },
             {
               "EntityName": "systemuser",
@@ -18,7 +18,7 @@
               "RelatedTo": {
                 "ToAttribute": "systemuserid",
                 "EntityName": "systemuser",
-                "AttributeName": "fullname"
+                "AttributeNames": ["fullname"]
               }
             }
           ]
@@ -92,14 +92,6 @@
               }
             }
           }
-        ],
-        "FilterGrid": [
-          {
-            "Group": {
-              "Type": "and",
-              "Items": []
-            }
-          }
         ]
       },
       {
@@ -107,8 +99,9 @@
         "ResultView": {
           "TableColumns": [
             {
-              "AttributeName": "name",
-              "DisplayName": "Name"
+              "AttributeNames": ["name", "accountnumber"],
+              "AttributesFormat": "{0} ({1})",
+              "DisplayName": "Account info"
             },
             {
               "EntityName": "systemuser",
@@ -116,7 +109,7 @@
               "RelatedTo": {
                 "ToAttribute": "systemuserid",
                 "EntityName": "systemuser",
-                "AttributeName": "fullname"
+                "AttributeNames": ["fullname"]
               }
             }
           ]

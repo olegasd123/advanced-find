@@ -13,7 +13,8 @@ export interface ResultViewConfig {
 }
 
 export interface TableColumnConfig {
-  AttributeName?: string
+  AttributeNames?: string[]
+  AttributesFormat?: string
   DisplayName?: string
   EntityName?: string
   FromAttribute?: string

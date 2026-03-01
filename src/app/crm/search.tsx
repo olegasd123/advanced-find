@@ -85,8 +85,10 @@ export const Search = () => {
       const attributeNamesByEntity = missingDisplayNameColumns.reduce<Record<string, string[]>>(
         (accumulator, column) => {
           accumulator[column.entityName] = accumulator[column.entityName] ?? []
-          if (!accumulator[column.entityName].includes(column.attributeName)) {
-            accumulator[column.entityName].push(column.attributeName)
+          for (const attribute of column.attributes) {
+            if (!accumulator[column.entityName].includes(attribute.attributeName)) {
+              accumulator[column.entityName].push(attribute.attributeName)
+            }
           }
           return accumulator
         },
@@ -106,13 +108,13 @@ export const Search = () => {
 
       const namesByColumnKey: Record<string, string> = {}
       for (const column of missingDisplayNameColumns) {
-        const metadata = metadataByEntity
-          .find((item) => item.entityName === column.entityName)
-          ?.metadata.find((item) => item.LogicalName === column.attributeName)
-        const label = metadata?.DisplayName.UserLocalizedLabel?.Label
-        if (label) {
-          namesByColumnKey[column.valueKey] = label
-        }
+        const entityMetadata =
+          metadataByEntity.find((item) => item.entityName === column.entityName)?.metadata ?? []
+        const labels = column.attributes.map((attribute) => {
+          const metadata = entityMetadata.find((item) => item.LogicalName === attribute.attributeName)
+          return metadata?.DisplayName.UserLocalizedLabel?.Label ?? attribute.attributeName
+        })
+        namesByColumnKey[column.columnKey] = labels.join(' | ')
       }
 
       setTableColumnDisplayNames(namesByColumnKey)

@@ -35,6 +35,43 @@ const formatConditionValue = (condition: AppliedFilterCondition): string => {
   return condition.values.map((value) => String(value)).join(', ')
 }
 
+const getColumnHeader = (
+  column: SearchTableColumn,
+  tableColumnDisplayNames?: Record<string, string>
+): string => {
+  return (
+    column.displayName ??
+    tableColumnDisplayNames?.[column.columnKey] ??
+    column.attributes.map((attribute) => attribute.attributeName).join(' | ')
+  )
+}
+
+const getColumnCellValue = (column: SearchTableColumn, row: Record<string, unknown>): string => {
+  const values = column.attributes.map((attribute) => {
+    const value = row[attribute.valueKey]
+    if (value === undefined || value === null || value === '') {
+      return ''
+    }
+
+    return String(value)
+  })
+
+  if (values.every((value) => value.length === 0)) {
+    return '-'
+  }
+
+  if (column.attributesFormat && column.attributesFormat.trim().length > 0) {
+    const formattedValue = column.attributesFormat.replace(/\{(\d+)\}/g, (_, indexValue: string) => {
+      const index = Number(indexValue)
+      return values[index] ?? ''
+    })
+    return formattedValue.trim().length === 0 ? '-' : formattedValue
+  }
+
+  const joinedValue = values.filter((value) => value.length > 0).join(' ')
+  return joinedValue.trim().length === 0 ? '-' : joinedValue
+}
+
 export const ResultGrid = ({
   results,
   tableColumns,
@@ -86,10 +123,8 @@ export const ResultGrid = ({
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableHeader key={column.valueKey}>
-                  {column.displayName ??
-                    tableColumnDisplayNames?.[column.valueKey] ??
-                    column.attributeName}
+                <TableHeader key={column.columnKey}>
+                  {getColumnHeader(column, tableColumnDisplayNames)}
                 </TableHeader>
               ))}
             </TableRow>
@@ -99,7 +134,7 @@ export const ResultGrid = ({
               Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={`skeleton-${index}`}>
                   {columns.map((column) => (
-                    <TableColumn key={`${column.valueKey}-${index}`}>
+                    <TableColumn key={`${column.columnKey}-${index}`}>
                       <div className="h-4 w-full rounded bg-zinc-200 animate-pulse" />
                     </TableColumn>
                   ))}
@@ -123,12 +158,9 @@ export const ResultGrid = ({
               results.map((row, index) => (
                 <TableRow key={index}>
                   {columns.map((column) => {
-                    const value = row[column.valueKey]
                     return (
-                      <TableColumn key={`${column.valueKey}-${index}`}>
-                        {value === undefined || value === null || value === ''
-                          ? '-'
-                          : String(value)}
+                      <TableColumn key={`${column.columnKey}-${index}`}>
+                        {getColumnCellValue(column, row)}
                       </TableColumn>
                     )
                   })}
