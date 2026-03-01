@@ -1,5 +1,7 @@
+import * as React from 'react'
 import { ArrowLeftIcon } from '@heroicons/react/16/solid'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
+import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
 import {
   Table,
   TableBody,
@@ -8,10 +10,18 @@ import {
   TableHeader,
   TableRow,
 } from '../../../vendor/catalyst-ui-kit/typescript/table'
+import { ResultViewPaginationConfig } from '../../libs/config/app-config'
 import { AppliedFilterCondition, SearchTableColumn } from '../../libs/utils/crm-search'
 import { getTargetFilterOption } from '../../libs/utils/filter'
 
 const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
+const pageSizeAllValue = '__all__'
+
+interface PaginationOption {
+  value: string
+  label: string
+  pageSize?: number
+}
 
 const hasConditionValue = (condition: AppliedFilterCondition): boolean => {
   if (noValueConditions.has(condition.condition ?? '')) {
@@ -72,10 +82,43 @@ const getColumnCellValue = (column: SearchTableColumn, row: Record<string, unkno
   return joinedValue.trim().length === 0 ? '-' : joinedValue
 }
 
+const getPaginationOptions = (pagination?: ResultViewPaginationConfig): PaginationOption[] => {
+  if (!pagination) {
+    return []
+  }
+
+  const list: number[] = []
+  for (const pageSizeItem of pagination.List ?? []) {
+    if (typeof pageSizeItem === 'number' && Number.isFinite(pageSizeItem)) {
+      const normalizedValue = Math.trunc(pageSizeItem)
+      if (normalizedValue > 0 && !list.includes(normalizedValue)) {
+        list.push(normalizedValue)
+      }
+    }
+  }
+
+  const options: PaginationOption[] = list.map((item) => ({
+    value: String(item),
+    label: String(item),
+    pageSize: item,
+  }))
+
+  const listItemAll = pagination.ListItemAll?.trim()
+  if (listItemAll) {
+    options.push({
+      value: pageSizeAllValue,
+      label: listItemAll,
+    })
+  }
+
+  return options
+}
+
 export const ResultGrid = ({
   results,
   tableColumns,
   tableColumnDisplayNames,
+  pagination,
   isLoading,
   errorMessage,
   appliedFilters,
@@ -84,6 +127,7 @@ export const ResultGrid = ({
   results: Record<string, unknown>[]
   tableColumns: SearchTableColumn[]
   tableColumnDisplayNames?: Record<string, string>
+  pagination?: ResultViewPaginationConfig
   isLoading?: boolean
   errorMessage?: string
   appliedFilters: AppliedFilterCondition[]
@@ -91,6 +135,60 @@ export const ResultGrid = ({
 }) => {
   const columns = tableColumns
   const columnSpan = Math.max(columns.length, 1)
+  const paginationOptions = React.useMemo(() => getPaginationOptions(pagination), [pagination])
+  const isPaginationEnabled = Boolean(pagination && paginationOptions.length > 0)
+  const [selectedPageSizeValue, setSelectedPageSizeValue] = React.useState('')
+  const [currentPage, setCurrentPage] = React.useState(1)
+
+  React.useEffect(() => {
+    if (!isPaginationEnabled) {
+      setSelectedPageSizeValue('')
+      return
+    }
+
+    if (!paginationOptions.some((option) => option.value === selectedPageSizeValue)) {
+      setSelectedPageSizeValue(paginationOptions[0].value)
+    }
+  }, [isPaginationEnabled, paginationOptions, selectedPageSizeValue])
+
+  const selectedPageSizeOption = paginationOptions.find(
+    (option) => option.value === selectedPageSizeValue
+  )
+  const totalPages = React.useMemo(() => {
+    if (!isPaginationEnabled || !selectedPageSizeOption?.pageSize) {
+      return 1
+    }
+
+    return Math.max(1, Math.ceil(results.length / selectedPageSizeOption.pageSize))
+  }, [isPaginationEnabled, results.length, selectedPageSizeOption?.pageSize])
+
+  React.useEffect(() => {
+    setCurrentPage(1)
+  }, [results, selectedPageSizeValue, isPaginationEnabled])
+
+  React.useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
+
+  const displayedRows = React.useMemo(() => {
+    if (!isPaginationEnabled || !selectedPageSizeOption?.pageSize) {
+      return results
+    }
+
+    const startIndex = (currentPage - 1) * selectedPageSizeOption.pageSize
+    return results.slice(startIndex, startIndex + selectedPageSizeOption.pageSize)
+  }, [currentPage, isPaginationEnabled, results, selectedPageSizeOption?.pageSize])
+
+  const handlePageSizeChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    setSelectedPageSizeValue(event.target.value)
+  }
+
+  const handlePageButtonClick = (page: number): void => {
+    setCurrentPage(page)
+  }
+
   const appliedFilterDescriptions = appliedFilters
     .filter(
       (condition) =>
@@ -106,16 +204,23 @@ export const ResultGrid = ({
 
   return (
     <>
-      <div className="flex flex-row gap-4 py-4 border-b border-b-gray-300">
-        <div className="w-36 grow-2">
-          <Button outline onClick={onBack} aria-label="Back" title="Back">
-            <ArrowLeftIcon />
-            <span className="font-normal">Back</span>
-          </Button>
-        </div>
-        <div className="w-36 grow-3"></div>
-        <div className="w-24 grow-2"></div>
-        <div className="w-64 grow-8"></div>
+      <div className="flex flex-row items-center justify-between gap-4 py-4 border-b border-b-gray-300">
+        <Button outline onClick={onBack} aria-label="Back" title="Back">
+          <ArrowLeftIcon />
+          <span className="font-normal">Back</span>
+        </Button>
+        {isPaginationEnabled && (
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-sm text-zinc-600">Rows per page</span>
+            <Select value={selectedPageSizeValue} onChange={handlePageSizeChanged}>
+              {paginationOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+        )}
       </div>
 
       <div className="pt-4">
@@ -155,7 +260,7 @@ export const ResultGrid = ({
 
             {!isLoading &&
               !errorMessage &&
-              results.map((row, index) => (
+              displayedRows.map((row, index) => (
                 <TableRow key={index}>
                   {columns.map((column) => {
                     return (
@@ -169,6 +274,35 @@ export const ResultGrid = ({
           </TableBody>
         </Table>
       </div>
+
+      {isPaginationEnabled && (
+        <div className="pt-3 flex flex-wrap items-center gap-2">
+          <Button
+            outline
+            disabled={currentPage <= 1}
+            onClick={() => handlePageButtonClick(Math.max(1, currentPage - 1))}
+          >
+            Prev
+          </Button>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+            <Button
+              key={page}
+              outline
+              disabled={page === currentPage}
+              onClick={() => handlePageButtonClick(page)}
+            >
+              {page}
+            </Button>
+          ))}
+          <Button
+            outline
+            disabled={currentPage >= totalPages}
+            onClick={() => handlePageButtonClick(Math.min(totalPages, currentPage + 1))}
+          >
+            Next
+          </Button>
+        </div>
+      )}
 
       <div className="pt-3 text-sm text-zinc-600">
         {appliedFilterDescriptions.length > 0

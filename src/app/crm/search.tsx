@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
 import { useAppConfiguration } from '../../hooks/use-app-config'
 import { EntityMetadata } from '../../libs/repositories/crm-repository'
-import { EntityConfig } from '../../libs/config/app-config'
+import { EntityConfig, ResultViewPaginationConfig } from '../../libs/config/app-config'
 import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
 import { FilterGrid } from './filter-grid'
 import { ResultGrid } from './result-grid'
@@ -34,6 +34,8 @@ export const Search = () => {
   const crmRepository = useCrmRepository()
 
   const configEntities = appConfiguration?.SearchScheme?.Entities
+  const resultViewPagination: ResultViewPaginationConfig | undefined =
+    currentEntityConfig?.ResultView.Pagination
 
   React.useEffect(() => {
     if ((configEntities?.length ?? 0) === 1) {
@@ -221,6 +223,7 @@ export const Search = () => {
           results={results}
           tableColumns={searchTableColumns}
           tableColumnDisplayNames={tableColumnDisplayNames}
+          pagination={resultViewPagination}
           isLoading={isResultsLoading}
           errorMessage={resultsError}
           appliedFilters={appliedFilters}
