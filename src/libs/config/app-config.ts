@@ -8,8 +8,13 @@ interface FilterOptionsDefaultConfig {
   Values?: Array<string | number>
 }
 
+interface ResultViewPaginationConfig {
+  List?: number[]
+  doDisplayAll?: boolean
+}
+
 export interface ResultViewConfig {
-  Pagination?: number[]
+  Pagination?: ResultViewPaginationConfig[]
   TableColumns: TableColumnConfig[]
 }
 

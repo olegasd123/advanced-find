@@ -4,7 +4,10 @@
       {
         "LogicalName": "invoice",
         "ResultView": {
-          "Pagination": [10, 25, 100],
+          "Pagination": {
+              "List": [10, 25, 100],
+              "doDisplayAll": true
+          },
           "TableColumns": [
             {
               "AttributeNames": ["name"],
