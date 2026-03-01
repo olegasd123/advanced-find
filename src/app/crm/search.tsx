@@ -204,12 +204,14 @@ export const Search = () => {
         </Select>
       )}
 
-      {currentEntityConfig && !isResultViewVisible && (
-        <FilterGrid
-          key={currentEntityConfig.LogicalName}
-          entityConfig={currentEntityConfig}
-          onSearch={handleSearch}
-        />
+      {currentEntityConfig && (
+        <div className={isResultViewVisible ? 'hidden' : ''}>
+          <FilterGrid
+            key={currentEntityConfig.LogicalName}
+            entityConfig={currentEntityConfig}
+            onSearch={handleSearch}
+          />
+        </div>
       )}
 
       {currentEntityConfig && isResultViewVisible && (
