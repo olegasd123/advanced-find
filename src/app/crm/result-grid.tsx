@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { ArrowLeftIcon } from '@heroicons/react/16/solid'
+import { ViewColumnsIcon } from '@heroicons/react/24/outline'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
 import { Checkbox } from '../../../vendor/catalyst-ui-kit/typescript/checkbox'
 import {
@@ -349,8 +350,8 @@ export const ResultGrid = ({
           <ArrowLeftIcon />
           <span className="font-normal">Back</span>
         </Button>
-        {isPaginationEnabled && (
-          <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2">
+          {isPaginationEnabled && (
             <Select value={selectedPageSizeValue} onChange={handlePageSizeChanged}>
               {paginationOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -358,32 +359,37 @@ export const ResultGrid = ({
                 </option>
               ))}
             </Select>
-            <Dropdown>
-              <DropdownButton outline>
-                Columns ({visibleColumns.length}/{columns.length})
-              </DropdownButton>
-              <DropdownMenu anchor="bottom end" className="min-w-72">
-                {columns.map((column) => {
-                  const isChecked = visibleColumnKeys.includes(column.columnKey)
-                  return (
-                    <DropdownItem
-                      key={column.columnKey}
-                      onClick={(event) => {
-                        event.preventDefault()
-                        toggleColumnVisibility(column.columnKey)
-                      }}
-                    >
-                      <span className="col-span-5 flex items-center gap-2">
-                        <Checkbox checked={isChecked} onChange={() => undefined} className="pointer-events-none" />
-                        <span>{getColumnHeader(column, tableColumnDisplayNames)}</span>
-                      </span>
-                    </DropdownItem>
-                  )
-                })}
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        )}
+          )}
+          <Dropdown>
+            <DropdownButton
+              outline
+              aria-label={`Columns (${visibleColumns.length}/${columns.length})`}
+              title={`Columns (${visibleColumns.length}/${columns.length})`}
+            >
+              <ViewColumnsIcon />
+              <span className="sr-only">Columns</span>
+            </DropdownButton>
+            <DropdownMenu anchor="bottom end" className="min-w-72">
+              {columns.map((column) => {
+                const isChecked = visibleColumnKeys.includes(column.columnKey)
+                return (
+                  <DropdownItem
+                    key={column.columnKey}
+                    onClick={(event) => {
+                      event.preventDefault()
+                      toggleColumnVisibility(column.columnKey)
+                    }}
+                  >
+                    <span className="col-span-5 flex items-center gap-2">
+                      <Checkbox checked={isChecked} onChange={() => undefined} className="pointer-events-none" />
+                      <span>{getColumnHeader(column, tableColumnDisplayNames)}</span>
+                    </span>
+                  </DropdownItem>
+                )
+              })}
+            </DropdownMenu>
+          </Dropdown>
+        </div>
       </div>
 
       <div className="pt-4">
