@@ -1,6 +1,13 @@
 import * as React from 'react'
 import { ArrowLeftIcon } from '@heroicons/react/16/solid'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
+import { Checkbox } from '../../../vendor/catalyst-ui-kit/typescript/checkbox'
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownItem,
+  DropdownMenu,
+} from '../../../vendor/catalyst-ui-kit/typescript/dropdown'
 import {
   Pagination,
   PaginationGap,
@@ -156,6 +163,7 @@ export const ResultGrid = ({
   results,
   tableColumns,
   tableColumnDisplayNames,
+  columnVisibilityStorageKey,
   pagination,
   isLoading,
   errorMessage,
@@ -165,6 +173,7 @@ export const ResultGrid = ({
   results: Record<string, unknown>[]
   tableColumns: SearchTableColumn[]
   tableColumnDisplayNames?: Record<string, string>
+  columnVisibilityStorageKey?: string
   pagination?: ResultViewPaginationConfig
   isLoading?: boolean
   errorMessage?: string
@@ -172,7 +181,58 @@ export const ResultGrid = ({
   onBack?: () => void
 }) => {
   const columns = tableColumns
-  const columnSpan = Math.max(columns.length, 1)
+  const localStorageKey = React.useMemo(() => {
+    if (!columnVisibilityStorageKey) {
+      return undefined
+    }
+
+    return `advanced-find:result-columns:${columnVisibilityStorageKey}`
+  }, [columnVisibilityStorageKey])
+  const [visibleColumnKeys, setVisibleColumnKeys] = React.useState<string[]>([])
+  const [isColumnSelectionLoaded, setIsColumnSelectionLoaded] = React.useState(false)
+
+  React.useEffect(() => {
+    if (columns.length === 0) {
+      setVisibleColumnKeys([])
+      setIsColumnSelectionLoaded(false)
+      return
+    }
+
+    const allColumnKeys = columns.map((column) => column.columnKey)
+    let initialColumnKeys = allColumnKeys
+
+    if (localStorageKey) {
+      try {
+        const storedValue = window.localStorage.getItem(localStorageKey)
+        if (storedValue) {
+          const parsed = JSON.parse(storedValue)
+          if (Array.isArray(parsed)) {
+            const parsedKeys = parsed.filter((item): item is string => typeof item === 'string')
+            initialColumnKeys = allColumnKeys.filter((columnKey) => parsedKeys.includes(columnKey))
+          }
+        }
+      } catch {
+        initialColumnKeys = allColumnKeys
+      }
+    }
+
+    setVisibleColumnKeys(initialColumnKeys)
+    setIsColumnSelectionLoaded(true)
+  }, [columns, localStorageKey])
+
+  React.useEffect(() => {
+    if (!localStorageKey || !isColumnSelectionLoaded || columns.length === 0) {
+      return
+    }
+
+    window.localStorage.setItem(localStorageKey, JSON.stringify(visibleColumnKeys))
+  }, [columns.length, isColumnSelectionLoaded, localStorageKey, visibleColumnKeys])
+
+  const visibleColumns = React.useMemo(() => {
+    const visibleKeys = new Set(visibleColumnKeys)
+    return columns.filter((column) => visibleKeys.has(column.columnKey))
+  }, [columns, visibleColumnKeys])
+  const columnSpan = Math.max(visibleColumns.length, 1)
   const paginationOptions = React.useMemo(() => getPaginationOptions(pagination), [pagination])
   const isPaginationEnabled = Boolean(pagination && paginationOptions.length > 0)
   const [selectedPageSizeValue, setSelectedPageSizeValue] = React.useState('')
@@ -225,6 +285,17 @@ export const ResultGrid = ({
 
   const handlePageButtonClick = (page: number): void => {
     setCurrentPage(page)
+  }
+  const toggleColumnVisibility = (columnKey: string): void => {
+    setVisibleColumnKeys((currentKeys) => {
+      if (currentKeys.includes(columnKey)) {
+        return currentKeys.filter((key) => key !== columnKey)
+      }
+
+      return columns
+        .map((column) => column.columnKey)
+        .filter((key) => key === columnKey || currentKeys.includes(key))
+    })
   }
 
   const visiblePageItems = React.useMemo(
@@ -287,6 +358,30 @@ export const ResultGrid = ({
                 </option>
               ))}
             </Select>
+            <Dropdown>
+              <DropdownButton outline>
+                Columns ({visibleColumns.length}/{columns.length})
+              </DropdownButton>
+              <DropdownMenu anchor="bottom end" className="min-w-72">
+                {columns.map((column) => {
+                  const isChecked = visibleColumnKeys.includes(column.columnKey)
+                  return (
+                    <DropdownItem
+                      key={column.columnKey}
+                      onClick={(event) => {
+                        event.preventDefault()
+                        toggleColumnVisibility(column.columnKey)
+                      }}
+                    >
+                      <span className="col-span-5 flex items-center gap-2">
+                        <Checkbox checked={isChecked} onChange={() => undefined} className="pointer-events-none" />
+                        <span>{getColumnHeader(column, tableColumnDisplayNames)}</span>
+                      </span>
+                    </DropdownItem>
+                  )
+                })}
+              </DropdownMenu>
+            </Dropdown>
           </div>
         )}
       </div>
@@ -295,7 +390,7 @@ export const ResultGrid = ({
         <Table striped dense>
           <TableHead>
             <TableRow>
-              {columns.map((column) => (
+              {visibleColumns.map((column) => (
                 <TableHeader key={column.columnKey}>
                   {getColumnHeader(column, tableColumnDisplayNames)}
                 </TableHeader>
@@ -306,7 +401,7 @@ export const ResultGrid = ({
             {isLoading &&
               Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={`skeleton-${index}`}>
-                  {columns.map((column) => (
+                  {visibleColumns.map((column) => (
                     <TableColumn key={`${column.columnKey}-${index}`}>
                       <div className="h-4 w-full rounded bg-zinc-200 animate-pulse" />
                     </TableColumn>
@@ -326,11 +421,18 @@ export const ResultGrid = ({
               </TableRow>
             )}
 
+            {!isLoading && !errorMessage && results.length > 0 && visibleColumns.length === 0 && (
+              <TableRow>
+                <TableColumn colSpan={columnSpan}>No columns selected.</TableColumn>
+              </TableRow>
+            )}
+
             {!isLoading &&
               !errorMessage &&
+              visibleColumns.length > 0 &&
               displayedRows.map((row, index) => (
                 <TableRow key={index}>
-                  {columns.map((column) => {
+                  {visibleColumns.map((column) => {
                     return (
                       <TableColumn key={`${column.columnKey}-${index}`}>
                         {getColumnCellValue(column, row)}

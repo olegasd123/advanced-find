@@ -223,6 +223,7 @@ export const Search = () => {
           results={results}
           tableColumns={searchTableColumns}
           tableColumnDisplayNames={tableColumnDisplayNames}
+          columnVisibilityStorageKey={currentEntityConfig.LogicalName}
           pagination={resultViewPagination}
           isLoading={isResultsLoading}
           errorMessage={resultsError}
