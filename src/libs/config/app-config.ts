@@ -11,6 +11,7 @@ interface FilterOptionsDefaultConfig {
 export interface ResultViewPaginationConfig {
   List?: number[]
   ListItemAll?: string
+  DisplaySummary?: string
 }
 
 export interface ResultViewConfig {

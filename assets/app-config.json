@@ -6,7 +6,8 @@
         "ResultView": {
           "Pagination": {
               "List": [25, 50, 100],
-              "ListItemAll": "All"
+              "ListItemAll": "All",
+              "DisplaySummary": "Showing {0} to {1} of {2} results"
           },
           "TableColumns": [
             {

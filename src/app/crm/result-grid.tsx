@@ -140,6 +140,18 @@ const getVisiblePageItems = (currentPage: number, totalPages: number): VisiblePa
   return [1, 'gap', currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2, 'gap', totalPages]
 }
 
+const formatPaginationSummary = (
+  template: string,
+  startIndex: number,
+  endIndex: number,
+  totalCount: number
+): string => {
+  return template
+    .replace(/\{0\}/g, String(startIndex))
+    .replace(/\{1\}/g, String(endIndex))
+    .replace(/\{2\}/g, String(totalCount))
+}
+
 export const ResultGrid = ({
   results,
   tableColumns,
@@ -219,6 +231,32 @@ export const ResultGrid = ({
     () => getVisiblePageItems(currentPage, totalPages),
     [currentPage, totalPages]
   )
+  const displaySummaryTemplate = pagination?.DisplaySummary?.trim()
+  const isSummaryVisible = Boolean(isPaginationEnabled && displaySummaryTemplate)
+  const paginationSummaryText = React.useMemo(() => {
+    if (!isSummaryVisible || !displaySummaryTemplate) {
+      return ''
+    }
+
+    const totalCount = results.length
+    if (totalCount === 0) {
+      return formatPaginationSummary(displaySummaryTemplate, 0, 0, 0)
+    }
+
+    if (!selectedPageSizeOption?.pageSize) {
+      return formatPaginationSummary(displaySummaryTemplate, 1, totalCount, totalCount)
+    }
+
+    const startIndex = (currentPage - 1) * selectedPageSizeOption.pageSize + 1
+    const endIndex = Math.min(currentPage * selectedPageSizeOption.pageSize, totalCount)
+    return formatPaginationSummary(displaySummaryTemplate, startIndex, endIndex, totalCount)
+  }, [
+    currentPage,
+    displaySummaryTemplate,
+    isSummaryVisible,
+    results.length,
+    selectedPageSizeOption?.pageSize,
+  ])
 
   const appliedFilterDescriptions = appliedFilters
     .filter(
@@ -306,7 +344,7 @@ export const ResultGrid = ({
       </div>
 
       {isPaginationEnabled && (
-        <div className="pt-3">
+        <div className="pt-3 flex items-center gap-4">
           <Pagination className="justify-start">
             <PaginationPrevious
               className="!grow-0 !basis-auto"
@@ -335,6 +373,9 @@ export const ResultGrid = ({
               onClick={() => handlePageButtonClick(Math.min(totalPages, currentPage + 1))}
             />
           </Pagination>
+          {isSummaryVisible && (
+            <div className="ml-auto text-sm text-zinc-600">{paginationSummaryText}</div>
+          )}
         </div>
       )}
 
