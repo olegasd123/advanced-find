@@ -51,6 +51,7 @@ export interface AppConfig {
 }
 
 export interface EntityConfig {
+  FilterUniqueOptionsOnly?: boolean
   FilterOptions: FilterOptionConfig[]
   LogicalName: string
   ResultView: ResultViewConfig

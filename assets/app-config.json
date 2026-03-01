@@ -28,6 +28,7 @@
             }
           ]
         },
+        "FilterUniqueOptionsOnly": true,
         "FilterOptions": [
           {
             "CategoryDisplayName": "General"

@@ -21,16 +21,19 @@ import {
   getTargetFilterOption,
 } from '../../libs/utils/filter'
 import { AppliedFilterCondition, ConditionValue } from '../../libs/utils/crm-search'
+import { FilterOptionConfig } from '../../libs/config/app-config'
 
 export const FilterItem = ({
   optionId,
   options,
+  selectedFilterOptions,
   currentOption,
   onDeleteCondition,
   onConditionChanged,
 }: {
   optionId: number
   options: FilterOption[]
+  selectedFilterOptions: ReadonlySet<FilterOptionConfig>
   currentOption?: FilterOption
   onDeleteCondition?: () => void
   onConditionChanged?: (optionId: number, condition: AppliedFilterCondition) => void
@@ -49,6 +52,34 @@ export const FilterItem = ({
 
   const localization = useAppConfiguration()?.SearchScheme?.Localization
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
+  const visibleOptions = React.useMemo(() => {
+    const next: FilterOption[] = []
+    let pendingCategory: FilterOption | undefined
+
+    for (const option of options) {
+      const config = option.FilterOptionConfig
+      const categoryDisplayName = config?.CategoryDisplayName?.trim()
+      const isCategory = typeof config?.CategoryDisplayName === 'string'
+
+      if (isCategory) {
+        pendingCategory = categoryDisplayName ? option : undefined
+        continue
+      }
+
+      if (!config || selectedFilterOptions.has(config)) {
+        continue
+      }
+
+      if (pendingCategory) {
+        next.push(pendingCategory)
+        pendingCategory = undefined
+      }
+
+      next.push(option)
+    }
+
+    return next
+  }, [options, selectedFilterOptions])
 
   React.useEffect(() => {
     setSelectedAttribute(currentOption ? { ...currentOption } : undefined)
@@ -126,7 +157,7 @@ export const FilterItem = ({
       </div>
       <div className="w-36 grow-3">
         <Combobox
-          options={options}
+          options={visibleOptions}
           displayValue={(option: FilterOption | null) =>
             getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName
           }
@@ -134,10 +165,12 @@ export const FilterItem = ({
           disabled={isDisabled || isAttributeDisabled}
           onChange={handleAttributeChanged}
         >
-          {(option) =>
-            option?.FilterOptionConfig?.CategoryDisplayName ? (
+          {(option) => {
+            const categoryDisplayName = option?.FilterOptionConfig?.CategoryDisplayName?.trim()
+
+            return categoryDisplayName ? (
               <ComboboxOptionCategory className="bg-zinc-200/60 dark:text-white">
-                {option?.FilterOptionConfig?.CategoryDisplayName}
+                {categoryDisplayName}
               </ComboboxOptionCategory>
             ) : (
               <ComboboxOption value={option}>
@@ -146,7 +179,7 @@ export const FilterItem = ({
                 </ComboboxLabel>
               </ComboboxOption>
             )
-          }
+          }}
         </Combobox>
       </div>
       <div className="w-24 grow-2">

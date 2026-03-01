@@ -123,6 +123,24 @@ export const FilterGrid = ({
     )
   }
 
+  const selectedFilterOptions = React.useMemo(() => {
+    if (!entityConfig?.FilterUniqueOptionsOnly) {
+      return new Set<FilterOptionConfig>()
+    }
+
+    const selected = new Set<FilterOptionConfig>()
+    for (const item of visibleFilterOptions) {
+      const hasCondition = Object.hasOwn(conditionsById, item.id)
+      const selectedFilterOption = hasCondition
+        ? conditionsById[item.id]?.filterOption
+        : item.option.FilterOptionConfig
+      if (selectedFilterOption) {
+        selected.add(selectedFilterOption)
+      }
+    }
+    return selected
+  }, [conditionsById, entityConfig?.FilterUniqueOptionsOnly, visibleFilterOptions])
+
   return (
     <div>
       <FilterCommandRow
@@ -137,6 +155,7 @@ export const FilterGrid = ({
             key={item.id}
             optionId={item.id}
             options={filterOptions ?? []}
+            selectedFilterOptions={selectedFilterOptions}
             currentOption={item.option}
             onDeleteCondition={() => handleDeleteCondition(item.id)}
             onConditionChanged={handleConditionChanged}
