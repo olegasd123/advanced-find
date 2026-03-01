@@ -14,10 +14,23 @@ export function PaginationPrevious({
   href = null,
   className,
   children = 'Previous',
-}: React.PropsWithChildren<{ href?: string | null; className?: string }>) {
+  onClick,
+  disabled,
+}: React.PropsWithChildren<{
+  href?: string | null
+  className?: string
+  onClick?: React.MouseEventHandler<HTMLElement>
+  disabled?: boolean
+}>) {
+  const isDisabled = disabled ?? (href === null && !onClick)
+  const buttonProps =
+    href === null
+      ? { onClick, ...(isDisabled ? { disabled: true } : {}) }
+      : { href, onClick }
+
   return (
     <span className={clsx(className, 'grow basis-0')}>
-      <Button {...(href === null ? { disabled: true } : { href })} plain aria-label="Previous page">
+      <Button {...buttonProps} plain aria-label="Previous page">
         <svg className="stroke-current" data-slot="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path
             d="M2.75 8H13.25M2.75 8L5.25 5.5M2.75 8L5.25 10.5"
@@ -36,10 +49,23 @@ export function PaginationNext({
   href = null,
   className,
   children = 'Next',
-}: React.PropsWithChildren<{ href?: string | null; className?: string }>) {
+  onClick,
+  disabled,
+}: React.PropsWithChildren<{
+  href?: string | null
+  className?: string
+  onClick?: React.MouseEventHandler<HTMLElement>
+  disabled?: boolean
+}>) {
+  const isDisabled = disabled ?? (href === null && !onClick)
+  const buttonProps =
+    href === null
+      ? { onClick, ...(isDisabled ? { disabled: true } : {}) }
+      : { href, onClick }
+
   return (
     <span className={clsx(className, 'flex grow basis-0 justify-end')}>
-      <Button {...(href === null ? { disabled: true } : { href })} plain aria-label="Next page">
+      <Button {...buttonProps} plain aria-label="Next page">
         {children}
         <svg className="stroke-current" data-slot="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path
@@ -62,11 +88,25 @@ export function PaginationPage({
   href,
   className,
   current = false,
+  onClick,
+  disabled,
   children,
-}: React.PropsWithChildren<{ href: string; className?: string; current?: boolean }>) {
+}: React.PropsWithChildren<{
+  href?: string | null
+  className?: string
+  current?: boolean
+  onClick?: React.MouseEventHandler<HTMLElement>
+  disabled?: boolean
+}>) {
+  const isDisabled = disabled ?? false
+  const buttonProps =
+    href === null || href === undefined
+      ? { onClick, ...(isDisabled ? { disabled: true } : {}) }
+      : { href, onClick }
+
   return (
     <Button
-      href={href}
+      {...buttonProps}
       plain
       aria-label={`Page ${children}`}
       aria-current={current ? 'page' : undefined}

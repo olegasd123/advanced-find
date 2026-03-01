@@ -1,6 +1,13 @@
 import * as React from 'react'
 import { ArrowLeftIcon } from '@heroicons/react/16/solid'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
+import {
+  Pagination,
+  PaginationList,
+  PaginationNext,
+  PaginationPage,
+  PaginationPrevious,
+} from '../../../vendor/catalyst-ui-kit/typescript/pagination'
 import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
 import {
   Table,
@@ -276,31 +283,31 @@ export const ResultGrid = ({
       </div>
 
       {isPaginationEnabled && (
-        <div className="pt-3 flex flex-wrap items-center gap-2">
-          <Button
-            outline
-            disabled={currentPage <= 1}
-            onClick={() => handlePageButtonClick(Math.max(1, currentPage - 1))}
-          >
-            Prev
-          </Button>
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-            <Button
-              key={page}
-              outline
-              disabled={page === currentPage}
-              onClick={() => handlePageButtonClick(page)}
-            >
-              {page}
-            </Button>
-          ))}
-          <Button
-            outline
-            disabled={currentPage >= totalPages}
-            onClick={() => handlePageButtonClick(Math.min(totalPages, currentPage + 1))}
-          >
-            Next
-          </Button>
+        <div className="pt-3">
+          <Pagination className="justify-start">
+            <PaginationPrevious
+              className="!grow-0 !basis-auto"
+              disabled={currentPage <= 1}
+              onClick={() => handlePageButtonClick(Math.max(1, currentPage - 1))}
+            />
+            <PaginationList className="!flex">
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                <PaginationPage
+                  key={page}
+                  current={page === currentPage}
+                  disabled={page === currentPage}
+                  onClick={() => handlePageButtonClick(page)}
+                >
+                  {page}
+                </PaginationPage>
+              ))}
+            </PaginationList>
+            <PaginationNext
+              className="!grow-0 !basis-auto !justify-start"
+              disabled={currentPage >= totalPages}
+              onClick={() => handlePageButtonClick(Math.min(totalPages, currentPage + 1))}
+            />
+          </Pagination>
         </div>
       )}
 
