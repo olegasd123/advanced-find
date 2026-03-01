@@ -42,36 +42,24 @@ export const FilterCommandRow = ({
         )}
       >
         <div className="w-8 grow-0">
-          {location === 'footer' ? (
-            <Button
-              outline
-              onClick={onAddCondition}
-              aria-label="Add condition"
-              title="Add condition"
-            >
-              <PlusIcon />
-            </Button>
-          ) : (
-            <Button
-              outline
-              onClick={handleResetClick}
-              aria-label="Reset filters"
-              title="Reset filters"
-            >
-              <ArrowPathIcon />
-            </Button>
-          )}
+          <Button
+            outline
+            onClick={handleResetClick}
+            aria-label="Reset filters"
+          >
+            <ArrowPathIcon />
+          </Button>
         </div>
         <div className="w-36 grow-3">
           {location === 'footer' && (
             <Button
               outline
-              onClick={handleResetClick}
-              aria-label="Reset filters"
-              title="Reset filters"
+              onClick={onAddCondition}
+              aria-label="Add a condition"
+              title="Add a condition"
             >
-              <ArrowPathIcon />
-              <span className="font-normal">Reset</span>
+              <PlusIcon />
+              <span className="font-normal">Add a condition</span>
             </Button>
           )}
         </div>
