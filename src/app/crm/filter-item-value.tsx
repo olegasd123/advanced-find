@@ -344,15 +344,36 @@ export const FilterItemValue = ({
   const handleMultiSelectionValueChanged = (values: ConditionValueOption[]): void => {
     const nextValues = values.map((value) => value.value)
 
-    if (selectionMaxItems && nextValues.length > selectionMaxItems) {
-      return
-    }
+    setConditionValues((previousValues) => {
+      if (nextValues.length < selectionMinItems) {
+        return previousValues
+      }
 
-    if (nextValues.length < selectionMinItems) {
-      return
-    }
+      if (!selectionMaxItems || nextValues.length <= selectionMaxItems) {
+        return nextValues
+      }
 
-    setConditionValues(nextValues)
+      const previousValuesSet = new Set(previousValues)
+      const addedValues = nextValues.filter((value) => !previousValuesSet.has(value))
+
+      if (addedValues.length === 0) {
+        return nextValues.slice(nextValues.length - selectionMaxItems)
+      }
+
+      const nextLimitedValues = [...previousValues]
+      const nextValuesSet = new Set(nextValues)
+
+      for (const addedValue of addedValues) {
+        while (nextLimitedValues.length >= selectionMaxItems) {
+          nextLimitedValues.shift()
+        }
+        if (!nextLimitedValues.includes(addedValue) && nextValuesSet.has(addedValue)) {
+          nextLimitedValues.push(addedValue)
+        }
+      }
+
+      return nextLimitedValues.filter((value) => nextValuesSet.has(value))
+    })
   }
 
   const selectedConditionValue = conditionValues.at(0) ?? ''
