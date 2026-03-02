@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
           isCrmBuild
             ? fs.copyFile(
                 `${__dirname}/assets/app-config.json`,
-                `${__dirname}/dist/crm-webresource/app-config.json`,
+                `${__dirname}/dist/advanced-find/app-config.json`,
                 (error: NodeJS.ErrnoException | null) => {
                   if (error) {
                     console.error('Vite config', error)
@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
     base: isCrmBuild ? './' : '/',
     build: isCrmBuild
       ? {
-          outDir: 'dist/crm-webresource',
+          outDir: 'dist/advanced-find',
           assetsDir: '',
           emptyOutDir: true,
           sourcemap: isCrmDevBuild,

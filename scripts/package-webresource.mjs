@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const projectRoot = path.resolve(__dirname, '..')
-const crmBuildDir = path.join(projectRoot, 'dist', 'crm-webresource')
-const packagingRoot = path.join(projectRoot, 'dist', 'crm-package')
+const crmBuildDir = path.join(projectRoot, 'dist', 'advanced-find')
+const packagingRoot = path.join(projectRoot, 'dist', 'advanced-find-package')
 const outputFiles = {
   html: 'advanced-find.html',
   js: 'advanced-find.js',

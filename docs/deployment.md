@@ -18,7 +18,7 @@ Pick the build profile that matches your deployment needs:
   npm run build:crm:dev
   ```
 
-Both commands emit the CRM-ready assets to `dist/crm-webresource` with static filenames.
+Both commands emit the CRM-ready assets to `dist/advanced-find` with static filenames.
 
 ### 2. Package web-resource assets
 
@@ -36,7 +36,7 @@ Produce the deployable files directly (no ZIP archive is created):
   npm run package:webresource:dev
   ```
 
-Each command ensures the relevant build has been run and then writes the following files to `dist/crm-package`:
+Each command ensures the relevant build has been run and then writes the following files to `dist/advanced-find-package`:
 
 - `advanced-find.html` (with an embedded metadata banner)
 - `advanced-find.js`
