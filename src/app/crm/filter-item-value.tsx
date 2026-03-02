@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Combobox, ComboboxLabel, ComboboxOption, MultiCombobox } from '../../components/controls/multi-combobox'
+import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/controls/combobox'
 import {
   Listbox,
   ListboxLabel,
@@ -381,7 +381,8 @@ export const FilterItemValue = ({
       if (isMultiSelection) {
         return (
           <div>
-            <MultiCombobox
+            <Combobox
+              multiple
               options={selectableOptions}
               placeholder="Select values"
               displayValue={(option) => option.displayName}
@@ -395,7 +396,7 @@ export const FilterItemValue = ({
                   <ComboboxLabel>{option.displayName}</ComboboxLabel>
                 </ComboboxOption>
               )}
-            </MultiCombobox>
+            </Combobox>
           </div>
         )
       }

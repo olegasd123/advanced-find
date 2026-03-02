@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
 import { TrashIcon } from '@heroicons/react/16/solid'
-import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/controls/multi-combobox'
+import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/controls/combobox'
 import {
   Listbox,
   ListboxLabel,
@@ -154,7 +154,7 @@ export const FilterItem = ({
       <div className="w-36 grow-3">
         <Combobox
           options={visibleOptions}
-          displayValue={(option: FilterOption | null) =>
+          displayValue={(option: FilterOption) =>
             getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName
           }
           value={selectedAttribute ?? undefined}

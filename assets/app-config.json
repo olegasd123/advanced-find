@@ -146,7 +146,7 @@
               "IsShowed": true
             },
             "Selection": {
-              "Multiple": false,
+              "Multiple": true,
               "MinItems": 1,
               "MaxItems": 2,
               "RelatedEntityAttributeNames": ["firstname", "lastname"],
