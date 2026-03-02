@@ -1,4 +1,9 @@
-import { EntityConfig, FilterOptionConfig, TableColumnConfig } from '../config/app-config'
+import {
+  EntityConfig,
+  FilterGroupOperator,
+  FilterOptionConfig,
+  TableColumnConfig,
+} from '../config/app-config'
 import { getTargetFilterOption } from './filter'
 
 export type ConditionValue = string | number
@@ -8,6 +13,8 @@ export interface AppliedFilterCondition {
   condition?: string | null
   values: ConditionValue[]
   isDisabled?: boolean
+  groupId?: number
+  groupOperator?: FilterGroupOperator
 }
 
 export interface SearchTableColumnAttribute {
@@ -37,12 +44,22 @@ interface FetchAttributeNode {
   alias?: string
 }
 
+interface FilterConditionGroupBucket {
+  operator: FilterGroupOperator
+  conditions: string[]
+}
+
+interface FilterConditionContext {
+  rootConditions: string[]
+  groupedConditions: Map<number, FilterConditionGroupBucket>
+}
+
 interface FetchLinkNode {
   entityName: string
   fromAttribute: string
   toAttribute: string
   attributes: Map<string, FetchAttributeNode>
-  conditions: string[]
+  filterContext: FilterConditionContext
   children: Map<string, FetchLinkNode>
 }
 
@@ -54,6 +71,9 @@ interface LegacyTableColumnConfig extends TableColumnConfig {
 const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
 
 const numberAttributeTypes = new Set(['number', 'integer', 'bigint', 'decimal', 'double', 'money'])
+
+const normalizeGroupOperator = (operator: FilterGroupOperator | undefined): FilterGroupOperator =>
+  operator === 'or' ? 'or' : 'and'
 
 const isNoValueCondition = (condition: string | null | undefined): boolean => {
   if (!condition) {
@@ -287,6 +307,83 @@ const createDateConditionExpression = (
   return undefined
 }
 
+const createFilterConditionContext = (): FilterConditionContext => ({
+  rootConditions: [],
+  groupedConditions: new Map<number, FilterConditionGroupBucket>(),
+})
+
+const addConditionToContext = (
+  filterContext: FilterConditionContext,
+  condition: AppliedFilterCondition,
+  expression: string
+): void => {
+  if (condition.groupId === undefined) {
+    filterContext.rootConditions.push(expression)
+    return
+  }
+
+  const existingGroup = filterContext.groupedConditions.get(condition.groupId)
+  if (!existingGroup) {
+    filterContext.groupedConditions.set(condition.groupId, {
+      operator: normalizeGroupOperator(condition.groupOperator),
+      conditions: [expression],
+    })
+    return
+  }
+
+  existingGroup.conditions.push(expression)
+}
+
+const buildGroupedExpressions = (
+  rootExpressions: string[],
+  groupedExpressions: Map<number, FilterConditionGroupBucket>
+): string[] => {
+  const parts = rootExpressions.map((expression) => `(${expression})`)
+
+  for (const groupedCondition of groupedExpressions.values()) {
+    if (groupedCondition.conditions.length === 0) {
+      continue
+    }
+
+    if (groupedCondition.conditions.length === 1) {
+      parts.push(`(${groupedCondition.conditions[0]})`)
+      continue
+    }
+
+    const groupedExpression = groupedCondition.conditions
+      .map((expression) => `(${expression})`)
+      .join(` ${groupedCondition.operator} `)
+    parts.push(`(${groupedExpression})`)
+  }
+
+  return parts
+}
+
+const renderFilterContextXml = (filterContext: FilterConditionContext): string => {
+  const parts: string[] = [...filterContext.rootConditions]
+
+  for (const groupedCondition of filterContext.groupedConditions.values()) {
+    if (groupedCondition.conditions.length === 0) {
+      continue
+    }
+
+    if (groupedCondition.conditions.length === 1) {
+      parts.push(groupedCondition.conditions[0])
+      continue
+    }
+
+    parts.push(
+      `<filter type="${groupedCondition.operator}">${groupedCondition.conditions.join('')}</filter>`
+    )
+  }
+
+  if (parts.length === 0) {
+    return ''
+  }
+
+  return `<filter type="and">${parts.join('')}</filter>`
+}
+
 const createFilterExpression = (conditionValue: AppliedFilterCondition): string | undefined => {
   const filterOption = getTargetFilterOption(conditionValue.filterOption)
   const condition = conditionValue.condition ?? undefined
@@ -450,7 +547,7 @@ const getOrCreateLinkNode = (
     fromAttribute,
     toAttribute,
     attributes: new Map<string, FetchAttributeNode>(),
-    conditions: [],
+    filterContext: createFilterConditionContext(),
     children: new Map<string, FetchLinkNode>(),
   }
   links.set(key, created)
@@ -502,8 +599,7 @@ const renderAttributeNodeXml = (attribute: FetchAttributeNode): string => {
 
 const renderLinkNodeXml = (node: FetchLinkNode): string => {
   const attributesXml = Array.from(node.attributes.values()).map(renderAttributeNodeXml).join('')
-  const filterXml =
-    node.conditions.length > 0 ? `<filter type="and">${node.conditions.join('')}</filter>` : ''
+  const filterXml = renderFilterContextXml(node.filterContext)
   const childrenXml = Array.from(node.children.values()).map(renderLinkNodeXml).join('')
 
   return `<link-entity name="${escapeXml(node.entityName)}" from="${escapeXml(node.fromAttribute)}" to="${escapeXml(node.toAttribute)}" link-type="inner">${attributesXml}${filterXml}${childrenXml}</link-entity>`
@@ -552,19 +648,31 @@ export const buildCrmEntitiesFilter = (
   entityLogicalName: string,
   conditions: AppliedFilterCondition[]
 ): string | undefined => {
-  const expressions = conditions
-    .filter((condition) => {
-      const conditionEntityName = condition.filterOption?.EntityName
-      return !conditionEntityName || conditionEntityName === entityLogicalName
-    })
-    .map(createFilterExpression)
-    .filter((expression): expression is string => Boolean(expression))
+  const expressionsContext = createFilterConditionContext()
+  for (const condition of conditions) {
+    const conditionEntityName = condition.filterOption?.EntityName
+    if (conditionEntityName && conditionEntityName !== entityLogicalName) {
+      continue
+    }
+
+    const expression = createFilterExpression(condition)
+    if (!expression) {
+      continue
+    }
+
+    addConditionToContext(expressionsContext, condition, expression)
+  }
+
+  const expressions = buildGroupedExpressions(
+    expressionsContext.rootConditions,
+    expressionsContext.groupedConditions
+  )
 
   if (expressions.length === 0) {
     return undefined
   }
 
-  return expressions.map((expression) => `(${expression})`).join(' and ')
+  return expressions.join(' and ')
 }
 
 export const buildCrmFetchXml = (
@@ -573,7 +681,7 @@ export const buildCrmFetchXml = (
   conditions: AppliedFilterCondition[]
 ): string => {
   const rootAttributes = new Map<string, FetchAttributeNode>()
-  const rootConditions: string[] = []
+  const rootFilterContext = createFilterConditionContext()
   const rootLinks = new Map<string, FetchLinkNode>()
 
   for (const column of tableColumns) {
@@ -614,7 +722,7 @@ export const buildCrmFetchXml = (
 
     const optionChain = getFilterOptionChain(sourceFilterOption)
     if (optionChain.length <= 1) {
-      rootConditions.push(conditionXml)
+      addConditionToContext(rootFilterContext, condition, conditionXml)
       continue
     }
 
@@ -623,12 +731,11 @@ export const buildCrmFetchXml = (
       continue
     }
 
-    linkNode.node.conditions.push(conditionXml)
+    addConditionToContext(linkNode.node.filterContext, condition, conditionXml)
   }
 
   const attributesXml = Array.from(rootAttributes.values()).map(renderAttributeNodeXml).join('')
-  const rootFilterXml =
-    rootConditions.length > 0 ? `<filter type="and">${rootConditions.join('')}</filter>` : ''
+  const rootFilterXml = renderFilterContextXml(rootFilterContext)
   const linksXml = Array.from(rootLinks.values()).map(renderLinkNodeXml).join('')
 
   return `<fetch version="1.0" mapping="logical" distinct="false"><entity name="${escapeXml(entityLogicalName)}">${attributesXml}${rootFilterXml}${linksXml}</entity></fetch>`

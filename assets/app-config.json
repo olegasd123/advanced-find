@@ -153,6 +153,12 @@
               "RelatedEntityAttributeFormat": "{0} {1}"
             }
           }
+        ],
+        "FilterGroups": [
+          {
+            "FilterOptionIndexes": [1, 2],
+            "Operator": "and"
+          }
         ]
       }
     ],

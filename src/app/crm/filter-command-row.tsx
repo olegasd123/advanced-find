@@ -41,6 +41,7 @@ export const FilterCommandRow = ({
           location === 'header' ? 'border-b border-b-gray-300' : ''
         )}
       >
+        <div className="w-8 grow-0"></div>
         <div className="w-8 grow-0">
           <Button outline onClick={handleResetClick} aria-label="Reset filters">
             <ArrowPathIcon />

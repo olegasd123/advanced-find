@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
-import { TrashIcon } from '@heroicons/react/16/solid'
+import { Bars3Icon, TrashIcon } from '@heroicons/react/16/solid'
 import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/controls/combobox'
 import {
   Listbox,
@@ -18,20 +18,33 @@ import {
 } from '../../libs/utils/filter'
 import { AppliedFilterCondition, ConditionValue } from '../../libs/utils/crm-search'
 import { FilterOptionConfig } from '../../libs/config/app-config'
+import clsx from 'clsx'
 
 export const FilterItem = ({
   optionId,
   options,
   selectedFilterOptions,
   currentOption,
+  isDropTarget,
   onDeleteCondition,
+  onDragStart,
+  onDragEnd,
+  onDragOver,
+  onDragLeave,
+  onDrop,
   onConditionChanged,
 }: {
   optionId: number
   options: FilterOption[]
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
   currentOption?: FilterOption
+  isDropTarget?: boolean
   onDeleteCondition?: () => void
+  onDragStart?: () => void
+  onDragEnd?: () => void
+  onDragOver?: (event: React.DragEvent<HTMLDivElement>) => void
+  onDragLeave?: () => void
+  onDrop?: () => void
   onConditionChanged?: (optionId: number, condition: AppliedFilterCondition) => void
 }) => {
   const [selectedAttribute, setSelectedAttribute] = React.useState<FilterOption | undefined>(
@@ -139,7 +152,33 @@ export const FilterItem = ({
   ])
 
   return (
-    <div className="flex flex-row gap-4 py-4 border-b border-b-gray-300">
+    <div
+      className={clsx(
+        'flex flex-row gap-4 py-4 border-b border-b-gray-300 rounded-sm',
+        isDropTarget ? 'bg-teal-50' : ''
+      )}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={(event) => {
+        event.preventDefault()
+        onDrop?.()
+      }}
+    >
+      <div className="w-8 grow-0">
+        <div
+          className="flex h-9 items-center justify-center rounded-lg border border-zinc-300 bg-white text-zinc-500 cursor-grab active:cursor-grabbing"
+          draggable
+          onDragStart={(event) => {
+            event.dataTransfer.setData('text/plain', String(optionId))
+            onDragStart?.()
+          }}
+          onDragEnd={onDragEnd}
+          aria-label="Drag condition"
+          title="Drag condition to create or move group"
+        >
+          <Bars3Icon className="size-4" />
+        </div>
+      </div>
       <div className="w-8 grow-0">
         <Button
           outline

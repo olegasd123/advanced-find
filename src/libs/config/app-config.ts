@@ -8,6 +8,13 @@ interface FilterOptionsDefaultConfig {
   Values?: Array<string | number>
 }
 
+export type FilterGroupOperator = 'and' | 'or'
+
+export interface FilterGroupConfig {
+  FilterOptionIndexes: number[]
+  Operator?: FilterGroupOperator
+}
+
 export interface ResultViewPaginationConfig {
   List?: number[]
   ListItemAll?: string
@@ -53,6 +60,7 @@ export interface AppConfig {
 export interface EntityConfig {
   FilterUniqueOptionsOnly?: boolean
   FilterOptions: FilterOptionConfig[]
+  FilterGroups?: FilterGroupConfig[]
   LogicalName: string
   ResultView: ResultViewConfig
 }
