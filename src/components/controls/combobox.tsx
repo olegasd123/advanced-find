@@ -40,6 +40,18 @@ export function Combobox<T>(props: SingleComboboxProps<T>): React.ReactElement
 export function Combobox<T>(props: MultiComboboxProps<T>): React.ReactElement
 export function Combobox<T>(props: ComboboxProps<T>) {
   const [query, setQuery] = React.useState('')
+  const handleInputClick = React.useCallback((event: React.MouseEvent<HTMLInputElement>) => {
+    // Re-open only on repeated click while the input is already focused.
+    // For first click from unfocused state, let Headless UI handle focus/open itself.
+    if (
+      document.activeElement === event.currentTarget &&
+      event.currentTarget.getAttribute('aria-expanded') !== 'true'
+    ) {
+      const input = event.currentTarget
+      input.blur()
+      requestAnimationFrame(() => input.focus())
+    }
+  }, [])
 
   if (props.multiple) {
     const {
@@ -101,10 +113,11 @@ export function Combobox<T>(props: ComboboxProps<T>) {
                 .map((option) => displayValue(option) ?? '')
                 .filter((option) => option.length > 0)
                 .join(', ')
-            }}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={placeholder}
-            className={clsx([
+                }}
+                onChange={(event) => setQuery(event.target.value)}
+                onClick={handleInputClick}
+                placeholder={placeholder}
+                className={clsx([
               className,
               'relative block w-full appearance-none rounded-lg py-[calc(--spacing(2.5)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
               'pr-[calc(--spacing(10)-1px)] pl-[calc(--spacing(3.5)-1px)] sm:pr-[calc(--spacing(9)-1px)] sm:pl-[calc(--spacing(3)-1px)]',
@@ -209,6 +222,7 @@ export function Combobox<T>(props: ComboboxProps<T>) {
           aria-label={ariaLabel}
           displayValue={(option: T | null) => (option ? displayValue(option) ?? '' : '')}
           onChange={(event) => setQuery(event.target.value)}
+          onClick={handleInputClick}
           placeholder={placeholder}
           className={clsx([
             className,
