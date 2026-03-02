@@ -1,11 +1,7 @@
 import * as React from 'react'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
 import { TrashIcon } from '@heroicons/react/16/solid'
-import {
-  Combobox,
-  ComboboxLabel,
-  ComboboxOption,
-} from '../../../vendor/catalyst-ui-kit/typescript/combobox'
+import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/controls/multi-combobox'
 import {
   Listbox,
   ListboxLabel,
