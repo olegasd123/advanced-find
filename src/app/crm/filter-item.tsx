@@ -25,6 +25,7 @@ export const FilterItem = ({
   options,
   selectedFilterOptions,
   currentOption,
+  groupPosition = 'none',
   isDropTarget,
   onDeleteCondition,
   onDragStart,
@@ -38,6 +39,7 @@ export const FilterItem = ({
   options: FilterOption[]
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
   currentOption?: FilterOption
+  groupPosition?: 'none' | 'first' | 'middle' | 'last' | 'only'
   isDropTarget?: boolean
   onDeleteCondition?: () => void
   onDragStart?: () => void
@@ -53,11 +55,12 @@ export const FilterItem = ({
   const [filterConditions, setFilterConditions] = React.useState<
     CrmFilterConditionOption[] | undefined
   >()
-  const [selectedFilterCondition, setSelectedFilterCondition] = React.useState<string | null>()
+  const [selectedFilterCondition, setSelectedFilterCondition] = React.useState<string | null>(null)
   const [cannotBeRemoved, setCannotBeRemoved] = React.useState<boolean | undefined>(true)
   const [isAttributeDisabled, setIsAttributeDisabled] = React.useState<boolean | undefined>(false)
   const [isDisabled, setIsDisabled] = React.useState<boolean | undefined>(false)
   const [selectedConditionValues, setSelectedConditionValues] = React.useState<ConditionValue[]>([])
+  const lastConditionRef = React.useRef<AppliedFilterCondition | undefined>(undefined)
 
   const localization = useAppConfiguration()?.SearchScheme?.Localization
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
@@ -75,7 +78,10 @@ export const FilterItem = ({
         continue
       }
 
-      if (!config || selectedFilterOptions.has(config)) {
+      if (
+        !config ||
+        (selectedFilterOptions.has(config) && config !== selectedAttribute?.FilterOptionConfig)
+      ) {
         continue
       }
 
@@ -88,10 +94,19 @@ export const FilterItem = ({
     }
 
     return next
-  }, [options, selectedFilterOptions])
+  }, [options, selectedAttribute?.FilterOptionConfig, selectedFilterOptions])
+
+  const compareFilterOption = React.useCallback(
+    (left: FilterOption, right: FilterOption): boolean => {
+      return (
+        left.FilterOptionConfig === right.FilterOptionConfig && left.sourceIndex === right.sourceIndex
+      )
+    },
+    []
+  )
 
   React.useEffect(() => {
-    setSelectedAttribute(currentOption ? { ...currentOption } : undefined)
+    setSelectedAttribute(currentOption ?? undefined)
 
     const targetFilterOption = getTargetFilterOption(currentOption?.FilterOptionConfig)
     // Apply default values from config to the condition only for initialization,
@@ -116,7 +131,7 @@ export const FilterItem = ({
 
   const handleAttributeChanged = (value: FilterOption | null): void => {
     const targetFilterOptionValue = getTargetFilterOption(value?.FilterOptionConfig)
-    setSelectedAttribute(value ? { ...value } : undefined)
+    setSelectedAttribute(value ?? undefined)
 
     const options = getCrmFilterConditionsOptions(
       targetFilterOptionValue?.AttributeType,
@@ -136,12 +151,26 @@ export const FilterItem = ({
   }
 
   React.useEffect(() => {
-    onConditionChanged?.(optionId, {
+    const nextCondition: AppliedFilterCondition = {
       filterOption: selectedAttribute?.FilterOptionConfig,
       condition: selectedFilterCondition,
       values: selectedConditionValues,
       isDisabled,
-    })
+    }
+
+    const previousCondition = lastConditionRef.current
+    if (
+      previousCondition?.filterOption === nextCondition.filterOption &&
+      previousCondition?.condition === nextCondition.condition &&
+      previousCondition?.isDisabled === nextCondition.isDisabled &&
+      previousCondition?.values.length === nextCondition.values.length &&
+      previousCondition?.values.every((value, index) => value === nextCondition.values[index])
+    ) {
+      return
+    }
+
+    lastConditionRef.current = nextCondition
+    onConditionChanged?.(optionId, nextCondition)
   }, [
     isDisabled,
     optionId,
@@ -154,7 +183,9 @@ export const FilterItem = ({
   return (
     <div
       className={clsx(
-        'flex flex-row gap-4 py-4 border-b border-b-gray-300 rounded-sm',
+        'flex flex-row gap-4 py-4 border-b border-b-gray-300',
+        groupPosition === 'none' ? 'rounded-sm' : 'border-x border-zinc-300 px-3',
+        groupPosition === 'last' || groupPosition === 'only' ? 'rounded-b-lg' : '',
         isDropTarget ? 'bg-teal-50' : ''
       )}
       onDragOver={onDragOver}
@@ -193,6 +224,7 @@ export const FilterItem = ({
       <div className="w-36 grow-3">
         <Combobox
           options={visibleOptions}
+          by={compareFilterOption}
           displayValue={(option: FilterOption) =>
             getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName
           }

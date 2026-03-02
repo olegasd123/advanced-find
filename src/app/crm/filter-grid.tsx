@@ -283,51 +283,6 @@ export const FilterGrid = ({
     setDropTargetKey(`item:${optionId}`)
   }
 
-  const handleGroupDragOver = (event: React.DragEvent<HTMLDivElement>, groupId: number): void => {
-    if (!draggingOptionId) {
-      return
-    }
-
-    event.preventDefault()
-    setDropTargetKey(`group:${groupId}`)
-  }
-
-  const handleDropOnGroup = (groupId: number): void => {
-    const optionId = draggingOptionId
-    if (!optionId) {
-      return
-    }
-
-    setGroupsById((previous) => {
-      const next = cloneGroups(previous)
-      const sourceGroupId = getGroupIdByOptionId(next, optionId)
-      if (sourceGroupId === groupId) {
-        return compactGroups(next, visibleFilterOptions)
-      }
-
-      if (sourceGroupId !== undefined) {
-        next[sourceGroupId].optionIds = next[sourceGroupId].optionIds.filter(
-          (groupedOptionId) => groupedOptionId !== optionId
-        )
-      }
-
-      const targetGroup = next[groupId]
-      if (!targetGroup) {
-        return compactGroups(next, visibleFilterOptions)
-      }
-
-      targetGroup.optionIds = sortOptionIdsByVisibleOrder(
-        [...targetGroup.optionIds, optionId],
-        visibleFilterOptions
-      )
-
-      return compactGroups(next, visibleFilterOptions)
-    })
-
-    setDraggingOptionId(undefined)
-    setDropTargetKey(undefined)
-  }
-
   const handleDropOnItem = (targetOptionId: number): void => {
     const sourceOptionId = draggingOptionId
     if (!sourceOptionId || sourceOptionId === targetOptionId) {
@@ -408,10 +363,23 @@ export const FilterGrid = ({
 
   const handleConditionChanged = React.useCallback(
     (optionId: number, condition: AppliedFilterCondition): void => {
-      setConditionsById((previous) => ({
-        ...previous,
-        [optionId]: condition,
-      }))
+      setConditionsById((previous) => {
+        const previousCondition = previous[optionId]
+        if (
+          previousCondition?.filterOption === condition.filterOption &&
+          previousCondition?.condition === condition.condition &&
+          previousCondition?.isDisabled === condition.isDisabled &&
+          previousCondition?.values.length === condition.values.length &&
+          previousCondition?.values.every((value, index) => value === condition.values[index])
+        ) {
+          return previous
+        }
+
+        return {
+          ...previous,
+          [optionId]: condition,
+        }
+      })
     },
     []
   )
@@ -468,14 +436,10 @@ export const FilterGrid = ({
     return selected
   }, [conditionsById, entityConfig?.FilterUniqueOptionsOnly, visibleFilterOptions])
 
-  const visibleOptionsById = React.useMemo(() => {
-    return visibleFilterOptions.reduce<Map<number, VisibleFilterOption>>((map, item) => {
-      map.set(item.id, item)
-      return map
-    }, new Map<number, VisibleFilterOption>())
-  }, [visibleFilterOptions])
-
-  const renderFilterItem = (item: VisibleFilterOption): React.ReactNode => {
+  const renderFilterItem = (
+    item: VisibleFilterOption,
+    groupPosition: 'none' | 'first' | 'middle' | 'last' | 'only' = 'none'
+  ): React.ReactNode => {
     return (
       <FilterItem
         key={item.id}
@@ -483,6 +447,7 @@ export const FilterGrid = ({
         options={filterOptions ?? []}
         selectedFilterOptions={selectedFilterOptions}
         currentOption={item.option}
+        groupPosition={groupPosition}
         isDropTarget={dropTargetKey === `item:${item.id}`}
         onDeleteCondition={() => handleDeleteCondition(item.id)}
         onDragStart={() => handleDragStart(item.id)}
@@ -509,59 +474,49 @@ export const FilterGrid = ({
 
       {visibleFilterOptions.map((item) => {
         const groupId = groupIdByOptionId.get(item.id)
-        if (groupId === undefined) {
-          return renderFilterItem(item)
-        }
-
-        const group = groupsById[groupId]
-        if (!group || group.optionIds[0] !== item.id) {
-          return null
-        }
+        const group = groupId !== undefined ? groupsById[groupId] : undefined
+        const isGroupStart = Boolean(group && group.optionIds[0] === item.id)
+        const groupOptionIndex = group ? group.optionIds.indexOf(item.id) : -1
+        const isOnlyItemInGroup = group ? group.optionIds.length === 1 : false
+        const groupPosition: 'none' | 'first' | 'middle' | 'last' | 'only' =
+          !group
+            ? 'none'
+            : isOnlyItemInGroup
+              ? 'only'
+              : groupOptionIndex === 0
+                ? 'first'
+                : groupOptionIndex === group.optionIds.length - 1
+                  ? 'last'
+                  : 'middle'
 
         return (
-          <div
-            key={`group-${group.id}`}
-            className={clsx(
-              'my-3 rounded-lg border border-zinc-300 px-3',
-              dropTargetKey === `group:${group.id}` ? 'bg-teal-50' : ''
-            )}
-            onDragOver={(event) => handleGroupDragOver(event, group.id)}
-            onDragLeave={() => {
-              if (dropTargetKey === `group:${group.id}`) {
-                setDropTargetKey(undefined)
-              }
-            }}
-            onDrop={(event) => {
-              event.preventDefault()
-              handleDropOnGroup(group.id)
-            }}
-          >
-            <div className="flex items-center justify-between gap-3 pt-3 pb-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">Group</span>
-                <Select
-                  value={group.operator}
-                  onChange={(event) =>
-                    handleGroupOperatorChanged(group.id, event.target.value as FilterGroupOperator)
-                  }
-                >
-                  <option value="and">AND</option>
-                  <option value="or">OR</option>
-                </Select>
+          <React.Fragment key={item.id}>
+            {isGroupStart && group && (
+              <div
+                className={clsx(
+                  'mt-3 flex items-center justify-between gap-3 rounded-t-lg border border-zinc-300 border-b-0 px-3 pt-3 pb-1',
+                  'bg-white'
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Group</span>
+                  <Select
+                    value={group.operator}
+                    onChange={(event) =>
+                      handleGroupOperatorChanged(group.id, event.target.value as FilterGroupOperator)
+                    }
+                  >
+                    <option value="and">AND</option>
+                    <option value="or">OR</option>
+                  </Select>
+                </div>
+                <Button outline onClick={() => handleUngroup(group.id)}>
+                  Ungroup
+                </Button>
               </div>
-              <Button outline onClick={() => handleUngroup(group.id)}>
-                Ungroup
-              </Button>
-            </div>
-            {group.optionIds.map((optionId) => {
-              const groupItem = visibleOptionsById.get(optionId)
-              if (!groupItem) {
-                return null
-              }
-
-              return renderFilterItem(groupItem)
-            })}
-          </div>
+            )}
+            {renderFilterItem(item, groupPosition)}
+          </React.Fragment>
         )
       })}
 
