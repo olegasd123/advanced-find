@@ -31,6 +31,8 @@ interface DefaultFilterState {
   groupsById: Record<number, FilterGroupState>
 }
 
+const DRAG_MOVEMENT_THRESHOLD_PX = 6
+
 const normalizeGroupOperator = (operator: FilterGroupOperator | undefined): FilterGroupOperator => {
   return operator === 'or' ? 'or' : 'and'
 }
@@ -129,6 +131,8 @@ export const FilterGrid = ({
   const groupIdRef = React.useRef(0)
   const draggingOptionIdRef = React.useRef<number | undefined>(undefined)
   const pointerDropTargetOptionIdRef = React.useRef<number | undefined>(undefined)
+  const dragStartPointRef = React.useRef<{ x: number; y: number } | undefined>(undefined)
+  const didDragRef = React.useRef(false)
 
   const getDefaultFilterState = React.useCallback(
     (options?: FilterOption[]): DefaultFilterState => {
@@ -206,6 +210,8 @@ export const FilterGrid = ({
     setDragPreviewPosition(undefined)
     draggingOptionIdRef.current = undefined
     pointerDropTargetOptionIdRef.current = undefined
+    dragStartPointRef.current = undefined
+    didDragRef.current = false
     setDropTargetKey(undefined)
     optionIdRef.current = 0
     groupIdRef.current = 0
@@ -274,6 +280,8 @@ export const FilterGrid = ({
     setDragPreviewPosition(undefined)
     pointerDropTargetOptionIdRef.current = undefined
     draggingOptionIdRef.current = undefined
+    dragStartPointRef.current = undefined
+    didDragRef.current = false
     setDraggingOptionId(undefined)
     setDropTargetKey(undefined)
   }
@@ -282,9 +290,30 @@ export const FilterGrid = ({
     setDragPreviewPosition(undefined)
     pointerDropTargetOptionIdRef.current = undefined
     draggingOptionIdRef.current = undefined
+    dragStartPointRef.current = undefined
+    didDragRef.current = false
     setDraggingOptionId(undefined)
     setDropTargetKey(undefined)
   }, [])
+
+  const removeOptionFromGroup = React.useCallback(
+    (sourceOptionId: number): void => {
+      setGroupsById((previous) => {
+        const sourceGroupId = getGroupIdByOptionId(previous, sourceOptionId)
+        if (sourceGroupId === undefined) {
+          return previous
+        }
+
+        const next = cloneGroups(previous)
+        next[sourceGroupId].optionIds = next[sourceGroupId].optionIds.filter(
+          (groupedOptionId) => groupedOptionId !== sourceOptionId
+        )
+
+        return compactGroups(next, visibleFilterOptions)
+      })
+    },
+    [visibleFilterOptions]
+  )
 
   const applyDropOnItem = React.useCallback(
     (sourceOptionId: number, targetOptionId: number): void => {
@@ -339,6 +368,8 @@ export const FilterGrid = ({
     event: React.PointerEvent<HTMLDivElement>
   ): void => {
     draggingOptionIdRef.current = optionId
+    dragStartPointRef.current = { x: event.clientX, y: event.clientY }
+    didDragRef.current = false
     setDraggingOptionId(optionId)
     setDragPreviewPosition({ x: event.clientX, y: event.clientY })
     pointerDropTargetOptionIdRef.current = undefined
@@ -416,27 +447,57 @@ export const FilterGrid = ({
 
     const handlePointerMove = (event: PointerEvent): void => {
       setDragPreviewPosition({ x: event.clientX, y: event.clientY })
+
+      if (didDragRef.current) {
+        return
+      }
+
+      const startPoint = dragStartPointRef.current
+      if (!startPoint) {
+        return
+      }
+
+      const deltaX = event.clientX - startPoint.x
+      const deltaY = event.clientY - startPoint.y
+      if (
+        deltaX * deltaX + deltaY * deltaY >=
+        DRAG_MOVEMENT_THRESHOLD_PX * DRAG_MOVEMENT_THRESHOLD_PX
+      ) {
+        didDragRef.current = true
+      }
     }
 
     const handlePointerEnd = (): void => {
       const sourceOptionId = draggingOptionIdRef.current
       const targetOptionId = pointerDropTargetOptionIdRef.current
-      if (sourceOptionId && targetOptionId && sourceOptionId !== targetOptionId) {
-        applyDropOnItem(sourceOptionId, targetOptionId)
+      if (!sourceOptionId || !didDragRef.current) {
+        clearDragState()
+        return
       }
+
+      if (targetOptionId && sourceOptionId !== targetOptionId) {
+        applyDropOnItem(sourceOptionId, targetOptionId)
+      } else {
+        removeOptionFromGroup(sourceOptionId)
+      }
+
+      clearDragState()
+    }
+
+    const handlePointerCancel = (): void => {
       clearDragState()
     }
 
     window.addEventListener('pointermove', handlePointerMove, true)
     window.addEventListener('pointerup', handlePointerEnd, true)
-    window.addEventListener('pointercancel', handlePointerEnd, true)
+    window.addEventListener('pointercancel', handlePointerCancel, true)
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove, true)
       window.removeEventListener('pointerup', handlePointerEnd, true)
-      window.removeEventListener('pointercancel', handlePointerEnd, true)
+      window.removeEventListener('pointercancel', handlePointerCancel, true)
     }
-  }, [applyDropOnItem, clearDragState, draggingOptionId])
+  }, [applyDropOnItem, clearDragState, draggingOptionId, removeOptionFromGroup])
 
   const handleGroupOperatorChanged = (groupId: number, operator: FilterGroupOperator): void => {
     setGroupsById((previous) => {
