@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Bars3Icon } from '@heroicons/react/16/solid'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
 import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
 import { EntityConfig, FilterGroupOperator, FilterOptionConfig } from '../../libs/config/app-config'
@@ -117,11 +118,17 @@ export const FilterGrid = ({
     Record<number, AppliedFilterCondition>
   >({})
   const [draggingOptionId, setDraggingOptionId] = React.useState<number>()
+  const [dragPreviewPosition, setDragPreviewPosition] = React.useState<{
+    x: number
+    y: number
+  }>()
   const [dropTargetKey, setDropTargetKey] = React.useState<string>()
   const crm = useCrmRepository()
   const requestIdRef = React.useRef(0)
   const optionIdRef = React.useRef(0)
   const groupIdRef = React.useRef(0)
+  const draggingOptionIdRef = React.useRef<number | undefined>(undefined)
+  const pointerDropTargetOptionIdRef = React.useRef<number | undefined>(undefined)
 
   const getDefaultFilterState = React.useCallback(
     (options?: FilterOption[]): DefaultFilterState => {
@@ -196,6 +203,9 @@ export const FilterGrid = ({
     setGroupsById({})
     setConditionsById({})
     setDraggingOptionId(undefined)
+    setDragPreviewPosition(undefined)
+    draggingOptionIdRef.current = undefined
+    pointerDropTargetOptionIdRef.current = undefined
     setDropTargetKey(undefined)
     optionIdRef.current = 0
     groupIdRef.current = 0
@@ -261,41 +271,44 @@ export const FilterGrid = ({
     setConditionsById({})
     setVisibleFilterOptions(defaultFilterState.visibleFilterOptions)
     setGroupsById(defaultFilterState.groupsById)
+    setDragPreviewPosition(undefined)
+    pointerDropTargetOptionIdRef.current = undefined
+    draggingOptionIdRef.current = undefined
     setDraggingOptionId(undefined)
     setDropTargetKey(undefined)
   }
 
-  const handleDragStart = (optionId: number): void => {
-    setDraggingOptionId(optionId)
-  }
-
-  const handleDragEnd = (): void => {
+  const clearDragState = React.useCallback((): void => {
+    setDragPreviewPosition(undefined)
+    pointerDropTargetOptionIdRef.current = undefined
+    draggingOptionIdRef.current = undefined
     setDraggingOptionId(undefined)
     setDropTargetKey(undefined)
-  }
+  }, [])
 
-  const handleItemDragOver = (event: React.DragEvent<HTMLDivElement>, optionId: number): void => {
-    if (!draggingOptionId || draggingOptionId === optionId) {
-      return
-    }
+  const applyDropOnItem = React.useCallback(
+    (sourceOptionId: number, targetOptionId: number): void => {
+      setGroupsById((previous) => {
+        const next = cloneGroups(previous)
+        const sourceGroupId = getGroupIdByOptionId(next, sourceOptionId)
+        const targetGroupId = getGroupIdByOptionId(next, targetOptionId)
 
-    event.preventDefault()
-    setDropTargetKey(`item:${optionId}`)
-  }
+        if (targetGroupId !== undefined) {
+          if (sourceGroupId === targetGroupId) {
+            return compactGroups(next, visibleFilterOptions)
+          }
 
-  const handleDropOnItem = (targetOptionId: number): void => {
-    const sourceOptionId = draggingOptionId
-    if (!sourceOptionId || sourceOptionId === targetOptionId) {
-      return
-    }
+          if (sourceGroupId !== undefined) {
+            next[sourceGroupId].optionIds = next[sourceGroupId].optionIds.filter(
+              (groupedOptionId) => groupedOptionId !== sourceOptionId
+            )
+          }
 
-    setGroupsById((previous) => {
-      const next = cloneGroups(previous)
-      const sourceGroupId = getGroupIdByOptionId(next, sourceOptionId)
-      const targetGroupId = getGroupIdByOptionId(next, targetOptionId)
+          next[targetGroupId].optionIds = sortOptionIdsByVisibleOrder(
+            [...next[targetGroupId].optionIds, sourceOptionId],
+            visibleFilterOptions
+          )
 
-      if (targetGroupId !== undefined) {
-        if (sourceGroupId === targetGroupId) {
           return compactGroups(next, visibleFilterOptions)
         }
 
@@ -305,36 +318,116 @@ export const FilterGrid = ({
           )
         }
 
-        next[targetGroupId].optionIds = sortOptionIdsByVisibleOrder(
-          [...next[targetGroupId].optionIds, sourceOptionId],
-          visibleFilterOptions
-        )
+        const createdGroupId = ++groupIdRef.current
+        next[createdGroupId] = {
+          id: createdGroupId,
+          operator: 'and',
+          optionIds: sortOptionIdsByVisibleOrder(
+            [targetOptionId, sourceOptionId],
+            visibleFilterOptions
+          ),
+        }
 
         return compactGroups(next, visibleFilterOptions)
-      }
+      })
+    },
+    [visibleFilterOptions]
+  )
 
-      if (sourceGroupId !== undefined) {
-        next[sourceGroupId].optionIds = next[sourceGroupId].optionIds.filter(
-          (groupedOptionId) => groupedOptionId !== sourceOptionId
-        )
-      }
-
-      const createdGroupId = ++groupIdRef.current
-      next[createdGroupId] = {
-        id: createdGroupId,
-        operator: 'and',
-        optionIds: sortOptionIdsByVisibleOrder(
-          [targetOptionId, sourceOptionId],
-          visibleFilterOptions
-        ),
-      }
-
-      return compactGroups(next, visibleFilterOptions)
-    })
-
-    setDraggingOptionId(undefined)
+  const handlePointerDragStart = (
+    optionId: number,
+    event: React.PointerEvent<HTMLDivElement>
+  ): void => {
+    draggingOptionIdRef.current = optionId
+    setDraggingOptionId(optionId)
+    setDragPreviewPosition({ x: event.clientX, y: event.clientY })
+    pointerDropTargetOptionIdRef.current = undefined
     setDropTargetKey(undefined)
   }
+
+  const readOptionIdFromDataTransfer = (
+    event: React.DragEvent<HTMLDivElement>
+  ): number | undefined => {
+    const rawValue = event.dataTransfer.getData('text/plain')
+    if (!rawValue) {
+      return undefined
+    }
+
+    const parsedValue = Number.parseInt(rawValue, 10)
+    return Number.isInteger(parsedValue) ? parsedValue : undefined
+  }
+
+  const getDraggingOptionId = (event?: React.DragEvent<HTMLDivElement>): number | undefined => {
+    return (
+      draggingOptionIdRef.current ??
+      draggingOptionId ??
+      (event ? readOptionIdFromDataTransfer(event) : undefined)
+    )
+  }
+
+  const handleItemDragOver = (event: React.DragEvent<HTMLDivElement>, optionId: number): void => {
+    const sourceOptionId = getDraggingOptionId(event)
+    if (!sourceOptionId || sourceOptionId === optionId) {
+      return
+    }
+
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'move'
+    pointerDropTargetOptionIdRef.current = optionId
+    setDropTargetKey(`item:${optionId}`)
+  }
+
+  const handleItemPointerEnter = (optionId: number): void => {
+    const sourceOptionId = draggingOptionIdRef.current ?? draggingOptionId
+    if (!sourceOptionId || sourceOptionId === optionId) {
+      return
+    }
+
+    pointerDropTargetOptionIdRef.current = optionId
+    setDropTargetKey(`item:${optionId}`)
+  }
+
+  const handleDropOnItem = (
+    targetOptionId: number,
+    event: React.DragEvent<HTMLDivElement>
+  ): void => {
+    const sourceOptionId = getDraggingOptionId(event)
+    if (!sourceOptionId || sourceOptionId === targetOptionId) {
+      return
+    }
+
+    applyDropOnItem(sourceOptionId, targetOptionId)
+    clearDragState()
+  }
+
+  React.useEffect(() => {
+    if (!draggingOptionId) {
+      return
+    }
+
+    const handlePointerMove = (event: PointerEvent): void => {
+      setDragPreviewPosition({ x: event.clientX, y: event.clientY })
+    }
+
+    const handlePointerEnd = (): void => {
+      const sourceOptionId = draggingOptionIdRef.current
+      const targetOptionId = pointerDropTargetOptionIdRef.current
+      if (sourceOptionId && targetOptionId && sourceOptionId !== targetOptionId) {
+        applyDropOnItem(sourceOptionId, targetOptionId)
+      }
+      clearDragState()
+    }
+
+    window.addEventListener('pointermove', handlePointerMove, true)
+    window.addEventListener('pointerup', handlePointerEnd, true)
+    window.addEventListener('pointercancel', handlePointerEnd, true)
+
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove, true)
+      window.removeEventListener('pointerup', handlePointerEnd, true)
+      window.removeEventListener('pointercancel', handlePointerEnd, true)
+    }
+  }, [applyDropOnItem, clearDragState, draggingOptionId])
 
   const handleGroupOperatorChanged = (groupId: number, operator: FilterGroupOperator): void => {
     setGroupsById((previous) => {
@@ -450,15 +543,15 @@ export const FilterGrid = ({
         groupPosition={groupPosition}
         isDropTarget={dropTargetKey === `item:${item.id}`}
         onDeleteCondition={() => handleDeleteCondition(item.id)}
-        onDragStart={() => handleDragStart(item.id)}
-        onDragEnd={handleDragEnd}
+        onPointerDragStart={(event) => handlePointerDragStart(item.id, event)}
+        onPointerEnter={() => handleItemPointerEnter(item.id)}
         onDragOver={(event) => handleItemDragOver(event, item.id)}
         onDragLeave={() => {
           if (dropTargetKey === `item:${item.id}`) {
             setDropTargetKey(undefined)
           }
         }}
-        onDrop={() => handleDropOnItem(item.id)}
+        onDrop={(event) => handleDropOnItem(item.id, event)}
         onConditionChanged={handleConditionChanged}
       />
     )
@@ -526,6 +619,19 @@ export const FilterGrid = ({
         onResetFilters={handleResetFilters}
         onSearch={handleSearch}
       />
+
+      {dragPreviewPosition && (
+        <div
+          className="pointer-events-none fixed z-50 flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-300 bg-white/95 text-zinc-500 shadow-md"
+          style={{
+            left: dragPreviewPosition.x - 18,
+            top: dragPreviewPosition.y - 18,
+          }}
+          aria-hidden="true"
+        >
+          <Bars3Icon className="size-4" />
+        </div>
+      )}
     </div>
   )
 }

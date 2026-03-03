@@ -28,8 +28,8 @@ export const FilterItem = ({
   groupPosition = 'none',
   isDropTarget,
   onDeleteCondition,
-  onDragStart,
-  onDragEnd,
+  onPointerDragStart,
+  onPointerEnter,
   onDragOver,
   onDragLeave,
   onDrop,
@@ -42,11 +42,11 @@ export const FilterItem = ({
   groupPosition?: 'none' | 'first' | 'middle' | 'last' | 'only'
   isDropTarget?: boolean
   onDeleteCondition?: () => void
-  onDragStart?: () => void
-  onDragEnd?: () => void
+  onPointerDragStart?: (event: React.PointerEvent<HTMLDivElement>) => void
+  onPointerEnter?: () => void
   onDragOver?: (event: React.DragEvent<HTMLDivElement>) => void
   onDragLeave?: () => void
-  onDrop?: () => void
+  onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
   onConditionChanged?: (optionId: number, condition: AppliedFilterCondition) => void
 }) => {
   const [selectedAttribute, setSelectedAttribute] = React.useState<FilterOption | undefined>(
@@ -188,22 +188,25 @@ export const FilterItem = ({
         groupPosition === 'last' || groupPosition === 'only' ? 'rounded-b-lg' : '',
         isDropTarget ? 'bg-teal-50' : ''
       )}
+      onPointerEnter={onPointerEnter}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={(event) => {
         event.preventDefault()
-        onDrop?.()
+        onDrop?.(event)
       }}
     >
       <div className="w-8 grow-0">
         <div
-          className="flex h-9 items-center justify-center rounded-lg border border-zinc-300 bg-white text-zinc-500 cursor-grab active:cursor-grabbing"
-          draggable
-          onDragStart={(event) => {
-            event.dataTransfer.setData('text/plain', String(optionId))
-            onDragStart?.()
+          className="flex h-9 items-center justify-center rounded-lg border border-zinc-300 bg-white text-zinc-500 cursor-grab active:cursor-grabbing touch-none"
+          draggable={false}
+          onPointerDown={(event) => {
+            if (event.button !== 0) {
+              return
+            }
+            event.preventDefault()
+            onPointerDragStart?.(event)
           }}
-          onDragEnd={onDragEnd}
           aria-label="Drag condition"
           title="Drag condition to create or move group"
         >
