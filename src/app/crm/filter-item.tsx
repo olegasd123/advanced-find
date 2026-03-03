@@ -63,6 +63,7 @@ export const FilterItem = ({
   const [isDisabled, setIsDisabled] = React.useState<boolean | undefined>(false)
   const [selectedConditionValues, setSelectedConditionValues] = React.useState<ConditionValue[]>([])
   const lastConditionRef = React.useRef<AppliedFilterCondition | undefined>(undefined)
+  const hasInsetGroupDivider = groupPosition === 'first' || groupPosition === 'middle'
 
   const localization = useAppConfiguration()?.SearchScheme?.Localization
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
@@ -185,9 +186,14 @@ export const FilterItem = ({
   return (
     <div
       className={clsx(
-        'flex flex-row gap-4 py-4 border-b border-b-gray-300',
-        groupPosition === 'none' ? 'rounded-sm' : 'border-x border-zinc-300 px-3',
-        groupPosition === 'last' || groupPosition === 'only' ? 'rounded-b-lg' : '',
+        'flex flex-row gap-4 py-4',
+        groupPosition === 'none' ? 'border-b border-b-gray-300 rounded-sm' : 'border-x border-zinc-300 px-3',
+        hasInsetGroupDivider
+          ? 'relative after:absolute after:bottom-0 after:left-3 after:right-3 after:border-b after:border-zinc-300'
+          : '',
+        groupPosition === 'last' || groupPosition === 'only'
+          ? 'border-b border-zinc-300 rounded-b-lg'
+          : '',
         isDropTarget ? 'bg-teal-50' : ''
       )}
       onPointerEnter={onPointerEnter}

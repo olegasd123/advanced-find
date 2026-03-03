@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Bars3Icon } from '@heroicons/react/16/solid'
+import { Bars3Icon, LinkSlashIcon } from '@heroicons/react/16/solid'
 import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
 import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
 import { EntityConfig, FilterGroupOperator, FilterOptionConfig } from '../../libs/config/app-config'
@@ -602,7 +602,7 @@ export const FilterGrid = ({
                 )}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">Group</span>
+                  <span className="text-sm">Group</span>
                   <Select
                     value={group.operator}
                     onChange={(event) =>
@@ -613,8 +613,13 @@ export const FilterGrid = ({
                     <option value="or">OR</option>
                   </Select>
                 </div>
-                <Button outline onClick={() => handleUngroup(group.id)}>
-                  Ungroup
+                <Button
+                  outline
+                  onClick={() => handleUngroup(group.id)}
+                  aria-label="Ungroup"
+                  title="Ungroup"
+                >
+                  <LinkSlashIcon />
                 </Button>
               </div>
             )}
