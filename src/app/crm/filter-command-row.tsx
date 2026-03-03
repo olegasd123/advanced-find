@@ -37,7 +37,7 @@ export const FilterCommandRow = ({
     <>
       <div
         className={clsx(
-          'flex flex-row gap-4 py-4',
+          'flex flex-row items-center gap-4 py-4',
           location === 'header' ? 'border-b border-b-gray-300' : ''
         )}
       >
@@ -48,6 +48,7 @@ export const FilterCommandRow = ({
           </Button>
         </div>
         <div className="w-36 grow-3">
+          {location === 'header' && <span className="text-sm text-zinc-400">Attribute</span>}
           {location === 'footer' && (
             <Button
               outline
@@ -60,8 +61,11 @@ export const FilterCommandRow = ({
             </Button>
           )}
         </div>
-        <div className="w-24 grow-2"></div>
+        <div className="w-24 grow-2">
+          {location === 'header' && <span className="text-sm text-zinc-400">Condition</span>}
+        </div>
         <div className="w-64 grow-8">
+          {location === 'header' && <span className="text-sm text-zinc-400">Value</span>}
           {location === 'footer' && (
             <Button outline aria-label="Search" title="Search" onClick={onSearch}>
               <MagnifyingGlassIcon />
