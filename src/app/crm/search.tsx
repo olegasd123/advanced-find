@@ -9,12 +9,102 @@ import { ResultGrid } from './result-grid'
 import { createLogger } from '../../libs/utils/logger'
 import {
   AppliedFilterCondition,
+  buildCrmFilterFetchXml,
   buildCrmFetchXml,
   resolveSearchTableColumns,
   SearchTableColumn,
 } from '../../libs/utils/crm-search'
 
 const logger = createLogger('Search')
+const resultIdsChunkSize = 120
+
+interface SearchBranchPlan {
+  requiresTwoPass: boolean
+  branches: AppliedFilterCondition[][]
+}
+
+const normalizeResponseItems = (response: unknown): Record<string, unknown>[] => {
+  const items = Array.isArray(response)
+    ? response
+    : response && typeof response === 'object' && 'value' in response
+      ? ((response as { value?: unknown }).value ?? [])
+      : []
+  return Array.isArray(items) ? (items as Record<string, unknown>[]) : []
+}
+
+const removeConditionGroupInfo = (condition: AppliedFilterCondition): AppliedFilterCondition => {
+  return {
+    ...condition,
+    groupId: undefined,
+    groupOperator: undefined,
+  }
+}
+
+const buildSearchBranchPlan = (conditions: AppliedFilterCondition[]): SearchBranchPlan => {
+  const groupedConditions = new Map<
+    number,
+    { operator: AppliedFilterCondition['groupOperator']; conditions: AppliedFilterCondition[] }
+  >()
+  const baseConditions: AppliedFilterCondition[] = []
+
+  for (const condition of conditions) {
+    if (condition.groupId === undefined) {
+      baseConditions.push(removeConditionGroupInfo(condition))
+      continue
+    }
+
+    const group = groupedConditions.get(condition.groupId)
+    if (!group) {
+      groupedConditions.set(condition.groupId, {
+        operator: condition.groupOperator,
+        conditions: [removeConditionGroupInfo(condition)],
+      })
+      continue
+    }
+
+    group.conditions.push(removeConditionGroupInfo(condition))
+  }
+
+  const orGroups: AppliedFilterCondition[][] = []
+  for (const group of groupedConditions.values()) {
+    if (group.conditions.length <= 1 || group.operator !== 'or') {
+      baseConditions.push(...group.conditions)
+      continue
+    }
+
+    orGroups.push(group.conditions)
+  }
+
+  if (orGroups.length === 0) {
+    return { requiresTwoPass: false, branches: [baseConditions] }
+  }
+
+  let branches: AppliedFilterCondition[][] = [[]]
+  for (const orGroup of orGroups) {
+    const nextBranches: AppliedFilterCondition[][] = []
+    for (const branch of branches) {
+      for (const condition of orGroup) {
+        nextBranches.push([...branch, condition])
+      }
+    }
+    branches = nextBranches
+  }
+
+  const fullBranches = branches.map((branchConditions) => [...baseConditions, ...branchConditions])
+  return { requiresTwoPass: true, branches: fullBranches }
+}
+
+const splitIntoChunks = <T,>(items: T[], chunkSize: number): T[][] => {
+  if (items.length === 0) {
+    return []
+  }
+
+  const chunks: T[][] = []
+  for (let index = 0; index < items.length; index += chunkSize) {
+    chunks.push(items.slice(index, index + chunkSize))
+  }
+  return chunks
+}
 
 export const Search = () => {
   const [entitiesMetadata, setEntitiesMetadata] = React.useState<EntityMetadata[] | undefined>([])
@@ -159,14 +249,19 @@ export const Search = () => {
     }
 
     const tableColumns = resolveSearchTableColumns(currentEntityConfig)
-    const fetchXml = buildCrmFetchXml(currentEntityConfig.LogicalName, tableColumns, conditions)
     setSearchTableColumns(tableColumns)
+
+    const branchPlan = buildSearchBranchPlan(conditions)
+    const primaryIdAttribute =
+      selectedEntityMetadata?.PrimaryIdAttribute ?? `${currentEntityConfig.LogicalName}id`
 
     logger.info(`Executing search with conditions`, {
       entitySetName,
       tableColumns,
       conditions,
-      fetchXml,
+      requiresTwoPass: branchPlan.requiresTwoPass,
+      branchesCount: branchPlan.branches.length,
+      primaryIdAttribute,
     })
 
     setIsResultViewVisible(true)
@@ -175,13 +270,73 @@ export const Search = () => {
     setResultsError(undefined)
 
     try {
-      const response = await crmRepository.getEntities(entitySetName, [], { fetchXml })
-      const items = Array.isArray(response)
-        ? response
-        : response && typeof response === 'object' && 'value' in response
-          ? ((response as { value?: unknown }).value ?? [])
-          : []
-      setResults(Array.isArray(items) ? (items as Record<string, unknown>[]) : [])
+      if (!branchPlan.requiresTwoPass) {
+        const fetchXml = buildCrmFetchXml(
+          currentEntityConfig.LogicalName,
+          tableColumns,
+          branchPlan.branches[0] ?? []
+        )
+        logger.info(`Executing single-pass search with FetchXML`, { fetchXml })
+        const response = await crmRepository.getEntities(entitySetName, [], { fetchXml })
+        setResults(normalizeResponseItems(response))
+        return
+      }
+
+      const resultIds = new Set<string>()
+
+      for (const branchConditions of branchPlan.branches) {
+        const branchFetchXml = buildCrmFilterFetchXml(
+          currentEntityConfig.LogicalName,
+          branchConditions,
+          [primaryIdAttribute]
+        )
+        logger.info(`Executing branch search with FetchXML`, { fetchXml: branchFetchXml })
+        const branchResponse = await crmRepository.getEntities(entitySetName, [], {
+          fetchXml: branchFetchXml,
+        })
+        const branchItems = normalizeResponseItems(branchResponse)
+        for (const item of branchItems) {
+          const rawId = item[primaryIdAttribute]
+          if (rawId !== undefined && rawId !== null) {
+            resultIds.add(String(rawId))
+          }
+        }
+      }
+
+      if (resultIds.size === 0) {
+        setResults([])
+        return
+      }
+
+      const resultRows: Record<string, unknown>[] = []
+      for (const chunkIds of splitIntoChunks(Array.from(resultIds), resultIdsChunkSize)) {
+        const idCondition: AppliedFilterCondition = {
+          filterOption: {
+            EntityName: currentEntityConfig.LogicalName,
+            AttributeName: primaryIdAttribute,
+          },
+          condition: 'in',
+          values: chunkIds,
+        }
+        const finalFetchXml = buildCrmFetchXml(currentEntityConfig.LogicalName, tableColumns, [
+          idCondition,
+        ])
+        const finalResponse = await crmRepository.getEntities(entitySetName, [], {
+          fetchXml: finalFetchXml,
+        })
+        resultRows.push(...normalizeResponseItems(finalResponse))
+      }
+
+      const uniqueRowsById = new Map<string, Record<string, unknown>>()
+      for (const row of resultRows) {
+        const rawId = row[primaryIdAttribute]
+        if (rawId === undefined || rawId === null) {
+          continue
+        }
+        uniqueRowsById.set(String(rawId), row)
+      }
+
+      setResults(Array.from(uniqueRowsById.values()))
     } catch (error) {
       logger.error(`Failed to load search results: ${error}`)
       setResults([])

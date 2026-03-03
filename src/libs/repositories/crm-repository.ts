@@ -65,6 +65,7 @@ export interface GetEntitiesOptions {
 export interface EntityMetadata extends Metadata {
   EntitySetName: string
   LogicalCollectionName?: string
+  PrimaryIdAttribute?: string
   DisplayCollectionName: DisplayCollectionName
 }
 
@@ -115,9 +116,9 @@ export default class CrmRepository implements CrmData {
     return findAttributes(entityLogicalName, allAttributes, attributesLogicalNames)
   }
 
-  // EntityDefinitions(LogicalName='account')?$select=LogicalName,LogicalCollectionName,EntitySetName,DisplayName,DisplayCollectionName
+  // EntityDefinitions(LogicalName='account')?$select=LogicalName,LogicalCollectionName,EntitySetName,PrimaryIdAttribute,DisplayName,DisplayCollectionName
   async getEntitiesMetadata(logicalNames: string[] | undefined): Promise<EntityMetadata[]> {
-    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions?$select=LogicalName,LogicalCollectionName,EntitySetName,DisplayName,DisplayCollectionName`
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions?$select=LogicalName,LogicalCollectionName,EntitySetName,PrimaryIdAttribute,DisplayName,DisplayCollectionName`
     const entities = await fetch(url).then(
       async (result) => {
         const data = await result.json()

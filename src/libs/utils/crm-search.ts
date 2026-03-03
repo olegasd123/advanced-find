@@ -282,6 +282,28 @@ const createColumnValueKey = (
   return `col_${columnIndex}_${normalizedAttributeName}_${attributeIndex}`
 }
 
+const createRootSearchColumn = (attributeName: string, index: number): SearchTableColumn => {
+  return {
+    sourceColumn: {
+      AttributeNames: [attributeName],
+    },
+    columnKey: createColumnKey(index),
+    chain: [
+      {
+        AttributeNames: [attributeName],
+      },
+    ],
+    attributes: [
+      {
+        attributeName,
+        valueKey: attributeName,
+      },
+    ],
+    entityName: '',
+    isRootColumn: true,
+  }
+}
+
 const hasMeaningfulValues = (values: ConditionValue[]): boolean => {
   return values.some((value) => {
     if (typeof value === 'number') {
@@ -739,4 +761,15 @@ export const buildCrmFetchXml = (
   const linksXml = Array.from(rootLinks.values()).map(renderLinkNodeXml).join('')
 
   return `<fetch version="1.0" mapping="logical" distinct="false"><entity name="${escapeXml(entityLogicalName)}">${attributesXml}${rootFilterXml}${linksXml}</entity></fetch>`
+}
+
+export const buildCrmFilterFetchXml = (
+  entityLogicalName: string,
+  conditions: AppliedFilterCondition[],
+  rootAttributeNames: string[] = []
+): string => {
+  const rootColumns = rootAttributeNames.map((attributeName, index) =>
+    createRootSearchColumn(attributeName, index)
+  )
+  return buildCrmFetchXml(entityLogicalName, rootColumns, conditions)
 }
