@@ -10,9 +10,12 @@ interface FilterOptionsDefaultConfig {
 
 export type FilterGroupOperator = 'and' | 'or'
 
-export interface FilterGroupConfig {
+export interface DefaultFilterGroupConfig {
   FilterOptionIndexes: number[]
   Operator?: FilterGroupOperator
+  IsOperatorChangeable?: boolean
+  IsRemovable?: boolean
+  GroupTitle?: string
 }
 
 export interface ResultViewPaginationConfig {
@@ -60,7 +63,7 @@ export interface AppConfig {
 export interface EntityConfig {
   FilterUniqueOptionsOnly?: boolean
   FilterOptions: FilterOptionConfig[]
-  FilterGroups?: FilterGroupConfig[]
+  DefaultFilterGroups?: DefaultFilterGroupConfig[]
   LogicalName: string
   ResultView: ResultViewConfig
 }
@@ -75,6 +78,7 @@ export interface FilterOptionConfig {
   Control?: string
   EntityName?: string
   Default?: FilterOptionsDefaultConfig
+  Groupable?: boolean
   Selection?: SelectionConfig
   RelatedTo?: FilterOptionConfig
 }

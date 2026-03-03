@@ -28,6 +28,7 @@ export const FilterItem = ({
   selectedFilterOptions,
   currentOption,
   currentCondition,
+  isGroupable = true,
   groupPosition = 'none',
   isDropTarget,
   onDeleteCondition,
@@ -44,6 +45,7 @@ export const FilterItem = ({
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
   currentOption?: FilterOption
   currentCondition?: AppliedFilterCondition
+  isGroupable?: boolean
   groupPosition?: 'none' | 'first' | 'middle' | 'last' | 'only'
   isDropTarget?: boolean
   onDeleteCondition?: () => void
@@ -231,9 +233,17 @@ export const FilterItem = ({
     >
       <div className="w-8 grow-0">
         <div
-          className="flex h-9 items-center justify-center rounded-lg border border-zinc-300 bg-white text-zinc-500 cursor-grab active:cursor-grabbing touch-none"
+          className={clsx(
+            'flex h-9 items-center justify-center rounded-lg border border-zinc-300 bg-white text-zinc-500 touch-none',
+            isGroupable
+              ? 'cursor-grab active:cursor-grabbing'
+              : 'cursor-not-allowed !text-zinc-400 bg-zinc-100 !border-zinc-200'
+          )}
           draggable={false}
           onPointerDown={(event) => {
+            if (!isGroupable) {
+              return
+            }
             if (event.button !== 0) {
               return
             }
@@ -241,7 +251,12 @@ export const FilterItem = ({
             onPointerDragStart?.(event)
           }}
           aria-label="Drag condition"
-          title="Drag condition to create or move group"
+          title={
+            isGroupable
+              ? 'Drag condition to create or move group'
+              : 'Grouping is disabled for this condition'
+          }
+          aria-disabled={!isGroupable}
         >
           <Bars3Icon className="size-4" />
         </div>

@@ -24,6 +24,9 @@ interface FilterGroupState {
   id: number
   operator: FilterGroupOperator
   optionIds: number[]
+  isOperatorChangeable: boolean
+  isRemovable: boolean
+  title?: string
 }
 
 interface DefaultFilterState {
@@ -35,6 +38,11 @@ const DRAG_MOVEMENT_THRESHOLD_PX = 6
 
 const normalizeGroupOperator = (operator: FilterGroupOperator | undefined): FilterGroupOperator => {
   return operator === 'or' ? 'or' : 'and'
+}
+
+const normalizeGroupTitle = (title: string | undefined): string | undefined => {
+  const normalizedTitle = title?.trim()
+  return normalizedTitle ? normalizedTitle : undefined
 }
 
 const cloneGroups = (
@@ -151,6 +159,23 @@ export const FilterGrid = ({
   const pointerDropTargetOptionIdRef = React.useRef<number | undefined>(undefined)
   const dragStartPointRef = React.useRef<{ x: number; y: number } | undefined>(undefined)
   const didDragRef = React.useRef(false)
+  const isGroupableByOptionId = React.useMemo(() => {
+    const map = new Map<number, boolean>()
+    for (const item of visibleFilterOptions) {
+      const hasCondition = Object.prototype.hasOwnProperty.call(conditionsById, item.id)
+      const selectedFilterOption = hasCondition
+        ? conditionsById[item.id]?.filterOption
+        : item.option.FilterOptionConfig
+      map.set(item.id, selectedFilterOption?.Groupable !== false)
+    }
+    return map
+  }, [conditionsById, visibleFilterOptions])
+  const isOptionGroupable = React.useCallback(
+    (optionId: number): boolean => {
+      return isGroupableByOptionId.get(optionId) !== false
+    },
+    [isGroupableByOptionId]
+  )
 
   const getDefaultFilterState = React.useCallback(
     (options?: FilterOption[]): DefaultFilterState => {
@@ -175,7 +200,7 @@ export const FilterGrid = ({
       }
 
       const assignedOptionIds = new Set<number>()
-      for (const filterGroup of entityConfig?.FilterGroups ?? []) {
+      for (const filterGroup of entityConfig?.DefaultFilterGroups ?? []) {
         const collectedOptionIds: number[] = []
         for (const sourceIndex of filterGroup.FilterOptionIndexes ?? []) {
           if (!Number.isInteger(sourceIndex)) {
@@ -203,6 +228,9 @@ export const FilterGrid = ({
           id: groupId,
           operator: normalizeGroupOperator(filterGroup.Operator),
           optionIds: normalizedOptionIds,
+          isOperatorChangeable: filterGroup.IsOperatorChangeable !== false,
+          isRemovable: filterGroup.IsRemovable !== false,
+          title: normalizeGroupTitle(filterGroup.GroupTitle),
         }
 
         for (const optionId of normalizedOptionIds) {
@@ -215,7 +243,7 @@ export const FilterGrid = ({
         groupsById: groups,
       }
     },
-    [entityConfig?.FilterGroups]
+    [entityConfig?.DefaultFilterGroups]
   )
 
   React.useEffect(() => {
@@ -316,6 +344,10 @@ export const FilterGrid = ({
 
   const removeOptionFromGroup = React.useCallback(
     (sourceOptionId: number): void => {
+      if (!isOptionGroupable(sourceOptionId)) {
+        return
+      }
+
       const sourceGroupId = getGroupIdByOptionId(groupsById, sourceOptionId)
       if (sourceGroupId === undefined) {
         return
@@ -340,11 +372,15 @@ export const FilterGrid = ({
       setVisibleFilterOptions(nextVisibleFilterOptions)
       setGroupsById(compactGroups(nextGroups, nextVisibleFilterOptions))
     },
-    [groupsById, visibleFilterOptions]
+    [groupsById, isOptionGroupable, visibleFilterOptions]
   )
 
   const applyDropOnItem = React.useCallback(
     (sourceOptionId: number, targetOptionId: number): void => {
+      if (!isOptionGroupable(sourceOptionId) || !isOptionGroupable(targetOptionId)) {
+        return
+      }
+
       const nextVisibleFilterOptions = moveOptionAfterTarget(
         visibleFilterOptions,
         sourceOptionId,
@@ -378,6 +414,8 @@ export const FilterGrid = ({
         nextGroups[createdGroupId] = {
           id: createdGroupId,
           operator: 'and',
+          isOperatorChangeable: true,
+          isRemovable: true,
           optionIds: sortOptionIdsByVisibleOrder(
             [targetOptionId, sourceOptionId],
             nextVisibleFilterOptions
@@ -388,13 +426,17 @@ export const FilterGrid = ({
       setVisibleFilterOptions(nextVisibleFilterOptions)
       setGroupsById(compactGroups(nextGroups, nextVisibleFilterOptions))
     },
-    [groupsById, visibleFilterOptions]
+    [groupsById, isOptionGroupable, visibleFilterOptions]
   )
 
   const handlePointerDragStart = (
     optionId: number,
     event: React.PointerEvent<HTMLDivElement>
   ): void => {
+    if (!isOptionGroupable(optionId)) {
+      return
+    }
+
     draggingOptionIdRef.current = optionId
     dragStartPointRef.current = { x: event.clientX, y: event.clientY }
     didDragRef.current = false
@@ -426,7 +468,12 @@ export const FilterGrid = ({
 
   const handleItemDragOver = (event: React.DragEvent<HTMLDivElement>, optionId: number): void => {
     const sourceOptionId = getDraggingOptionId(event)
-    if (!sourceOptionId || sourceOptionId === optionId) {
+    if (
+      !sourceOptionId ||
+      sourceOptionId === optionId ||
+      !isOptionGroupable(sourceOptionId) ||
+      !isOptionGroupable(optionId)
+    ) {
       return
     }
 
@@ -438,7 +485,12 @@ export const FilterGrid = ({
 
   const handleItemPointerEnter = (optionId: number): void => {
     const sourceOptionId = draggingOptionIdRef.current ?? draggingOptionId
-    if (!sourceOptionId || sourceOptionId === optionId) {
+    if (
+      !sourceOptionId ||
+      sourceOptionId === optionId ||
+      !isOptionGroupable(sourceOptionId) ||
+      !isOptionGroupable(optionId)
+    ) {
       return
     }
 
@@ -460,7 +512,12 @@ export const FilterGrid = ({
     event: React.DragEvent<HTMLDivElement>
   ): void => {
     const sourceOptionId = getDraggingOptionId(event)
-    if (!sourceOptionId || sourceOptionId === targetOptionId) {
+    if (
+      !sourceOptionId ||
+      sourceOptionId === targetOptionId ||
+      !isOptionGroupable(sourceOptionId) ||
+      !isOptionGroupable(targetOptionId)
+    ) {
       return
     }
 
@@ -498,7 +555,7 @@ export const FilterGrid = ({
     const handlePointerEnd = (): void => {
       const sourceOptionId = draggingOptionIdRef.current
       const targetOptionId = pointerDropTargetOptionIdRef.current
-      if (!sourceOptionId || !didDragRef.current) {
+      if (!sourceOptionId || !didDragRef.current || !isOptionGroupable(sourceOptionId)) {
         clearDragState()
         return
       }
@@ -525,12 +582,12 @@ export const FilterGrid = ({
       window.removeEventListener('pointerup', handlePointerEnd, true)
       window.removeEventListener('pointercancel', handlePointerCancel, true)
     }
-  }, [applyDropOnItem, clearDragState, draggingOptionId, removeOptionFromGroup])
+  }, [applyDropOnItem, clearDragState, draggingOptionId, isOptionGroupable, removeOptionFromGroup])
 
   const handleGroupOperatorChanged = (groupId: number, operator: FilterGroupOperator): void => {
     setGroupsById((previous) => {
       const group = previous[groupId]
-      if (!group) {
+      if (!group || group.isOperatorChangeable === false) {
         return previous
       }
 
@@ -546,6 +603,9 @@ export const FilterGrid = ({
 
   const handleUngroup = (groupId: number): void => {
     setGroupsById((previous) => {
+      if (previous[groupId]?.isRemovable === false) {
+        return previous
+      }
       const next = { ...previous }
       delete next[groupId]
       return next
@@ -631,6 +691,8 @@ export const FilterGrid = ({
     item: VisibleFilterOption,
     groupPosition: 'none' | 'first' | 'middle' | 'last' | 'only' = 'none'
   ): React.ReactNode => {
+    const isGroupable = isOptionGroupable(item.id)
+
     return (
       <FilterItem
         key={item.id}
@@ -639,8 +701,9 @@ export const FilterGrid = ({
         selectedFilterOptions={selectedFilterOptions}
         currentOption={item.option}
         currentCondition={conditionsById[item.id]}
+        isGroupable={isGroupable}
         groupPosition={groupPosition}
-        isDropTarget={dropTargetKey === `item:${item.id}`}
+        isDropTarget={isGroupable && dropTargetKey === `item:${item.id}`}
         onDeleteCondition={() => handleDeleteCondition(item.id)}
         onPointerDragStart={(event) => handlePointerDragStart(item.id, event)}
         onPointerEnter={() => handleItemPointerEnter(item.id)}
@@ -695,6 +758,7 @@ export const FilterGrid = ({
                   <span className="text-sm">Group</span>
                   <Select
                     value={group.operator}
+                    disabled={!group.isOperatorChangeable}
                     onChange={(event) =>
                       handleGroupOperatorChanged(group.id, event.target.value as FilterGroupOperator)
                     }
@@ -703,11 +767,15 @@ export const FilterGrid = ({
                     <option value="or">OR</option>
                   </Select>
                 </div>
+                <div className="flex gap-2">
+                  {group.title && <span className="text-sm text-zinc-400">{group.title}</span>}
+                </div>
                 <Button
                   outline
                   onClick={() => handleUngroup(group.id)}
+                  disabled={!group.isRemovable}
                   aria-label="Ungroup"
-                  title="Ungroup"
+                  title={group.isRemovable ? 'Ungroup' : 'This group cannot be removed'}
                 >
                   <LinkSlashIcon />
                 </Button>

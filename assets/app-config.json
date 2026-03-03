@@ -155,11 +155,12 @@
             }
           }
         ],
-        "FilterGroups": [
+        "DefaultFilterGroups": [
           {
             "FilterOptionIndexes": [1, 2],
             "Operator": "and",
-            "GroupName": "Name and category",
+            "GroupTitle": "Title if the group has more than 1 filter option",
+            "IsOperatorChangeable": false,
             "IsRemovable": false
           }
         ]
