@@ -128,7 +128,8 @@
             "AttributeName": "name",
             "Default": {
               "IsShowed": true
-            }
+            },
+            "Groupable": false
           },
           {
             "AttributeName": "accountcategorycode",
@@ -157,7 +158,9 @@
         "FilterGroups": [
           {
             "FilterOptionIndexes": [1, 2],
-            "Operator": "and"
+            "Operator": "and",
+            "GroupName": "Name and category",
+            "IsRemovable": false
           }
         ]
       }
