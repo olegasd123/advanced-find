@@ -83,6 +83,24 @@ const sortOptionIdsByVisibleOrder = (
   })
 }
 
+const moveOptionAfterTarget = (
+  visibleFilterOptions: VisibleFilterOption[],
+  sourceOptionId: number,
+  targetOptionId: number
+): VisibleFilterOption[] => {
+  const sourceIndex = visibleFilterOptions.findIndex((item) => item.id === sourceOptionId)
+  const targetIndex = visibleFilterOptions.findIndex((item) => item.id === targetOptionId)
+  if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) {
+    return visibleFilterOptions
+  }
+
+  const next = [...visibleFilterOptions]
+  const [sourceItem] = next.splice(sourceIndex, 1)
+  const adjustedTargetIndex = sourceIndex < targetIndex ? targetIndex - 1 : targetIndex
+  next.splice(adjustedTargetIndex + 1, 0, sourceItem)
+  return next
+}
+
 const compactGroups = (
   groupsById: Record<number, FilterGroupState>,
   visibleFilterOptions: VisibleFilterOption[]
@@ -298,69 +316,79 @@ export const FilterGrid = ({
 
   const removeOptionFromGroup = React.useCallback(
     (sourceOptionId: number): void => {
-      setGroupsById((previous) => {
-        const sourceGroupId = getGroupIdByOptionId(previous, sourceOptionId)
-        if (sourceGroupId === undefined) {
-          return previous
-        }
+      const sourceGroupId = getGroupIdByOptionId(groupsById, sourceOptionId)
+      if (sourceGroupId === undefined) {
+        return
+      }
 
-        const next = cloneGroups(previous)
-        next[sourceGroupId].optionIds = next[sourceGroupId].optionIds.filter(
-          (groupedOptionId) => groupedOptionId !== sourceOptionId
-        )
+      const sourceGroup = groupsById[sourceGroupId]
+      const remainingOptionIds = sourceGroup.optionIds.filter(
+        (groupedOptionId) => groupedOptionId !== sourceOptionId
+      )
+      const sortedRemainingOptionIds = sortOptionIdsByVisibleOrder(
+        remainingOptionIds,
+        visibleFilterOptions
+      )
+      const anchorOptionId = sortedRemainingOptionIds.at(-1)
+      const nextVisibleFilterOptions = anchorOptionId
+        ? moveOptionAfterTarget(visibleFilterOptions, sourceOptionId, anchorOptionId)
+        : visibleFilterOptions
 
-        return compactGroups(next, visibleFilterOptions)
-      })
+      const nextGroups = cloneGroups(groupsById)
+      nextGroups[sourceGroupId].optionIds = remainingOptionIds
+
+      setVisibleFilterOptions(nextVisibleFilterOptions)
+      setGroupsById(compactGroups(nextGroups, nextVisibleFilterOptions))
     },
-    [visibleFilterOptions]
+    [groupsById, visibleFilterOptions]
   )
 
   const applyDropOnItem = React.useCallback(
     (sourceOptionId: number, targetOptionId: number): void => {
-      setGroupsById((previous) => {
-        const next = cloneGroups(previous)
-        const sourceGroupId = getGroupIdByOptionId(next, sourceOptionId)
-        const targetGroupId = getGroupIdByOptionId(next, targetOptionId)
+      const nextVisibleFilterOptions = moveOptionAfterTarget(
+        visibleFilterOptions,
+        sourceOptionId,
+        targetOptionId
+      )
+      const nextGroups = cloneGroups(groupsById)
+      const sourceGroupId = getGroupIdByOptionId(nextGroups, sourceOptionId)
+      const targetGroupId = getGroupIdByOptionId(nextGroups, targetOptionId)
 
-        if (targetGroupId !== undefined) {
-          if (sourceGroupId === targetGroupId) {
-            return compactGroups(next, visibleFilterOptions)
-          }
-
+      if (targetGroupId !== undefined) {
+        if (sourceGroupId !== targetGroupId) {
           if (sourceGroupId !== undefined) {
-            next[sourceGroupId].optionIds = next[sourceGroupId].optionIds.filter(
+            nextGroups[sourceGroupId].optionIds = nextGroups[sourceGroupId].optionIds.filter(
               (groupedOptionId) => groupedOptionId !== sourceOptionId
             )
           }
 
-          next[targetGroupId].optionIds = sortOptionIdsByVisibleOrder(
-            [...next[targetGroupId].optionIds, sourceOptionId],
-            visibleFilterOptions
+          nextGroups[targetGroupId].optionIds = sortOptionIdsByVisibleOrder(
+            [...nextGroups[targetGroupId].optionIds, sourceOptionId],
+            nextVisibleFilterOptions
           )
-
-          return compactGroups(next, visibleFilterOptions)
         }
-
+      } else {
         if (sourceGroupId !== undefined) {
-          next[sourceGroupId].optionIds = next[sourceGroupId].optionIds.filter(
+          nextGroups[sourceGroupId].optionIds = nextGroups[sourceGroupId].optionIds.filter(
             (groupedOptionId) => groupedOptionId !== sourceOptionId
           )
         }
 
         const createdGroupId = ++groupIdRef.current
-        next[createdGroupId] = {
+        nextGroups[createdGroupId] = {
           id: createdGroupId,
           operator: 'and',
           optionIds: sortOptionIdsByVisibleOrder(
             [targetOptionId, sourceOptionId],
-            visibleFilterOptions
+            nextVisibleFilterOptions
           ),
         }
+      }
 
-        return compactGroups(next, visibleFilterOptions)
-      })
+      setVisibleFilterOptions(nextVisibleFilterOptions)
+      setGroupsById(compactGroups(nextGroups, nextVisibleFilterOptions))
     },
-    [visibleFilterOptions]
+    [groupsById, visibleFilterOptions]
   )
 
   const handlePointerDragStart = (
@@ -610,6 +638,7 @@ export const FilterGrid = ({
         options={filterOptions ?? []}
         selectedFilterOptions={selectedFilterOptions}
         currentOption={item.option}
+        currentCondition={conditionsById[item.id]}
         groupPosition={groupPosition}
         isDropTarget={dropTargetKey === `item:${item.id}`}
         onDeleteCondition={() => handleDeleteCondition(item.id)}

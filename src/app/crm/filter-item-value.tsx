@@ -125,11 +125,13 @@ const areSameValues = (left: ConditionValue[], right: ConditionValue[]): boolean
 export const FilterItemValue = ({
   filterOption,
   selectedFilterCondition,
+  values,
   isDisabled,
   onConditionValuesChanged,
 }: {
   filterOption?: FilterOptionConfig
   selectedFilterCondition?: string | null
+  values?: ConditionValue[]
   isDisabled?: boolean
   onConditionValuesChanged?: (values: ConditionValue[]) => void
 }) => {
@@ -139,8 +141,10 @@ export const FilterItemValue = ({
 
   const crmRepository = useCrmRepository()
   const selectableOptionsRequestId = React.useRef(0)
+  const valuesRef = React.useRef<ConditionValue[] | undefined>(values)
 
   const selectedAttributeType = filterOption?.AttributeType
+  const normalizedSelectedFilterCondition = selectedFilterCondition ?? null
   const selection = filterOption?.Selection
   const selectionMinItems = Math.max(0, selection?.MinItems ?? 0)
   const selectionMaxItems =
@@ -149,6 +153,10 @@ export const FilterItemValue = ({
   const isLookupAttribute = selectedAttributeType === 'Lookup'
   const isSelectableAttribute = isPicklistAttribute || isLookupAttribute
   const isMultiSelection = isSelectableAttribute && Boolean(selection?.Multiple)
+
+  React.useEffect(() => {
+    valuesRef.current = values
+  }, [values])
 
   const loadSelectableOptions = React.useCallback(
     async (
@@ -283,13 +291,13 @@ export const FilterItemValue = ({
       return
     }
 
-    const defaultValues = filterOption.Default?.Values ?? []
+    const defaultValues = valuesRef.current ?? filterOption.Default?.Values ?? []
     setConditionValues(defaultValues)
     void loadSelectableOptions(filterOption, filterOption.Default?.Condition, defaultValues)
   }, [filterOption, loadSelectableOptions])
 
   React.useEffect(() => {
-    if (isNoValueCondition(selectedFilterCondition)) {
+    if (isNoValueCondition(normalizedSelectedFilterCondition)) {
       setConditionValues((previousValues) => (previousValues.length === 0 ? previousValues : []))
       return
     }
@@ -312,7 +320,7 @@ export const FilterItemValue = ({
     isSelectableAttribute,
     selectableOptions,
     selectionMaxItems,
-    selectedFilterCondition,
+    normalizedSelectedFilterCondition,
   ])
 
   React.useEffect(() => {
@@ -382,7 +390,7 @@ export const FilterItemValue = ({
   )
   const selectedSingleLookupValue = selectedSelectionValues.at(0) ?? null
 
-  if (isNoValueCondition(selectedFilterCondition)) {
+  if (isNoValueCondition(normalizedSelectedFilterCondition)) {
     return <span>&nbsp;</span>
   }
 
@@ -441,7 +449,7 @@ export const FilterItemValue = ({
         )
       }
 
-      if (isPicklistAttribute && selectedFilterCondition === 'in') {
+      if (isPicklistAttribute && normalizedSelectedFilterCondition === 'in') {
         return (
           <Input
             type="text"
@@ -489,7 +497,10 @@ export const FilterItemValue = ({
     )
   }
 
-  if (numberAttributeTypes.has(selectedAttributeType ?? '') && selectedFilterCondition !== 'in') {
+  if (
+    numberAttributeTypes.has(selectedAttributeType ?? '') &&
+    normalizedSelectedFilterCondition !== 'in'
+  ) {
     return (
       <Input
         type="number"
@@ -514,7 +525,7 @@ export const FilterItemValue = ({
   return (
     <Input
       type="text"
-      placeholder={selectedFilterCondition === 'in' ? 'Use comma separated values' : 'Value'}
+      placeholder={normalizedSelectedFilterCondition === 'in' ? 'Use comma separated values' : 'Value'}
       value={selectedConditionValue.toString()}
       disabled={isDisabled}
       onChange={handleConditionValueChanged}

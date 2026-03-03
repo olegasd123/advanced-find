@@ -20,11 +20,14 @@ import { AppliedFilterCondition, ConditionValue } from '../../libs/utils/crm-sea
 import { FilterOptionConfig } from '../../libs/config/app-config'
 import clsx from 'clsx'
 
+const EMPTY_FILTER_OPTION: FilterOption = {}
+
 export const FilterItem = ({
   optionId,
   options,
   selectedFilterOptions,
   currentOption,
+  currentCondition,
   groupPosition = 'none',
   isDropTarget,
   onDeleteCondition,
@@ -40,6 +43,7 @@ export const FilterItem = ({
   options: FilterOption[]
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
   currentOption?: FilterOption
+  currentCondition?: AppliedFilterCondition
   groupPosition?: 'none' | 'first' | 'middle' | 'last' | 'only'
   isDropTarget?: boolean
   onDeleteCondition?: () => void
@@ -51,18 +55,19 @@ export const FilterItem = ({
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
   onConditionChanged?: (optionId: number, condition: AppliedFilterCondition) => void
 }) => {
-  const [selectedAttribute, setSelectedAttribute] = React.useState<FilterOption | undefined>(
-    currentOption
+  const [selectedAttribute, setSelectedAttribute] = React.useState<FilterOption>(
+    currentOption ?? EMPTY_FILTER_OPTION
   )
   const [filterConditions, setFilterConditions] = React.useState<
     CrmFilterConditionOption[] | undefined
   >()
   const [selectedFilterCondition, setSelectedFilterCondition] = React.useState<string | null>(null)
-  const [cannotBeRemoved, setCannotBeRemoved] = React.useState<boolean | undefined>(true)
-  const [isAttributeDisabled, setIsAttributeDisabled] = React.useState<boolean | undefined>(false)
-  const [isDisabled, setIsDisabled] = React.useState<boolean | undefined>(false)
+  const [cannotBeRemoved, setCannotBeRemoved] = React.useState<boolean>(true)
+  const [isAttributeDisabled, setIsAttributeDisabled] = React.useState<boolean>(false)
+  const [isDisabled, setIsDisabled] = React.useState<boolean>(false)
   const [selectedConditionValues, setSelectedConditionValues] = React.useState<ConditionValue[]>([])
   const lastConditionRef = React.useRef<AppliedFilterCondition | undefined>(undefined)
+  const currentConditionRef = React.useRef<AppliedFilterCondition | undefined>(currentCondition)
   const hasInsetGroupDivider = groupPosition === 'first' || groupPosition === 'middle'
 
   const localization = useAppConfiguration()?.SearchScheme?.Localization
@@ -109,32 +114,51 @@ export const FilterItem = ({
   )
 
   React.useEffect(() => {
-    setSelectedAttribute(currentOption ?? undefined)
+    currentConditionRef.current = currentCondition
+  }, [currentCondition])
 
-    const targetFilterOption = getTargetFilterOption(currentOption?.FilterOptionConfig)
+  React.useEffect(() => {
+    const persistedCondition = currentConditionRef.current
+    const selectedFilterOptionFromState =
+      persistedCondition?.filterOption ?? currentOption?.FilterOptionConfig
+    const selectedOptionFromList = options.find(
+      (option) => option.FilterOptionConfig === selectedFilterOptionFromState
+    )
+    setSelectedAttribute(
+      selectedOptionFromList ??
+        (selectedFilterOptionFromState
+          ? { FilterOptionConfig: selectedFilterOptionFromState }
+          : EMPTY_FILTER_OPTION)
+    )
+
+    const targetFilterOption = getTargetFilterOption(selectedFilterOptionFromState)
     // Apply default values from config to the condition only for initialization,
     // after that the condition values will be controlled by user actions and config default values will be ignored
     setCannotBeRemoved(
-      targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved
+      Boolean(targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved)
     )
-    setIsAttributeDisabled(targetFilterOption?.Default?.IsAttributeDisabled)
-    setIsDisabled(targetFilterOption?.Default?.IsDisabled)
+    setIsAttributeDisabled(Boolean(targetFilterOption?.Default?.IsAttributeDisabled))
+    setIsDisabled(Boolean(persistedCondition?.isDisabled ?? targetFilterOption?.Default?.IsDisabled))
 
-    const options = getCrmFilterConditionsOptions(
+    const nextFilterConditions = getCrmFilterConditionsOptions(
       targetFilterOption?.AttributeType,
       localization?.CrmFilterConditions,
       targetFilterOption?.Selection?.Multiple
     )
-    setFilterConditions(options)
+    setFilterConditions(nextFilterConditions)
 
-    const defaultCondition = targetFilterOption?.Default?.Condition ?? options?.at(0)?.value ?? 'eq'
+    const defaultCondition =
+      persistedCondition?.condition ??
+      targetFilterOption?.Default?.Condition ??
+      nextFilterConditions?.at(0)?.value ??
+      'eq'
     setSelectedFilterCondition(defaultCondition)
-    setSelectedConditionValues(targetFilterOption?.Default?.Values ?? [])
-  }, [currentOption, localization?.CrmFilterConditions])
+    setSelectedConditionValues([...(persistedCondition?.values ?? targetFilterOption?.Default?.Values ?? [])])
+  }, [currentOption, localization?.CrmFilterConditions, options])
 
   const handleAttributeChanged = (value: FilterOption | null): void => {
     const targetFilterOptionValue = getTargetFilterOption(value?.FilterOptionConfig)
-    setSelectedAttribute(value ?? undefined)
+    setSelectedAttribute(value ?? EMPTY_FILTER_OPTION)
 
     const options = getCrmFilterConditionsOptions(
       targetFilterOptionValue?.AttributeType,
@@ -240,7 +264,7 @@ export const FilterItem = ({
           displayValue={(option: FilterOption) =>
             getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName
           }
-          value={selectedAttribute ?? undefined}
+          value={selectedAttribute}
           disabled={isDisabled || isAttributeDisabled}
           onChange={handleAttributeChanged}
         >
@@ -282,6 +306,7 @@ export const FilterItem = ({
         <FilterItemValue
           filterOption={selectedFilterOption}
           selectedFilterCondition={selectedFilterCondition}
+          values={selectedConditionValues}
           isDisabled={isDisabled}
           onConditionValuesChanged={setSelectedConditionValues}
         />
