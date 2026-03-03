@@ -387,6 +387,15 @@ export const FilterGrid = ({
     setDropTargetKey(`item:${optionId}`)
   }
 
+  const handleItemPointerLeave = (optionId: number): void => {
+    if (pointerDropTargetOptionIdRef.current !== optionId) {
+      return
+    }
+
+    pointerDropTargetOptionIdRef.current = undefined
+    setDropTargetKey((previous) => (previous === `item:${optionId}` ? undefined : previous))
+  }
+
   const handleDropOnItem = (
     targetOptionId: number,
     event: React.DragEvent<HTMLDivElement>
@@ -545,6 +554,7 @@ export const FilterGrid = ({
         onDeleteCondition={() => handleDeleteCondition(item.id)}
         onPointerDragStart={(event) => handlePointerDragStart(item.id, event)}
         onPointerEnter={() => handleItemPointerEnter(item.id)}
+        onPointerLeave={() => handleItemPointerLeave(item.id)}
         onDragOver={(event) => handleItemDragOver(event, item.id)}
         onDragLeave={() => {
           if (dropTargetKey === `item:${item.id}`) {

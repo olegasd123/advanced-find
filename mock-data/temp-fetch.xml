@@ -1,13 +1,20 @@
 <fetch version="1.0" mapping="logical" distinct="false">
-    <entity name="account">
+    <entity name="invoice">
         <attribute name="name" />
+        <attribute name="invoicenumber" />
         <filter type="and">
-            <condition attribute="name" operator="eq" value="acc name" />
-            <condition attribute="accountcategorycode" operator="eq" value="1" />
-            <condition attribute="createdby" operator="eq" value="b1c4acf4-88ac-ec11-9841-000d3a6518aa" />
+            <condition attribute="invoicenumber" operator="ne" value="1" />
+            <condition attribute="name" operator="eq" value="210" />
         </filter>
         <link-entity name="systemuser" from="systemuserid" to="createdby" link-type="inner">
-            <attribute name="fullname" alias="col_1_fullname" />
+            <attribute name="fullname" alias="col_2_fullname_0" />
+        </link-entity>
+        <link-entity name="invoicedetail" from="invoiceid" to="invoiceid" link-type="inner">
+            <link-entity name="product" from="productid" to="productid" link-type="inner">
+                <filter type="and">
+                    <condition attribute="name" operator="eq" value="123" />
+                </filter>
+            </link-entity>
         </link-entity>
     </entity>
 </fetch>

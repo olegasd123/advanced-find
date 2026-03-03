@@ -30,6 +30,7 @@ export const FilterItem = ({
   onDeleteCondition,
   onPointerDragStart,
   onPointerEnter,
+  onPointerLeave,
   onDragOver,
   onDragLeave,
   onDrop,
@@ -44,6 +45,7 @@ export const FilterItem = ({
   onDeleteCondition?: () => void
   onPointerDragStart?: (event: React.PointerEvent<HTMLDivElement>) => void
   onPointerEnter?: () => void
+  onPointerLeave?: () => void
   onDragOver?: (event: React.DragEvent<HTMLDivElement>) => void
   onDragLeave?: () => void
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
@@ -189,6 +191,7 @@ export const FilterItem = ({
         isDropTarget ? 'bg-teal-50' : ''
       )}
       onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={(event) => {
