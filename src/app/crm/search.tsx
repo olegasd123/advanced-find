@@ -2,7 +2,11 @@ import * as React from 'react'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
 import { useAppConfiguration } from '../../hooks/use-app-config'
 import { EntityMetadata } from '../../libs/repositories/crm-repository'
-import { EntityConfig, ResultViewPaginationConfig } from '../../libs/config/app-config'
+import {
+  EntityConfig,
+  ResultViewDefaultSortConfig,
+  ResultViewPaginationConfig,
+} from '../../libs/config/app-config'
 import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
 import { FilterGrid } from './filter-grid'
 import { ResultGrid } from './result-grid'
@@ -126,6 +130,8 @@ export const Search = () => {
   const configEntities = appConfiguration?.SearchScheme?.Entities
   const resultViewPagination: ResultViewPaginationConfig | undefined =
     currentEntityConfig?.ResultView.Pagination
+  const resultViewDefaultSort: ResultViewDefaultSortConfig[] | undefined =
+    currentEntityConfig?.ResultView.DefaultSort
 
   React.useEffect(() => {
     if ((configEntities?.length ?? 0) === 1) {
@@ -382,6 +388,7 @@ export const Search = () => {
           tableColumnDisplayNames={tableColumnDisplayNames}
           columnVisibilityStorageKey={currentEntityConfig.LogicalName}
           pagination={resultViewPagination}
+          defaultSort={resultViewDefaultSort}
           isLoading={isResultsLoading}
           errorMessage={resultsError}
           appliedFilters={appliedFilters}

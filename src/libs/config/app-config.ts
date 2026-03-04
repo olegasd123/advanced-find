@@ -24,9 +24,15 @@ export interface ResultViewPaginationConfig {
   DisplaySummary?: string
 }
 
+export interface ResultViewDefaultSortConfig {
+  ColumnNumber?: number
+  IsAscending?: boolean
+}
+
 export interface ResultViewConfig {
   Pagination?: ResultViewPaginationConfig
   TableColumns: TableColumnConfig[]
+  DefaultSort?: ResultViewDefaultSortConfig[]
 }
 
 export interface TableColumnConfig {

@@ -27,7 +27,10 @@ import {
   TableHeader,
   TableRow,
 } from '../../../vendor/catalyst-ui-kit/typescript/table'
-import { ResultViewPaginationConfig } from '../../libs/config/app-config'
+import {
+  ResultViewDefaultSortConfig,
+  ResultViewPaginationConfig,
+} from '../../libs/config/app-config'
 import { AppliedFilterCondition, SearchTableColumn } from '../../libs/utils/crm-search'
 import { getTargetFilterOption } from '../../libs/utils/filter'
 
@@ -40,7 +43,17 @@ interface PaginationOption {
   pageSize?: number
 }
 
+interface SortRule {
+  columnKey: string
+  isAscending: boolean
+}
+
 type VisiblePageItem = number | 'gap'
+
+const tableValueCollator = new Intl.Collator(undefined, {
+  numeric: true,
+  sensitivity: 'base',
+})
 
 const hasConditionValue = (condition: AppliedFilterCondition): boolean => {
   if (noValueConditions.has(condition.condition ?? '')) {
@@ -174,12 +187,70 @@ const formatPaginationSummary = (
     .replace(/\{2\}/g, String(totalCount))
 }
 
+const isEmptyCellValue = (value: string): boolean => {
+  const normalizedValue = value.trim()
+  return normalizedValue.length === 0 || normalizedValue === '-'
+}
+
+const compareCellValues = (leftValue: string, rightValue: string): number => {
+  const isLeftEmpty = isEmptyCellValue(leftValue)
+  const isRightEmpty = isEmptyCellValue(rightValue)
+
+  if (isLeftEmpty && isRightEmpty) {
+    return 0
+  }
+
+  if (isLeftEmpty) {
+    return 1
+  }
+
+  if (isRightEmpty) {
+    return -1
+  }
+
+  return tableValueCollator.compare(leftValue, rightValue)
+}
+
+const getDefaultSortRules = (
+  columns: SearchTableColumn[],
+  defaultSort?: ResultViewDefaultSortConfig[]
+): SortRule[] => {
+  if (!defaultSort || defaultSort.length === 0 || columns.length === 0) {
+    return []
+  }
+
+  const uniqueRules: SortRule[] = []
+  for (const rule of defaultSort) {
+    if (!rule || typeof rule.ColumnNumber !== 'number' || !Number.isFinite(rule.ColumnNumber)) {
+      continue
+    }
+
+    const normalizedColumnIndex = Math.trunc(rule.ColumnNumber) - 1
+    const column = columns.at(normalizedColumnIndex)
+    if (!column) {
+      continue
+    }
+
+    if (uniqueRules.some((item) => item.columnKey === column.columnKey)) {
+      continue
+    }
+
+    uniqueRules.push({
+      columnKey: column.columnKey,
+      isAscending: rule.IsAscending !== false,
+    })
+  }
+
+  return uniqueRules
+}
+
 export const ResultGrid = ({
   results,
   tableColumns,
   tableColumnDisplayNames,
   columnVisibilityStorageKey,
   pagination,
+  defaultSort,
   isLoading,
   errorMessage,
   appliedFilters,
@@ -190,6 +261,7 @@ export const ResultGrid = ({
   tableColumnDisplayNames?: Record<string, string>
   columnVisibilityStorageKey?: string
   pagination?: ResultViewPaginationConfig
+  defaultSort?: ResultViewDefaultSortConfig[]
   isLoading?: boolean
   errorMessage?: string
   appliedFilters: AppliedFilterCondition[]
@@ -253,6 +325,11 @@ export const ResultGrid = ({
   const [selectedPageSizeValue, setSelectedPageSizeValue] = React.useState('')
   const [currentPage, setCurrentPage] = React.useState(1)
   const [tableSearchText, setTableSearchText] = React.useState('')
+  const [sortRules, setSortRules] = React.useState<SortRule[]>([])
+
+  React.useEffect(() => {
+    setSortRules(getDefaultSortRules(columns, defaultSort))
+  }, [columns, defaultSort])
 
   React.useEffect(() => {
     if (!isPaginationEnabled) {
@@ -286,13 +363,51 @@ export const ResultGrid = ({
     )
   }, [results, tableSearchText, visibleColumns])
 
+  const visibleSortRules = React.useMemo(() => {
+    if (sortRules.length === 0 || visibleColumns.length === 0) {
+      return []
+    }
+
+    const visibleColumnKeys = new Set(visibleColumns.map((column) => column.columnKey))
+    return sortRules.filter((rule) => visibleColumnKeys.has(rule.columnKey))
+  }, [sortRules, visibleColumns])
+
+  const sortedRows = React.useMemo(() => {
+    if (visibleSortRules.length === 0 || filteredRows.length <= 1) {
+      return filteredRows
+    }
+
+    const columnsByKey = new Map(visibleColumns.map((column) => [column.columnKey, column]))
+
+    return filteredRows
+      .map((row, index) => ({ row, index }))
+      .sort((left, right) => {
+        for (const rule of visibleSortRules) {
+          const column = columnsByKey.get(rule.columnKey)
+          if (!column) {
+            continue
+          }
+
+          const leftValue = getColumnCellValue(column, left.row)
+          const rightValue = getColumnCellValue(column, right.row)
+          const compareResult = compareCellValues(leftValue, rightValue)
+          if (compareResult !== 0) {
+            return rule.isAscending ? compareResult : -compareResult
+          }
+        }
+
+        return left.index - right.index
+      })
+      .map((item) => item.row)
+  }, [filteredRows, visibleColumns, visibleSortRules])
+
   const totalPages = React.useMemo(() => {
     if (!isPaginationEnabled || !selectedPageSizeOption?.pageSize) {
       return 1
     }
 
-    return Math.max(1, Math.ceil(filteredRows.length / selectedPageSizeOption.pageSize))
-  }, [filteredRows.length, isPaginationEnabled, selectedPageSizeOption?.pageSize])
+    return Math.max(1, Math.ceil(sortedRows.length / selectedPageSizeOption.pageSize))
+  }, [isPaginationEnabled, selectedPageSizeOption?.pageSize, sortedRows.length])
 
   React.useEffect(() => {
     setCurrentPage(1)
@@ -306,12 +421,12 @@ export const ResultGrid = ({
 
   const displayedRows = React.useMemo(() => {
     if (!isPaginationEnabled || !selectedPageSizeOption?.pageSize) {
-      return filteredRows
+      return sortedRows
     }
 
     const startIndex = (currentPage - 1) * selectedPageSizeOption.pageSize
-    return filteredRows.slice(startIndex, startIndex + selectedPageSizeOption.pageSize)
-  }, [currentPage, filteredRows, isPaginationEnabled, selectedPageSizeOption?.pageSize])
+    return sortedRows.slice(startIndex, startIndex + selectedPageSizeOption.pageSize)
+  }, [currentPage, isPaginationEnabled, selectedPageSizeOption?.pageSize, sortedRows])
 
   const handlePageSizeChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     setSelectedPageSizeValue(event.target.value)
@@ -320,6 +435,29 @@ export const ResultGrid = ({
   const handlePageButtonClick = (page: number): void => {
     setCurrentPage(page)
   }
+
+  const handleSortChanged = (columnKey: string, shouldAddToSortOrder: boolean): void => {
+    setSortRules((currentRules) => {
+      const currentRuleIndex = currentRules.findIndex((rule) => rule.columnKey === columnKey)
+
+      if (!shouldAddToSortOrder) {
+        if (currentRuleIndex >= 0) {
+          return [{ columnKey, isAscending: !currentRules[currentRuleIndex].isAscending }]
+        }
+
+        return [{ columnKey, isAscending: true }]
+      }
+
+      if (currentRuleIndex >= 0) {
+        return currentRules.map((rule, index) =>
+          index === currentRuleIndex ? { ...rule, isAscending: !rule.isAscending } : rule
+        )
+      }
+
+      return [...currentRules, { columnKey, isAscending: true }]
+    })
+  }
+
   const handleTableSearchTextChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTableSearchText(event.target.value)
   }
@@ -339,6 +477,9 @@ export const ResultGrid = ({
     () => getVisiblePageItems(currentPage, totalPages),
     [currentPage, totalPages]
   )
+  const visibleSortRuleByColumnKey = React.useMemo(() => {
+    return new Map(visibleSortRules.map((rule) => [rule.columnKey, rule]))
+  }, [visibleSortRules])
   const displaySummaryTemplate = pagination?.DisplaySummary?.trim()
   const isSummaryVisible = Boolean(isPaginationEnabled && displaySummaryTemplate)
   const paginationSummaryText = React.useMemo(() => {
@@ -450,11 +591,41 @@ export const ResultGrid = ({
         <Table striped dense>
           <TableHead>
             <TableRow>
-              {visibleColumns.map((column) => (
-                <TableHeader key={column.columnKey}>
-                  {getColumnHeader(column, tableColumnDisplayNames)}
-                </TableHeader>
-              ))}
+              {visibleColumns.map((column) => {
+                const currentSortRule = visibleSortRuleByColumnKey.get(column.columnKey)
+                const sortRuleIndex = visibleSortRules.findIndex(
+                  (rule) => rule.columnKey === column.columnKey
+                )
+                const sortPriorityLabel = sortRuleIndex >= 0 ? `${sortRuleIndex + 1}` : ''
+                const sortDirectionLabel = currentSortRule
+                  ? currentSortRule.isAscending
+                    ? 'Ascending'
+                    : 'Descending'
+                  : 'Not sorted'
+                const ariaSort =
+                  sortRuleIndex === 0
+                    ? currentSortRule?.isAscending
+                      ? 'ascending'
+                      : 'descending'
+                    : undefined
+
+                return (
+                  <TableHeader key={column.columnKey} aria-sort={ariaSort}>
+                    <button
+                      type="button"
+                      className="inline-flex w-full items-center gap-1 text-left hover:text-zinc-900 focus:outline-none focus-visible:text-zinc-900 dark:hover:text-white dark:focus-visible:text-white"
+                      onClick={(event) => handleSortChanged(column.columnKey, event.shiftKey)}
+                      title={`Sort by ${getColumnHeader(column, tableColumnDisplayNames)} (${sortDirectionLabel}). Hold Shift to add to sort order.`}
+                    >
+                      <span>{getColumnHeader(column, tableColumnDisplayNames)}</span>
+                      <span className="text-zinc-400 dark:text-zinc-500">
+                        {currentSortRule ? (currentSortRule.isAscending ? '↑' : '↓') : '↕'}
+                        {sortPriorityLabel}
+                      </span>
+                    </button>
+                  </TableHeader>
+                )
+              })}
             </TableRow>
           </TableHead>
           <TableBody>
