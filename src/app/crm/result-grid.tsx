@@ -48,12 +48,19 @@ interface SortRule {
   isAscending: boolean
 }
 
+interface ColumnResizeState {
+  columnKey: string
+  startX: number
+  startWidth: number
+}
+
 type VisiblePageItem = number | 'gap'
 
 const tableValueCollator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: 'base',
 })
+const minColumnWidth = 80
 
 const hasConditionValue = (condition: AppliedFilterCondition): boolean => {
   if (noValueConditions.has(condition.condition ?? '')) {
@@ -326,10 +333,32 @@ export const ResultGrid = ({
   const [currentPage, setCurrentPage] = React.useState(1)
   const [tableSearchText, setTableSearchText] = React.useState('')
   const [sortRules, setSortRules] = React.useState<SortRule[]>([])
+  const [columnWidthsByKey, setColumnWidthsByKey] = React.useState<Record<string, number>>({})
+  const [columnResizeState, setColumnResizeState] = React.useState<ColumnResizeState | null>(null)
 
   React.useEffect(() => {
     setSortRules(getDefaultSortRules(columns, defaultSort))
   }, [columns, defaultSort])
+
+  React.useEffect(() => {
+    if (columns.length === 0) {
+      setColumnWidthsByKey({})
+      return
+    }
+
+    const columnKeys = new Set(columns.map((column) => column.columnKey))
+    setColumnWidthsByKey((currentWidths) => {
+      const nextWidths = Object.fromEntries(
+        Object.entries(currentWidths).filter(([columnKey]) => columnKeys.has(columnKey))
+      )
+
+      if (Object.keys(nextWidths).length === Object.keys(currentWidths).length) {
+        return currentWidths
+      }
+
+      return nextWidths
+    })
+  }, [columns])
 
   React.useEffect(() => {
     if (!isPaginationEnabled) {
@@ -457,6 +486,58 @@ export const ResultGrid = ({
       return [...currentRules, { columnKey, isAscending: true }]
     })
   }
+
+  const handleColumnResizeStart = (
+    event: React.PointerEvent<HTMLButtonElement>,
+    columnKey: string
+  ): void => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    const headerElement = event.currentTarget.closest('th')
+    const measuredWidth = headerElement?.getBoundingClientRect().width ?? 0
+    const startWidth = Math.max(minColumnWidth, Math.round(measuredWidth))
+
+    setColumnResizeState({
+      columnKey,
+      startX: event.clientX,
+      startWidth,
+    })
+  }
+
+  React.useEffect(() => {
+    if (!columnResizeState) {
+      return
+    }
+
+    const handlePointerMove = (event: PointerEvent): void => {
+      const deltaX = event.clientX - columnResizeState.startX
+      const nextWidth = Math.max(minColumnWidth, Math.round(columnResizeState.startWidth + deltaX))
+
+      setColumnWidthsByKey((currentWidths) => {
+        if (currentWidths[columnResizeState.columnKey] === nextWidth) {
+          return currentWidths
+        }
+
+        return {
+          ...currentWidths,
+          [columnResizeState.columnKey]: nextWidth,
+        }
+      })
+    }
+
+    const handlePointerUp = (): void => {
+      setColumnResizeState(null)
+    }
+
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerUp)
+
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('pointerup', handlePointerUp)
+    }
+  }, [columnResizeState])
 
   const handleTableSearchTextChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTableSearchText(event.target.value)
@@ -589,6 +670,18 @@ export const ResultGrid = ({
 
       <div className="pt-4">
         <Table striped dense>
+          <colgroup>
+            {visibleColumns.map((column) => (
+              <col
+                key={column.columnKey}
+                style={
+                  columnWidthsByKey[column.columnKey]
+                    ? { width: `${columnWidthsByKey[column.columnKey]}px` }
+                    : undefined
+                }
+              />
+            ))}
+          </colgroup>
           <TableHead>
             <TableRow>
               {visibleColumns.map((column) => {
@@ -610,10 +703,10 @@ export const ResultGrid = ({
                     : undefined
 
                 return (
-                  <TableHeader key={column.columnKey} aria-sort={ariaSort}>
+                  <TableHeader key={column.columnKey} aria-sort={ariaSort} className="relative">
                     <button
                       type="button"
-                      className="inline-flex w-full items-center gap-1 text-left hover:text-zinc-900 focus:outline-none focus-visible:text-zinc-900 dark:hover:text-white dark:focus-visible:text-white"
+                      className="inline-flex w-full items-center gap-1 pr-2 text-left hover:text-zinc-900 focus:outline-none focus-visible:text-zinc-900 dark:hover:text-white dark:focus-visible:text-white"
                       onClick={(event) => handleSortChanged(column.columnKey, event.shiftKey)}
                       title={`Sort by ${getColumnHeader(column, tableColumnDisplayNames)} (${sortDirectionLabel}). Hold Shift to add to sort order.`}
                     >
@@ -623,6 +716,16 @@ export const ResultGrid = ({
                         {sortPriorityLabel}
                       </span>
                     </button>
+                    <button
+                      type="button"
+                      aria-label={`Resize ${getColumnHeader(column, tableColumnDisplayNames)} column`}
+                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize touch-none select-none"
+                      onPointerDown={(event) => handleColumnResizeStart(event, column.columnKey)}
+                      onClick={(event) => {
+                        event.preventDefault()
+                        event.stopPropagation()
+                      }}
+                    />
                   </TableHeader>
                 )
               })}
