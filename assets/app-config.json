@@ -68,7 +68,8 @@
           {
             "AttributeName": "name",
             "Default": {
-              "IsShowed": true
+              "IsShowed": true,
+              "Values": ["invoice name 1"]
             }
           },
           {

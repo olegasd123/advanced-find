@@ -57,6 +57,9 @@ export const FilterItem = ({
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
   onConditionChanged?: (optionId: number, condition: AppliedFilterCondition) => void
 }) => {
+  const initialSelectedFilterOption = getTargetFilterOption(
+    currentCondition?.filterOption ?? currentOption?.FilterOptionConfig
+  )
   const [selectedAttribute, setSelectedAttribute] = React.useState<FilterOption>(
     currentOption ?? EMPTY_FILTER_OPTION
   )
@@ -67,7 +70,9 @@ export const FilterItem = ({
   const [cannotBeRemoved, setCannotBeRemoved] = React.useState<boolean>(true)
   const [isAttributeDisabled, setIsAttributeDisabled] = React.useState<boolean>(false)
   const [isDisabled, setIsDisabled] = React.useState<boolean>(false)
-  const [selectedConditionValues, setSelectedConditionValues] = React.useState<ConditionValue[]>([])
+  const [selectedConditionValues, setSelectedConditionValues] = React.useState<ConditionValue[]>(
+    () => [...(currentCondition?.values ?? initialSelectedFilterOption?.Default?.Values ?? [])]
+  )
   const [selectedConditionDisplayValues, setSelectedConditionDisplayValues] = React.useState<
     string[] | undefined
   >(currentCondition?.displayValues)
