@@ -1,7 +1,4 @@
-import {
-  FilterGroupOperator,
-  FilterOptionConfig,
-} from '../config/app-config'
+import { FilterGroupOperator, FilterOptionConfig } from '../config/app-config'
 import { getTargetFilterOption } from './filter'
 
 // Re-export column resolution types and functions
@@ -85,10 +82,7 @@ export const parseValues = (condition: string, values: ConditionValue[]): Condit
     .filter((item) => item.length > 0)
 }
 
-export const toFetchValue = (
-  attributeType: string | undefined,
-  value: ConditionValue
-): string => {
+export const toFetchValue = (attributeType: string | undefined, value: ConditionValue): string => {
   const normalizedAttributeType = attributeType?.toLowerCase()
 
   if (normalizedAttributeType === 'boolean') {

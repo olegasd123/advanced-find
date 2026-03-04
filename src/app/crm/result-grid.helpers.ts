@@ -241,8 +241,7 @@ export const getDefaultColumnWidth = (column: SearchTableColumn): number | undef
     return undefined
   }
 
-  const normalizedWidth =
-    typeof rawWidth === 'number' ? rawWidth : Number(rawWidth)
+  const normalizedWidth = typeof rawWidth === 'number' ? rawWidth : Number(rawWidth)
 
   if (!Number.isFinite(normalizedWidth) || normalizedWidth <= 0) {
     return undefined

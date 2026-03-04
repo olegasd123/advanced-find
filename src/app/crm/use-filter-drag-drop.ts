@@ -131,7 +131,14 @@ export const useFilterDragDrop = ({
       setVisibleFilterOptions(nextVisibleFilterOptions)
       setGroupsById(compactGroups(nextGroups, nextVisibleFilterOptions))
     },
-    [groupIdRef, groupsById, isOptionGroupable, setGroupsById, setVisibleFilterOptions, visibleFilterOptions]
+    [
+      groupIdRef,
+      groupsById,
+      isOptionGroupable,
+      setGroupsById,
+      setVisibleFilterOptions,
+      visibleFilterOptions,
+    ]
   )
 
   const handlePointerDragStart = (

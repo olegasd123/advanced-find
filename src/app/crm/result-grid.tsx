@@ -115,8 +115,7 @@ export const ResultGrid = ({
     handlePageButtonClick,
   } = usePagination(sortedRows, filteredRows.length, pagination)
 
-  const { columnWidthsByKey, columnResizeState, handleColumnResizeStart } =
-    useColumnResize(columns)
+  const { columnWidthsByKey, columnResizeState, handleColumnResizeStart } = useColumnResize(columns)
 
   const [expandedCellKeys, setExpandedCellKeys] = React.useState<Set<string>>(new Set())
 

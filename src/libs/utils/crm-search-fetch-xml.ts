@@ -2,7 +2,6 @@ import { FilterOptionConfig } from '../config/app-config'
 import { getTargetFilterOption } from './filter'
 import {
   createRootSearchColumn,
-  getTableColumnChain,
   SearchTableColumn,
 } from './crm-search-columns'
 import {

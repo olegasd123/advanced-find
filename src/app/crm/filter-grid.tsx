@@ -61,7 +61,6 @@ export const FilterGrid = ({
   )
 
   const {
-    draggingOptionId,
     dragPreviewPosition,
     dropTargetKey,
     setDropTargetKey,

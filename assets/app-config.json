@@ -53,10 +53,11 @@
               "IsShowed": true,
               "Condition": "ne",
               "Values": ["1"],
-              "IsAttributeDisabled": false,
+              "IsAttributeDisabled": true,
               "IsDisabled": false,
               "CannotBeRemoved": true
             },
+            "Groupable": false,
             "Selection": {
               "Multiple": true,
               "MinItems": 1,
