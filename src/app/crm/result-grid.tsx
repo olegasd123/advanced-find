@@ -684,11 +684,13 @@ export const ResultGrid = ({
           </colgroup>
           <TableHead>
             <TableRow>
-              {visibleColumns.map((column) => {
+              {visibleColumns.map((column, columnIndex) => {
                 const currentSortRule = visibleSortRuleByColumnKey.get(column.columnKey)
                 const sortRuleIndex = visibleSortRules.findIndex(
                   (rule) => rule.columnKey === column.columnKey
                 )
+                const isLastVisibleColumn = columnIndex === visibleColumns.length - 1
+                const isColumnResizing = columnResizeState?.columnKey === column.columnKey
                 const sortPriorityLabel = sortRuleIndex >= 0 ? `${sortRuleIndex + 1}` : ''
                 const sortDirectionLabel = currentSortRule
                   ? currentSortRule.isAscending
@@ -706,7 +708,7 @@ export const ResultGrid = ({
                   <TableHeader key={column.columnKey} aria-sort={ariaSort} className="relative">
                     <button
                       type="button"
-                      className="inline-flex w-full items-center gap-1 pr-2 text-left hover:text-zinc-900 focus:outline-none focus-visible:text-zinc-900 dark:hover:text-white dark:focus-visible:text-white"
+                      className="inline-flex w-full items-center gap-1 pr-3 text-left hover:text-zinc-900 focus:outline-none focus-visible:text-zinc-900 dark:hover:text-white dark:focus-visible:text-white"
                       onClick={(event) => handleSortChanged(column.columnKey, event.shiftKey)}
                       title={`Sort by ${getColumnHeader(column, tableColumnDisplayNames)} (${sortDirectionLabel}). Hold Shift to add to sort order.`}
                     >
@@ -719,13 +721,23 @@ export const ResultGrid = ({
                     <button
                       type="button"
                       aria-label={`Resize ${getColumnHeader(column, tableColumnDisplayNames)} column`}
-                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize touch-none select-none"
+                      className="group absolute top-0 -right-1 h-full w-3 cursor-col-resize touch-none select-none"
                       onPointerDown={(event) => handleColumnResizeStart(event, column.columnKey)}
                       onClick={(event) => {
                         event.preventDefault()
                         event.stopPropagation()
                       }}
-                    />
+                    >
+                      <span
+                        className={`mx-auto block h-4/5 w-px transition-colors ${
+                          isLastVisibleColumn
+                            ? 'bg-transparent'
+                            : isColumnResizing
+                              ? 'bg-zinc-600 dark:bg-zinc-300'
+                              : 'bg-zinc-300 group-hover:bg-zinc-500 dark:bg-zinc-600 dark:group-hover:bg-zinc-400'
+                        }`}
+                      />
+                    </button>
                   </TableHeader>
                 )
               })}
