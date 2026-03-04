@@ -45,7 +45,7 @@ This document defines the shared coding standards for the advanced-find project.
 
 ## Testing & Quality Gates
 
-- Co-locate unit tests next to the source file using the `.test.ts(x)` naming convention.
+- Co-locate unit tests next to the source file in the `__tests__` folder, using the `.test.ts(x)` naming convention.
 - Integration tests that span multiple modules belong under `src/tests` with descriptive folder names.
 - Favor Vite test utilities or Testing Library; front-end logic should assert user-visible behavior, not implementation details.
 - Run the lint and test suites before raising a PR; fix warnings rather than suppressing them. If suppression is unavoidable, comment with context and tracking issue.
