@@ -68,6 +68,9 @@ export const FilterItem = ({
   const [isAttributeDisabled, setIsAttributeDisabled] = React.useState<boolean>(false)
   const [isDisabled, setIsDisabled] = React.useState<boolean>(false)
   const [selectedConditionValues, setSelectedConditionValues] = React.useState<ConditionValue[]>([])
+  const [selectedConditionDisplayValues, setSelectedConditionDisplayValues] = React.useState<
+    string[] | undefined
+  >(currentCondition?.displayValues)
   const lastConditionRef = React.useRef<AppliedFilterCondition | undefined>(undefined)
   const currentConditionRef = React.useRef<AppliedFilterCondition | undefined>(currentCondition)
   const hasInsetGroupDivider = groupPosition === 'first' || groupPosition === 'middle'
@@ -156,6 +159,9 @@ export const FilterItem = ({
       'eq'
     setSelectedFilterCondition(defaultCondition)
     setSelectedConditionValues([...(persistedCondition?.values ?? targetFilterOption?.Default?.Values ?? [])])
+    setSelectedConditionDisplayValues(
+      persistedCondition?.displayValues ? [...persistedCondition.displayValues] : undefined
+    )
   }, [currentOption, localization?.CrmFilterConditions, options])
 
   const handleAttributeChanged = (value: FilterOption | null): void => {
@@ -173,10 +179,12 @@ export const FilterItem = ({
       targetFilterOptionValue?.Default?.Condition ?? options?.at(0)?.value ?? 'eq'
     setSelectedFilterCondition(defaultCondition)
     setSelectedConditionValues(targetFilterOptionValue?.Default?.Values ?? [])
+    setSelectedConditionDisplayValues(undefined)
   }
 
   const handleConditionOptionChanged = (value: string | null): void => {
     setSelectedFilterCondition(value)
+    setSelectedConditionDisplayValues(undefined)
   }
 
   React.useEffect(() => {
@@ -184,16 +192,21 @@ export const FilterItem = ({
       filterOption: selectedAttribute?.FilterOptionConfig,
       condition: selectedFilterCondition,
       values: selectedConditionValues,
+      displayValues: selectedConditionDisplayValues,
       isDisabled,
     }
 
     const previousCondition = lastConditionRef.current
+    const previousDisplayValues = previousCondition?.displayValues ?? []
+    const nextDisplayValues = nextCondition.displayValues ?? []
     if (
       previousCondition?.filterOption === nextCondition.filterOption &&
       previousCondition?.condition === nextCondition.condition &&
       previousCondition?.isDisabled === nextCondition.isDisabled &&
       previousCondition?.values.length === nextCondition.values.length &&
-      previousCondition?.values.every((value, index) => value === nextCondition.values[index])
+      previousCondition?.values.every((value, index) => value === nextCondition.values[index]) &&
+      previousDisplayValues.length === nextDisplayValues.length &&
+      previousDisplayValues.every((value, index) => value === nextDisplayValues[index])
     ) {
       return
     }
@@ -205,6 +218,7 @@ export const FilterItem = ({
     optionId,
     onConditionChanged,
     selectedAttribute,
+    selectedConditionDisplayValues,
     selectedConditionValues,
     selectedFilterCondition,
   ])
@@ -323,7 +337,10 @@ export const FilterItem = ({
           selectedFilterCondition={selectedFilterCondition}
           values={selectedConditionValues}
           isDisabled={isDisabled}
-          onConditionValuesChanged={setSelectedConditionValues}
+          onConditionValuesChanged={(values, displayValues) => {
+            setSelectedConditionValues(values)
+            setSelectedConditionDisplayValues(displayValues)
+          }}
         />
       </div>
     </div>

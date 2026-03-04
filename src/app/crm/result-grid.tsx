@@ -81,6 +81,11 @@ const formatConditionValue = (condition: AppliedFilterCondition): string => {
   if (noValueConditions.has(conditionName)) {
     return conditionName
   }
+
+  if (condition.displayValues && condition.displayValues.length > 0) {
+    return condition.displayValues.join(', ')
+  }
+
   return condition.values.map((value) => String(value)).join(', ')
 }
 
@@ -728,11 +733,23 @@ export const ResultGrid = ({
     .map((condition) => {
       const targetFilterOption = getTargetFilterOption(condition.filterOption)
       const attributeName = targetFilterOption?.DisplayName ?? targetFilterOption?.AttributeName
-      return `${attributeName} ${condition.condition} ${formatConditionValue(condition)}`
+      const conditionName = condition.condition ?? ''
+      const conditionValue = formatConditionValue(condition)
+
+      return {
+        key: `${attributeName}-${conditionName}-${conditionValue}`,
+        attributeName,
+        conditionName,
+        conditionValue,
+      }
     })
   const appliedFiltersText =
     appliedFilterDescriptions.length > 0
-      ? `Applied filters: ${appliedFilterDescriptions.join('; ')}`
+      ? `Applied filters: ${appliedFilterDescriptions
+          .map(
+            (item) => `${item.attributeName} ${item.conditionName} ${item.conditionValue}`
+          )
+          .join('; ')}`
       : 'Applied filters: none'
 
   return (
@@ -743,8 +760,22 @@ export const ResultGrid = ({
           <span className="font-normal">Back</span>
         </Button>
         {showAppliedFilters && (
-          <div className="min-w-0 flex-1 text-sm text-zinc-600 truncate" title={appliedFiltersText}>
-            {appliedFiltersText}
+          <div className="min-w-0 flex-1 overflow-hidden text-sm text-zinc-600" title={appliedFiltersText}>
+            <div className="truncate">
+              <span>Applied filters: </span>
+              {appliedFilterDescriptions.length > 0 ? (
+                appliedFilterDescriptions.map((item, index) => (
+                  <React.Fragment key={`${item.key}-${index}`}>
+                    {index > 0 && <span>; </span>}
+                    <span>{item.attributeName} </span>
+                    <span>{item.conditionName} </span>
+                    <span className="text-zinc-950">{item.conditionValue}</span>
+                  </React.Fragment>
+                ))
+              ) : (
+                <span>none</span>
+              )}
+            </div>
           </div>
         )}
         <div className="ml-auto flex items-center gap-2">
