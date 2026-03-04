@@ -152,11 +152,11 @@ export const getColumnCellValue = (
 export const getPaginationOptions = (
   pagination?: ResultViewPaginationConfig
 ): PaginationOption[] => {
-  if (!pagination || !pagination.PageSizes || pagination.PageSizes.length === 0) {
+  if (!pagination || !pagination.List || pagination.List.length === 0) {
     return []
   }
 
-  const options: PaginationOption[] = pagination.PageSizes.map((size) => {
+  const options: PaginationOption[] = pagination.List.map((size) => {
     const normalizedSize = typeof size === 'number' ? Math.max(1, Math.trunc(size)) : undefined
     if (normalizedSize === undefined) {
       return {
@@ -171,6 +171,13 @@ export const getPaginationOptions = (
       pageSize: normalizedSize,
     }
   })
+
+  if (pagination.ListItemAll) {
+    options.push({
+      value: pageSizeAllValue,
+      label: pagination.ListItemAll,
+    })
+  }
 
   return options
 }
@@ -221,15 +228,15 @@ export const formatPaginationSummary = (
   totalCount: number
 ): string => {
   return template
-    .replace('{start}', String(startIndex))
-    .replace('{end}', String(endIndex))
-    .replace('{total}', String(totalCount))
+    .replace('{0}', String(startIndex))
+    .replace('{1}', String(endIndex))
+    .replace('{2}', String(totalCount))
 }
 
 // --- Column width helpers ---
 
 export const getDefaultColumnWidth = (column: SearchTableColumn): number | undefined => {
-  const rawWidth = column.sourceColumn.DefaultWidth
+  const rawWidth = column.sourceColumn.Width
   if (rawWidth === undefined || rawWidth === null) {
     return undefined
   }
