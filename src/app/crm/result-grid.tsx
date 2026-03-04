@@ -26,7 +26,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../../vendor/catalyst-ui-kit/typescript/table'
+} from '../../components/controls/table'
 import {
   ResultViewDefaultSortConfig,
   ResultViewPaginationConfig,
@@ -251,6 +251,114 @@ const getDefaultSortRules = (
   return uniqueRules
 }
 
+const ExpandableCellText = ({
+  cellKey,
+  value,
+  isExpanded,
+  onExpandedChange,
+}: {
+  cellKey: string
+  value: string
+  isExpanded: boolean
+  onExpandedChange: (cellKey: string, shouldBeExpanded: boolean) => void
+}) => {
+  const containerRef = React.useRef<HTMLDivElement | null>(null)
+  const measureTextRef = React.useRef<HTMLSpanElement | null>(null)
+  const [isOverflowing, setIsOverflowing] = React.useState(false)
+
+  React.useEffect(() => {
+    if (value === '-') {
+      setIsOverflowing(false)
+      return
+    }
+
+    const containerElement = containerRef.current
+    const measureTextElement = measureTextRef.current
+    if (!containerElement || !measureTextElement) {
+      return
+    }
+
+    const measureOverflow = (): void => {
+      const visibleWidth = containerElement.clientWidth
+      const fullTextWidth = measureTextElement.scrollWidth
+      if (visibleWidth <= 0 || fullTextWidth <= 0) {
+        return
+      }
+
+      setIsOverflowing(fullTextWidth - visibleWidth > 1)
+    }
+
+    const animationFrameId = window.requestAnimationFrame(measureOverflow)
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(() => {
+        measureOverflow()
+      })
+      resizeObserver.observe(containerElement)
+      return () => {
+        window.cancelAnimationFrame(animationFrameId)
+        resizeObserver.disconnect()
+      }
+    }
+
+    measureOverflow()
+    window.addEventListener('resize', measureOverflow)
+    return () => {
+      window.cancelAnimationFrame(animationFrameId)
+      window.removeEventListener('resize', measureOverflow)
+    }
+  }, [isExpanded, value])
+
+  React.useEffect(() => {
+    if (!isOverflowing && isExpanded) {
+      onExpandedChange(cellKey, false)
+    }
+  }, [cellKey, isExpanded, isOverflowing, onExpandedChange])
+
+  const isToggleVisible = value !== '-' && isOverflowing
+
+  const content = isToggleVisible ? (
+    <div className="flex min-w-0 items-start gap-2">
+      <span
+        className={
+          isExpanded ? 'block whitespace-normal break-words' : 'block min-w-0 flex-1 truncate'
+        }
+        title={isExpanded ? undefined : value}
+      >
+        {value}
+      </span>
+      <button
+        type="button"
+        className="shrink-0 text-xs text-zinc-500 underline hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+        onClick={() => onExpandedChange(cellKey, !isExpanded)}
+        title={isExpanded ? 'Collapse value' : 'Expand value'}
+      >
+        {isExpanded ? 'Less' : 'More'}
+      </button>
+    </div>
+  ) : (
+    <span
+      className="block min-w-0 max-w-full truncate"
+      title={value === '-' ? undefined : value}
+    >
+      {value}
+    </span>
+  )
+
+  return (
+    <div ref={containerRef} className="relative min-w-0">
+      <span
+        ref={measureTextRef}
+        aria-hidden
+        className="pointer-events-none invisible absolute max-w-none whitespace-nowrap"
+      >
+        {value}
+      </span>
+      {content}
+    </div>
+  )
+}
+
 export const ResultGrid = ({
   results,
   tableColumns,
@@ -335,6 +443,7 @@ export const ResultGrid = ({
   const [sortRules, setSortRules] = React.useState<SortRule[]>([])
   const [columnWidthsByKey, setColumnWidthsByKey] = React.useState<Record<string, number>>({})
   const [columnResizeState, setColumnResizeState] = React.useState<ColumnResizeState | null>(null)
+  const [expandedCellKeys, setExpandedCellKeys] = React.useState<Set<string>>(new Set())
 
   React.useEffect(() => {
     setSortRules(getDefaultSortRules(columns, defaultSort))
@@ -450,12 +559,18 @@ export const ResultGrid = ({
 
   const displayedRows = React.useMemo(() => {
     if (!isPaginationEnabled || !selectedPageSizeOption?.pageSize) {
-      return sortedRows
+      return sortedRows.map((row, rowIndex) => ({ row, rowIndex }))
     }
 
     const startIndex = (currentPage - 1) * selectedPageSizeOption.pageSize
-    return sortedRows.slice(startIndex, startIndex + selectedPageSizeOption.pageSize)
+    return sortedRows
+      .slice(startIndex, startIndex + selectedPageSizeOption.pageSize)
+      .map((row, index) => ({ row, rowIndex: startIndex + index }))
   }, [currentPage, isPaginationEnabled, selectedPageSizeOption?.pageSize, sortedRows])
+
+  React.useEffect(() => {
+    setExpandedCellKeys(new Set())
+  }, [sortedRows, currentPage, selectedPageSizeValue])
 
   const handlePageSizeChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     setSelectedPageSizeValue(event.target.value)
@@ -542,6 +657,19 @@ export const ResultGrid = ({
   const handleTableSearchTextChanged = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTableSearchText(event.target.value)
   }
+
+  const handleCellExpandedChanged = (cellKey: string, shouldBeExpanded: boolean): void => {
+    setExpandedCellKeys((currentCellKeys) => {
+      const nextCellKeys = new Set(currentCellKeys)
+      if (shouldBeExpanded) {
+        nextCellKeys.add(cellKey)
+      } else {
+        nextCellKeys.delete(cellKey)
+      }
+      return nextCellKeys
+    })
+  }
+
   const toggleColumnVisibility = (columnKey: string): void => {
     setVisibleColumnKeys((currentKeys) => {
       if (currentKeys.includes(columnKey)) {
@@ -669,7 +797,7 @@ export const ResultGrid = ({
       </div>
 
       <div className="pt-4">
-        <Table striped dense>
+        <Table striped dense fixed>
           <colgroup>
             {visibleColumns.map((column) => (
               <col
@@ -708,11 +836,11 @@ export const ResultGrid = ({
                   <TableHeader key={column.columnKey} aria-sort={ariaSort} className="relative">
                     <button
                       type="button"
-                      className="inline-flex w-full items-center gap-1 pr-3 text-left hover:text-zinc-900 focus:outline-none focus-visible:text-zinc-900 dark:hover:text-white dark:focus-visible:text-white"
+                      className="inline-flex w-full items-center gap-1 overflow-hidden pr-3 text-left hover:text-zinc-900 focus:outline-none focus-visible:text-zinc-900 dark:hover:text-white dark:focus-visible:text-white"
                       onClick={(event) => handleSortChanged(column.columnKey, event.shiftKey)}
                       title={`Sort by ${getColumnHeader(column, tableColumnDisplayNames)} (${sortDirectionLabel}). Hold Shift to add to sort order.`}
                     >
-                      <span>{getColumnHeader(column, tableColumnDisplayNames)}</span>
+                      <span className="truncate">{getColumnHeader(column, tableColumnDisplayNames)}</span>
                       <span className="text-zinc-400 dark:text-zinc-500">
                         {currentSortRule ? (currentSortRule.isAscending ? '↑' : '↓') : '↕'}
                         {sortPriorityLabel}
@@ -786,12 +914,20 @@ export const ResultGrid = ({
             {!isLoading &&
               !errorMessage &&
               visibleColumns.length > 0 &&
-              displayedRows.map((row, index) => (
+              displayedRows.map(({ row, rowIndex }, index) => (
                 <TableRow key={index}>
                   {visibleColumns.map((column) => {
+                    const cellValue = getColumnCellValue(column, row)
+                    const cellKey = `${rowIndex}:${column.columnKey}`
+                    const isCellExpanded = expandedCellKeys.has(cellKey)
                     return (
                       <TableColumn key={`${column.columnKey}-${index}`}>
-                        {getColumnCellValue(column, row)}
+                        <ExpandableCellText
+                          cellKey={cellKey}
+                          value={cellValue}
+                          isExpanded={isCellExpanded}
+                          onExpandedChange={handleCellExpandedChanged}
+                        />
                       </TableColumn>
                     )
                   })}
