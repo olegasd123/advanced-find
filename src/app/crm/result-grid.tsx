@@ -240,6 +240,27 @@ const formatPaginationSummary = (
     .replace(/\{2\}/g, String(totalCount))
 }
 
+const getDefaultColumnWidth = (column: SearchTableColumn): number | undefined => {
+  const configuredWidth = column.sourceColumn.Width
+  const parsedConfiguredWidth =
+    typeof configuredWidth === 'number'
+      ? configuredWidth
+      : typeof configuredWidth === 'string'
+        ? Number(configuredWidth.trim().replace(/px$/i, ''))
+        : Number.NaN
+
+  if (!Number.isFinite(parsedConfiguredWidth)) {
+    return undefined
+  }
+
+  const normalizedWidth = Math.round(parsedConfiguredWidth)
+  if (normalizedWidth <= 0) {
+    return undefined
+  }
+
+  return Math.max(minColumnWidth, normalizedWidth)
+}
+
 const isEmptyCellValue = (value: string): boolean => {
   const normalizedValue = value.trim()
   return normalizedValue.length === 0 || normalizedValue === '-'
@@ -503,18 +524,15 @@ export const ResultGrid = ({
       return
     }
 
-    const columnKeys = new Set(columns.map((column) => column.columnKey))
-    setColumnWidthsByKey((currentWidths) => {
-      const nextWidths = Object.fromEntries(
-        Object.entries(currentWidths).filter(([columnKey]) => columnKeys.has(columnKey))
-      )
-
-      if (Object.keys(nextWidths).length === Object.keys(currentWidths).length) {
-        return currentWidths
+    const nextDefaultWidths: Record<string, number> = {}
+    for (const column of columns) {
+      const columnDefaultWidth = getDefaultColumnWidth(column)
+      if (columnDefaultWidth !== undefined) {
+        nextDefaultWidths[column.columnKey] = columnDefaultWidth
       }
+    }
 
-      return nextWidths
-    })
+    setColumnWidthsByKey(nextDefaultWidths)
   }, [columns])
 
   React.useEffect(() => {

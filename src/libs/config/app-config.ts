@@ -40,6 +40,7 @@ export interface TableColumnConfig {
   AttributeNames?: string[]
   AttributesFormat?: string
   DisplayName?: string
+  Width?: number | string
   EntityName?: string
   FromAttribute?: string
   ToAttribute?: string
