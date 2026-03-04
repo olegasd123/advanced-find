@@ -1,0 +1,128 @@
+import { FilterGroupOperator, FilterOptionConfig } from '../../libs/config/app-config'
+import { normalizeGroupOperator } from '../../libs/utils/crm-search'
+
+// --- Types ---
+
+export interface FilterOption {
+  FilterOptionConfig?: FilterOptionConfig
+  sourceIndex?: number
+}
+
+export interface VisibleFilterOption {
+  id: number
+  option: FilterOption
+}
+
+export interface FilterGroupState {
+  id: number
+  operator: FilterGroupOperator
+  optionIds: number[]
+  isOperatorChangeable: boolean
+  isRemovable: boolean
+  title?: string
+}
+
+export interface DefaultFilterState {
+  visibleFilterOptions: VisibleFilterOption[]
+  groupsById: Record<number, FilterGroupState>
+}
+
+// --- Constants ---
+
+export const DRAG_MOVEMENT_THRESHOLD_PX = 6
+
+// --- Pure helpers ---
+
+export { normalizeGroupOperator }
+
+export const normalizeGroupTitle = (title: string | undefined): string | undefined => {
+  const normalizedTitle = title?.trim()
+  return normalizedTitle ? normalizedTitle : undefined
+}
+
+export const cloneGroups = (
+  groupsById: Record<number, FilterGroupState>
+): Record<number, FilterGroupState> => {
+  const next: Record<number, FilterGroupState> = {}
+  for (const [groupId, group] of Object.entries(groupsById)) {
+    next[Number(groupId)] = {
+      ...group,
+      optionIds: [...group.optionIds],
+    }
+  }
+  return next
+}
+
+export const getGroupIdByOptionId = (
+  groupsById: Record<number, FilterGroupState>,
+  optionId: number
+): number | undefined => {
+  for (const [groupId, group] of Object.entries(groupsById)) {
+    if (group.optionIds.includes(optionId)) {
+      return Number(groupId)
+    }
+  }
+  return undefined
+}
+
+export const sortOptionIdsByVisibleOrder = (
+  optionIds: number[],
+  visibleFilterOptions: VisibleFilterOption[]
+): number[] => {
+  const orderByOptionId = visibleFilterOptions.reduce<Record<number, number>>(
+    (accumulator, item, index) => {
+      accumulator[item.id] = index
+      return accumulator
+    },
+    {}
+  )
+
+  const uniqueOptionIds = Array.from(new Set(optionIds))
+  return uniqueOptionIds.sort((left, right) => {
+    return (
+      (orderByOptionId[left] ?? Number.MAX_SAFE_INTEGER) -
+      (orderByOptionId[right] ?? Number.MAX_SAFE_INTEGER)
+    )
+  })
+}
+
+export const moveOptionAfterTarget = (
+  visibleFilterOptions: VisibleFilterOption[],
+  sourceOptionId: number,
+  targetOptionId: number
+): VisibleFilterOption[] => {
+  const sourceIndex = visibleFilterOptions.findIndex((item) => item.id === sourceOptionId)
+  const targetIndex = visibleFilterOptions.findIndex((item) => item.id === targetOptionId)
+  if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) {
+    return visibleFilterOptions
+  }
+
+  const next = [...visibleFilterOptions]
+  const [sourceItem] = next.splice(sourceIndex, 1)
+  const adjustedTargetIndex = sourceIndex < targetIndex ? targetIndex - 1 : targetIndex
+  next.splice(adjustedTargetIndex + 1, 0, sourceItem)
+  return next
+}
+
+export const compactGroups = (
+  groupsById: Record<number, FilterGroupState>,
+  visibleFilterOptions: VisibleFilterOption[]
+): Record<number, FilterGroupState> => {
+  const visibleOptionIds = new Set(visibleFilterOptions.map((item) => item.id))
+  const next = cloneGroups(groupsById)
+
+  for (const [groupId, group] of Object.entries(next)) {
+    const normalizedOptionIds = sortOptionIdsByVisibleOrder(
+      group.optionIds.filter((optionId) => visibleOptionIds.has(optionId)),
+      visibleFilterOptions
+    )
+    if (normalizedOptionIds.length < 2) {
+      delete next[Number(groupId)]
+      continue
+    }
+
+    group.optionIds = normalizedOptionIds
+  }
+
+  return next
+}
