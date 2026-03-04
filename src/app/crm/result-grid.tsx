@@ -366,6 +366,7 @@ export const ResultGrid = ({
   columnVisibilityStorageKey,
   pagination,
   defaultSort,
+  showAppliedFilters,
   isLoading,
   errorMessage,
   appliedFilters,
@@ -377,6 +378,7 @@ export const ResultGrid = ({
   columnVisibilityStorageKey?: string
   pagination?: ResultViewPaginationConfig
   defaultSort?: ResultViewDefaultSortConfig[]
+  showAppliedFilters?: boolean
   isLoading?: boolean
   errorMessage?: string
   appliedFilters: AppliedFilterCondition[]
@@ -728,14 +730,23 @@ export const ResultGrid = ({
       const attributeName = targetFilterOption?.DisplayName ?? targetFilterOption?.AttributeName
       return `${attributeName} ${condition.condition} ${formatConditionValue(condition)}`
     })
+  const appliedFiltersText =
+    appliedFilterDescriptions.length > 0
+      ? `Applied filters: ${appliedFilterDescriptions.join('; ')}`
+      : 'Applied filters: none'
 
   return (
     <>
-      <div className="flex flex-row items-center justify-between gap-4 py-4 border-b border-b-gray-300">
+      <div className="flex flex-row items-center gap-4 py-4 border-b border-b-gray-300">
         <Button outline onClick={onBack} aria-label="Back" title="Back">
           <ArrowLeftIcon />
           <span className="font-normal">Back</span>
         </Button>
+        {showAppliedFilters && (
+          <div className="min-w-0 flex-1 text-sm text-zinc-600 truncate" title={appliedFiltersText}>
+            {appliedFiltersText}
+          </div>
+        )}
         <div className="ml-auto flex items-center gap-2">
           <InputGroup>
             <MagnifyingGlassIcon data-slot="icon" />
@@ -972,12 +983,6 @@ export const ResultGrid = ({
           )}
         </div>
       )}
-
-      <div className="pt-3 text-sm text-zinc-600">
-        {appliedFilterDescriptions.length > 0
-          ? `Applied filters: ${appliedFilterDescriptions.join('; ')}`
-          : 'Applied filters: none'}
-      </div>
     </>
   )
 }

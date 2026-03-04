@@ -33,6 +33,7 @@ export interface ResultViewConfig {
   Pagination?: ResultViewPaginationConfig
   TableColumns: TableColumnConfig[]
   DefaultSort?: ResultViewDefaultSortConfig[]
+  ShowAppliedFilters?: boolean
 }
 
 export interface TableColumnConfig {

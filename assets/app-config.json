@@ -4,11 +4,6 @@
       {
         "LogicalName": "invoice",
         "ResultView": {
-          "Pagination": {
-            "List": [25, 50, 100],
-            "ListItemAll": "All",
-            "DisplaySummary": "Showing {0} to {1} of {2} results"
-          },
           "TableColumns": [
             {
               "AttributeNames": ["name"],
@@ -27,6 +22,12 @@
               }
             }
           ],
+          "ShowAppliedFilters": true,
+          "Pagination": {
+            "List": [25, 50, 100],
+            "ListItemAll": "All",
+            "DisplaySummary": "Showing {0} to {1} of {2} results"
+          },
           "DefaultSort": [
             {
               "ColumnNumber": 3,
@@ -113,6 +114,7 @@
       {
         "LogicalName": "account",
         "ResultView": {
+          "ShowAppliedFilters": true,
           "TableColumns": [
             {
               "AttributeNames": ["name", "accountnumber"],
@@ -128,7 +130,12 @@
                 "AttributeNames": ["fullname"]
               }
             }
-          ]
+          ],
+          "Pagination": {
+            "List": [25, 50, 100],
+            "ListItemAll": "All",
+            "DisplaySummary": "Showing {0} to {1} of {2} results"
+          }
         },
         "FilterOptions": [
           {

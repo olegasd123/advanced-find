@@ -132,6 +132,8 @@ export const Search = () => {
     currentEntityConfig?.ResultView.Pagination
   const resultViewDefaultSort: ResultViewDefaultSortConfig[] | undefined =
     currentEntityConfig?.ResultView.DefaultSort
+  const resultViewShowAppliedFilters: boolean =
+    currentEntityConfig?.ResultView.ShowAppliedFilters === true
 
   React.useEffect(() => {
     if ((configEntities?.length ?? 0) === 1) {
@@ -389,6 +391,7 @@ export const Search = () => {
           columnVisibilityStorageKey={currentEntityConfig.LogicalName}
           pagination={resultViewPagination}
           defaultSort={resultViewDefaultSort}
+          showAppliedFilters={resultViewShowAppliedFilters}
           isLoading={isResultsLoading}
           errorMessage={resultsError}
           appliedFilters={appliedFilters}
