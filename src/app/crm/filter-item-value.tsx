@@ -211,9 +211,8 @@ export const FilterItemValue = ({
 
             if (entityCollectionName) {
               const idAttributeName = `${targetEntityLogicalName}id`
-              const relatedAttributeNames =
-                targetFilterOption.Selection?.RelatedEntityAttributeNames ?? []
-              const attributeNames = [...new Set([idAttributeName, ...relatedAttributeNames])]
+              const lookupAttributeNames = targetFilterOption.Lookup?.AttributeNames ?? []
+              const attributeNames = [...new Set([idAttributeName, ...lookupAttributeNames])]
               const entitiesResponse = await crmRepository?.getEntities(
                 entityCollectionName,
                 attributeNames
@@ -228,8 +227,8 @@ export const FilterItemValue = ({
                   const value = String(rawId)
                   const displayName = formatLookupDisplayValue(
                     item,
-                    relatedAttributeNames,
-                    targetFilterOption.Selection?.RelatedEntityAttributeFormat,
+                    lookupAttributeNames,
+                    targetFilterOption.Lookup?.AttributeFormat,
                     value
                   )
                   return { value, displayName }

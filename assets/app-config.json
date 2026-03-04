@@ -70,6 +70,15 @@
             }
           },
           {
+            "AttributeName": "createdby",
+            "Default": {
+              "IsShowed": true
+            },
+            "Lookup": {
+              "AttributeNames": ["lastname"]
+            }
+          },
+          {
             "CategoryDisplayName": "Misc"
           },
           {
@@ -163,12 +172,14 @@
             "Default": {
               "IsShowed": true
             },
+            "Lookup": {
+              "AttributeNames": ["firstname", "lastname"],
+              "AttributeFormat": "{0} {1}"
+            },
             "Selection": {
               "Multiple": true,
               "MinItems": 1,
-              "MaxItems": 2,
-              "RelatedEntityAttributeNames": ["firstname", "lastname"],
-              "RelatedEntityAttributeFormat": "{0} {1}"
+              "MaxItems": 2
             }
           }
         ],

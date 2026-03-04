@@ -59,8 +59,11 @@ interface SelectionConfig {
   MaxItems?: number
   MinItems?: number
   Multiple?: boolean
-  RelatedEntityAttributeNames?: string[]
-  RelatedEntityAttributeFormat?: string
+}
+
+interface LookupConfig {
+  AttributeNames?: string[]
+  AttributeFormat?: string
 }
 
 export interface AppConfig {
@@ -86,6 +89,7 @@ export interface FilterOptionConfig {
   EntityName?: string
   Default?: FilterOptionsDefaultConfig
   Groupable?: boolean
+  Lookup?: LookupConfig
   Selection?: SelectionConfig
   RelatedTo?: FilterOptionConfig
 }
