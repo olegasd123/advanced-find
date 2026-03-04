@@ -203,16 +203,16 @@ const getPaginationOptions = (pagination?: ResultViewPaginationConfig): Paginati
 }
 
 const getVisiblePageItems = (currentPage: number, totalPages: number): VisiblePageItem[] => {
-  if (totalPages <= 7) {
+  if (totalPages <= 9) {
     return Array.from({ length: totalPages }, (_, index) => index + 1)
   }
 
   if (currentPage <= 4) {
-    return [1, 2, 3, 4, 5, 'gap', totalPages]
+    return [1, 2, 3, 4, 5, 6, 7, 'gap', totalPages]
   }
 
-  if (currentPage >= totalPages - 3) {
-    return [1, 'gap', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+  if (currentPage >= totalPages - 5) {
+    return [1, 'gap', totalPages - 6, totalPages - 5, totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
   }
 
   return [
@@ -851,10 +851,16 @@ export const ResultGrid = ({
           <InputGroup>
             <MagnifyingGlassIcon data-slot="icon" />
             <Input
-              type="search"
+              type="text"
               className="min-w-72"
               value={tableSearchText}
               onChange={handleTableSearchTextChanged}
+              onKeyDownCapture={(event) => {
+                event.stopPropagation()
+              }}
+              onKeyUpCapture={(event) => {
+                event.stopPropagation()
+              }}
               placeholder="Search in results"
             />
           </InputGroup>
