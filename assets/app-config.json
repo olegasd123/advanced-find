@@ -26,6 +26,16 @@
                 "AttributeNames": ["fullname"]
               }
             }
+          ],
+          "DefaultSort": [
+            {
+              "ColumnNumber": 3,
+              "IsAscending": true
+            },
+            {
+              "ColumnNumber": 1,
+              "IsAscending": true
+            }
           ]
         },
         "FilterUniqueOptionsOnly": true,
