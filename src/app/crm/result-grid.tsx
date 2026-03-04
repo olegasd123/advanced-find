@@ -89,6 +89,47 @@ const formatConditionValue = (condition: AppliedFilterCondition): string => {
   return condition.values.map((value) => String(value)).join(', ')
 }
 
+const formatConditionOperator = (condition: string | null | undefined): string => {
+  switch (condition) {
+    case 'eq':
+      return '='
+    case 'ne':
+      return '≠'
+    case 'gt':
+      return '>'
+    case 'ge':
+      return '≥'
+    case 'lt':
+      return '<'
+    case 'le':
+      return '≤'
+    case 'null':
+      return 'is empty'
+    case 'not-null':
+      return 'is not empty'
+    case 'today':
+      return 'is today'
+    case 'tomorrow':
+      return 'is tomorrow'
+    case 'yesterday':
+      return 'is yesterday'
+    case 'like':
+      return 'contains'
+    case 'not-like':
+      return 'does not contain'
+    case 'begins-with':
+      return 'starts with'
+    case 'not-begin-with':
+      return 'does not start with'
+    case 'ends-with':
+      return 'ends with'
+    case 'not-end-with':
+      return 'does not end with'
+    default:
+      return condition ?? ''
+  }
+}
+
 const getColumnHeader = (
   column: SearchTableColumn,
   tableColumnDisplayNames?: Record<string, string>
@@ -733,11 +774,14 @@ export const ResultGrid = ({
     .map((condition) => {
       const targetFilterOption = getTargetFilterOption(condition.filterOption)
       const attributeName = targetFilterOption?.DisplayName ?? targetFilterOption?.AttributeName
-      const conditionName = condition.condition ?? ''
-      const conditionValue = formatConditionValue(condition)
+      const rawConditionName = condition.condition ?? ''
+      const conditionName = formatConditionOperator(rawConditionName)
+      const conditionValue = noValueConditions.has(rawConditionName)
+        ? undefined
+        : formatConditionValue(condition)
 
       return {
-        key: `${attributeName}-${conditionName}-${conditionValue}`,
+        key: `${attributeName}-${conditionName}-${conditionValue ?? ''}`,
         attributeName,
         conditionName,
         conditionValue,
@@ -746,8 +790,10 @@ export const ResultGrid = ({
   const appliedFiltersText =
     appliedFilterDescriptions.length > 0
       ? `Applied filters: ${appliedFilterDescriptions
-          .map(
-            (item) => `${item.attributeName} ${item.conditionName} ${item.conditionValue}`
+          .map((item) =>
+            item.conditionValue
+              ? `${item.attributeName} ${item.conditionName} ${item.conditionValue}`
+              : `${item.attributeName} ${item.conditionName}`
           )
           .join('; ')}`
       : 'Applied filters: none'
@@ -768,8 +814,13 @@ export const ResultGrid = ({
                   <React.Fragment key={`${item.key}-${index}`}>
                     {index > 0 && <span>; </span>}
                     <span>{item.attributeName} </span>
-                    <span>{item.conditionName} </span>
-                    <span className="text-zinc-950">{item.conditionValue}</span>
+                    <span>{item.conditionName}</span>
+                    {item.conditionValue && (
+                      <>
+                        <span> </span>
+                        <span className="text-zinc-950">{item.conditionValue}</span>
+                      </>
+                    )}
                   </React.Fragment>
                 ))
               ) : (
