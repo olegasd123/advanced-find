@@ -734,16 +734,15 @@ export const FilterGrid = ({
         const isGroupStart = Boolean(group && group.optionIds[0] === item.id)
         const groupOptionIndex = group ? group.optionIds.indexOf(item.id) : -1
         const isOnlyItemInGroup = group ? group.optionIds.length === 1 : false
-        const groupPosition: 'none' | 'first' | 'middle' | 'last' | 'only' =
-          !group
-            ? 'none'
-            : isOnlyItemInGroup
-              ? 'only'
-              : groupOptionIndex === 0
-                ? 'first'
-                : groupOptionIndex === group.optionIds.length - 1
-                  ? 'last'
-                  : 'middle'
+        const groupPosition: 'none' | 'first' | 'middle' | 'last' | 'only' = !group
+          ? 'none'
+          : isOnlyItemInGroup
+            ? 'only'
+            : groupOptionIndex === 0
+              ? 'first'
+              : groupOptionIndex === group.optionIds.length - 1
+                ? 'last'
+                : 'middle'
 
         return (
           <React.Fragment key={item.id}>
@@ -760,7 +759,10 @@ export const FilterGrid = ({
                     value={group.operator}
                     disabled={!group.isOperatorChangeable}
                     onChange={(event) =>
-                      handleGroupOperatorChanged(group.id, event.target.value as FilterGroupOperator)
+                      handleGroupOperatorChanged(
+                        group.id,
+                        event.target.value as FilterGroupOperator
+                      )
                     }
                   >
                     <option value="and">AND</option>

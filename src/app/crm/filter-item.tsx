@@ -112,7 +112,8 @@ export const FilterItem = ({
   const compareFilterOption = React.useCallback(
     (left: FilterOption, right: FilterOption): boolean => {
       return (
-        left.FilterOptionConfig === right.FilterOptionConfig && left.sourceIndex === right.sourceIndex
+        left.FilterOptionConfig === right.FilterOptionConfig &&
+        left.sourceIndex === right.sourceIndex
       )
     },
     []
@@ -140,10 +141,14 @@ export const FilterItem = ({
     // Apply default values from config to the condition only for initialization,
     // after that the condition values will be controlled by user actions and config default values will be ignored
     setCannotBeRemoved(
-      Boolean(targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved)
+      Boolean(
+        targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved
+      )
     )
     setIsAttributeDisabled(Boolean(targetFilterOption?.Default?.IsAttributeDisabled))
-    setIsDisabled(Boolean(persistedCondition?.isDisabled ?? targetFilterOption?.Default?.IsDisabled))
+    setIsDisabled(
+      Boolean(persistedCondition?.isDisabled ?? targetFilterOption?.Default?.IsDisabled)
+    )
 
     const nextFilterConditions = getCrmFilterConditionsOptions(
       targetFilterOption?.AttributeType,
@@ -158,7 +163,9 @@ export const FilterItem = ({
       nextFilterConditions?.at(0)?.value ??
       'eq'
     setSelectedFilterCondition(defaultCondition)
-    setSelectedConditionValues([...(persistedCondition?.values ?? targetFilterOption?.Default?.Values ?? [])])
+    setSelectedConditionValues([
+      ...(persistedCondition?.values ?? targetFilterOption?.Default?.Values ?? []),
+    ])
     setSelectedConditionDisplayValues(
       persistedCondition?.displayValues ? [...persistedCondition.displayValues] : undefined
     )
@@ -227,7 +234,9 @@ export const FilterItem = ({
     <div
       className={clsx(
         'flex flex-row gap-4 py-4',
-        groupPosition === 'none' ? 'border-b border-b-gray-300 rounded-sm' : 'border-x border-zinc-300 px-3',
+        groupPosition === 'none'
+          ? 'border-b border-b-gray-300 rounded-sm'
+          : 'border-x border-zinc-300 px-3',
         hasInsetGroupDivider
           ? 'relative after:absolute after:bottom-0 after:left-3 after:right-3 after:border-b after:border-zinc-300'
           : '',

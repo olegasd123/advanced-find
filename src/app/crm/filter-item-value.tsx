@@ -563,7 +563,9 @@ export const FilterItemValue = ({
   return (
     <Input
       type="text"
-      placeholder={normalizedSelectedFilterCondition === 'in' ? 'Use comma separated values' : 'Value'}
+      placeholder={
+        normalizedSelectedFilterCondition === 'in' ? 'Use comma separated values' : 'Value'
+      }
       value={selectedConditionValue.toString()}
       disabled={isDisabled}
       onChange={handleConditionValueChanged}

@@ -212,7 +212,17 @@ const getVisiblePageItems = (currentPage: number, totalPages: number): VisiblePa
   }
 
   if (currentPage >= totalPages - 5) {
-    return [1, 'gap', totalPages - 6, totalPages - 5, totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+    return [
+      1,
+      'gap',
+      totalPages - 6,
+      totalPages - 5,
+      totalPages - 4,
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ]
   }
 
   return [
@@ -404,10 +414,7 @@ const ExpandableCellText = ({
       </button>
     </div>
   ) : (
-    <span
-      className="block min-w-0 max-w-full truncate"
-      title={value === '-' ? undefined : value}
-    >
+    <span className="block min-w-0 max-w-full truncate" title={value === '-' ? undefined : value}>
       {value}
     </span>
   )
@@ -824,7 +831,10 @@ export const ResultGrid = ({
           <span className="font-normal">Back</span>
         </Button>
         {showAppliedFilters && (
-          <div className="min-w-0 flex-1 overflow-hidden text-sm text-zinc-600" title={appliedFiltersText}>
+          <div
+            className="min-w-0 flex-1 overflow-hidden text-sm text-zinc-600"
+            title={appliedFiltersText}
+          >
             <div className="truncate">
               <span>Applied filters: </span>
               {appliedFilterDescriptions.length > 0 ? (
@@ -957,7 +967,9 @@ export const ResultGrid = ({
                       onClick={(event) => handleSortChanged(column.columnKey, event.shiftKey)}
                       title={`Sort by ${getColumnHeader(column, tableColumnDisplayNames)} (${sortDirectionLabel}). Hold Shift to add to sort order.`}
                     >
-                      <span className="truncate">{getColumnHeader(column, tableColumnDisplayNames)}</span>
+                      <span className="truncate">
+                        {getColumnHeader(column, tableColumnDisplayNames)}
+                      </span>
                       <span className="text-zinc-400 dark:text-zinc-500">
                         {currentSortRule ? (currentSortRule.isAscending ? '↑' : '↓') : '↕'}
                         {sortPriorityLabel}

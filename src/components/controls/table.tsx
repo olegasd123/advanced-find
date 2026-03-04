@@ -5,7 +5,12 @@ import type React from 'react'
 import { createContext, useContext, useState } from 'react'
 import { Link } from '../../../vendor/catalyst-ui-kit/typescript/link'
 
-const TableContext = createContext<{ bleed: boolean; dense: boolean; grid: boolean; striped: boolean }>({
+const TableContext = createContext<{
+  bleed: boolean
+  dense: boolean
+  grid: boolean
+  striped: boolean
+}>({
   bleed: false,
   dense: false,
   grid: false,
@@ -29,9 +34,14 @@ export function Table({
   striped?: boolean
 } & React.ComponentPropsWithoutRef<'div'>) {
   return (
-    <TableContext.Provider value={{ bleed, dense, grid, striped } as React.ContextType<typeof TableContext>}>
+    <TableContext.Provider
+      value={{ bleed, dense, grid, striped } as React.ContextType<typeof TableContext>}
+    >
       <div className="flow-root">
-        <div {...props} className={clsx(className, '-mx-(--gutter) overflow-x-auto whitespace-nowrap')}>
+        <div
+          {...props}
+          className={clsx(className, '-mx-(--gutter) overflow-x-auto whitespace-nowrap')}
+        >
           <div
             className={clsx(
               fixed ? 'w-full align-middle' : 'inline-block min-w-full align-middle',
@@ -77,7 +87,9 @@ export function TableRow({
   const { striped } = useContext(TableContext)
 
   return (
-    <TableRowContext.Provider value={{ href, target, title } as React.ContextType<typeof TableRowContext>}>
+    <TableRowContext.Provider
+      value={{ href, target, title } as React.ContextType<typeof TableRowContext>}
+    >
       <tr
         {...props}
         className={clsx(
@@ -109,7 +121,11 @@ export function TableHeader({ className, ...props }: React.ComponentPropsWithout
   )
 }
 
-export function TableColumn({ className, children, ...props }: React.ComponentPropsWithoutRef<'td'>) {
+export function TableColumn({
+  className,
+  children,
+  ...props
+}: React.ComponentPropsWithoutRef<'td'>) {
   const { bleed, dense, grid, striped } = useContext(TableContext)
   const { href, target, title } = useContext(TableRowContext)
   const [cellRef, setCellRef] = useState<HTMLElement | null>(null)

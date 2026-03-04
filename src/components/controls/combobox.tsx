@@ -19,18 +19,12 @@ type BaseComboboxProps<T> = {
 }
 
 type SingleComboboxProps<T> = BaseComboboxProps<T> &
-  Omit<
-    Headless.ComboboxProps<T, false>,
-    'as' | 'children' | 'multiple' | 'virtual' | 'onClose'
-  > & {
+  Omit<Headless.ComboboxProps<T, false>, 'as' | 'children' | 'multiple' | 'virtual' | 'onClose'> & {
     multiple?: false
   }
 
 type MultiComboboxProps<T> = BaseComboboxProps<T> &
-  Omit<
-    Headless.ComboboxProps<T, true>,
-    'as' | 'children' | 'multiple' | 'virtual' | 'onClose'
-  > & {
+  Omit<Headless.ComboboxProps<T, true>, 'as' | 'children' | 'multiple' | 'virtual' | 'onClose'> & {
     multiple: true
   }
 
@@ -74,7 +68,9 @@ export function Combobox<T>(props: ComboboxProps<T>) {
       query === ''
         ? options
         : options.filter((option) =>
-            filter ? filter(option, query) : displayValue(option)?.toLowerCase().includes(query.toLowerCase())
+            filter
+              ? filter(option, query)
+              : displayValue(option)?.toLowerCase().includes(query.toLowerCase())
           )
 
     return (
@@ -113,11 +109,11 @@ export function Combobox<T>(props: ComboboxProps<T>) {
                 .map((option) => displayValue(option) ?? '')
                 .filter((option) => option.length > 0)
                 .join(', ')
-                }}
-                onChange={(event) => setQuery(event.target.value)}
-                onClick={handleInputClick}
-                placeholder={placeholder}
-                className={clsx([
+            }}
+            onChange={(event) => setQuery(event.target.value)}
+            onClick={handleInputClick}
+            placeholder={placeholder}
+            className={clsx([
               className,
               'relative block w-full appearance-none rounded-lg py-[calc(--spacing(2.5)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
               'pr-[calc(--spacing(10)-1px)] pl-[calc(--spacing(3.5)-1px)] sm:pr-[calc(--spacing(9)-1px)] sm:pl-[calc(--spacing(3)-1px)]',
@@ -190,7 +186,9 @@ export function Combobox<T>(props: ComboboxProps<T>) {
     query === ''
       ? options
       : options.filter((option) =>
-          filter ? filter(option, query) : displayValue(option)?.toLowerCase().includes(query.toLowerCase())
+          filter
+            ? filter(option, query)
+            : displayValue(option)?.toLowerCase().includes(query.toLowerCase())
         )
 
   return (
@@ -220,7 +218,7 @@ export function Combobox<T>(props: ComboboxProps<T>) {
           autoFocus={autoFocus}
           data-slot="control"
           aria-label={ariaLabel}
-          displayValue={(option: T | null) => (option ? displayValue(option) ?? '' : '')}
+          displayValue={(option: T | null) => (option ? (displayValue(option) ?? '') : '')}
           onChange={(event) => setQuery(event.target.value)}
           onClick={handleInputClick}
           placeholder={placeholder}
@@ -320,6 +318,9 @@ export function ComboboxOption<T>({
 
 export function ComboboxLabel({ className, ...props }: React.ComponentPropsWithoutRef<'span'>) {
   return (
-    <span {...props} className={clsx(className, 'ml-2.5 truncate first:ml-0 sm:ml-2 sm:first:ml-0')} />
+    <span
+      {...props}
+      className={clsx(className, 'ml-2.5 truncate first:ml-0 sm:ml-2 sm:first:ml-0')}
+    />
   )
 }
