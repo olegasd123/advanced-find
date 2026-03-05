@@ -11,7 +11,8 @@ interface FilterOptionsDefaultConfig {
 export type FilterGroupOperator = 'and' | 'or'
 
 export interface DefaultFilterGroupConfig {
-  FilterOptionIndexes: number[]
+  FilterOptionIds?: string[]
+  FilterOptionIndexes?: number[]
   Operator?: FilterGroupOperator
   IsOperatorChangeable?: boolean
   IsRemovable?: boolean
@@ -25,6 +26,7 @@ export interface ResultViewPaginationConfig {
 }
 
 export interface ResultViewDefaultSortConfig {
+  ColumnId?: string
   ColumnNumber?: number
   IsAscending?: boolean
 }
@@ -37,6 +39,7 @@ export interface ResultViewConfig {
 }
 
 export interface TableColumnConfig {
+  Id?: string
   AttributeNames?: string[]
   AttributesFormat?: string
   DisplayName?: string
@@ -80,6 +83,7 @@ export interface EntityConfig {
 }
 
 export interface FilterOptionConfig {
+  Id?: string
   DisplayName?: string
   AttributeName?: string
   FromAttribute?: string

@@ -124,7 +124,8 @@ export const Search = () => {
   const [resultsError, setResultsError] = React.useState<string>()
   const tableColumnsRequestIdRef = React.useRef(0)
 
-  const appConfiguration = useAppConfiguration()
+  const appConfigurationState = useAppConfiguration()
+  const appConfiguration = appConfigurationState.appConfig
   const crmRepository = useCrmRepository()
 
   const configEntities = appConfiguration?.SearchScheme?.Entities
@@ -352,6 +353,18 @@ export const Search = () => {
     } finally {
       setIsResultsLoading(false)
     }
+  }
+
+  if (appConfigurationState.isLoading) {
+    return <div className="py-6 text-zinc-600">Loading app configuration...</div>
+  }
+
+  if (appConfigurationState.errorMessage) {
+    return <div className="py-6 text-rose-700">{appConfigurationState.errorMessage}</div>
+  }
+
+  if (!configEntities || configEntities.length === 0) {
+    return <div className="py-6 text-zinc-600">No entities found in app configuration.</div>
   }
 
   return (

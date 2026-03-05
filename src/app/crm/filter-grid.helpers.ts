@@ -5,6 +5,7 @@ import { normalizeGroupOperator } from '../../libs/utils/crm/crm-search'
 
 export interface FilterOption {
   FilterOptionConfig?: FilterOptionConfig
+  optionId?: string
   sourceIndex?: number
 }
 

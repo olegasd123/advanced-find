@@ -40,6 +40,10 @@ export const FilterGrid = ({
   const requestIdRef = React.useRef(0)
   const optionIdRef = React.useRef(0)
   const groupIdRef = React.useRef(0)
+  const normalizeConfigId = React.useCallback((value: string | undefined): string | undefined => {
+    const normalized = value?.trim()
+    return normalized ? normalized.toLowerCase() : undefined
+  }, [])
 
   const isGroupableByOptionId = React.useMemo(() => {
     const map = new Map<number, boolean>()
@@ -95,26 +99,45 @@ export const FilterGrid = ({
 
       const groups: Record<number, FilterGroupState> = {}
       const visibleOptionIdsBySourceIndex = new Map<number, number>()
+      const visibleOptionIdsByConfigId = new Map<string, number>()
       for (const visibleOption of defaultVisibleFilterOptions) {
         if (typeof visibleOption.option.sourceIndex === 'number') {
           visibleOptionIdsBySourceIndex.set(visibleOption.option.sourceIndex, visibleOption.id)
+        }
+        if (visibleOption.option.optionId) {
+          visibleOptionIdsByConfigId.set(visibleOption.option.optionId, visibleOption.id)
         }
       }
 
       const assignedOptionIds = new Set<number>()
       for (const filterGroup of entityConfig?.DefaultFilterGroups ?? []) {
         const collectedOptionIds: number[] = []
-        for (const sourceIndex of filterGroup.FilterOptionIndexes ?? []) {
-          if (!Number.isInteger(sourceIndex)) {
-            continue
-          }
+        const filterOptionIds = (filterGroup.FilterOptionIds ?? [])
+          .map(normalizeConfigId)
+          .filter((id): id is string => Boolean(id))
 
-          const optionId = visibleOptionIdsBySourceIndex.get(sourceIndex)
-          if (optionId === undefined || assignedOptionIds.has(optionId)) {
-            continue
-          }
+        if (filterOptionIds.length > 0) {
+          for (const filterOptionId of filterOptionIds) {
+            const optionId = visibleOptionIdsByConfigId.get(filterOptionId)
+            if (optionId === undefined || assignedOptionIds.has(optionId)) {
+              continue
+            }
 
-          collectedOptionIds.push(optionId)
+            collectedOptionIds.push(optionId)
+          }
+        } else {
+          for (const sourceIndex of filterGroup.FilterOptionIndexes ?? []) {
+            if (!Number.isInteger(sourceIndex)) {
+              continue
+            }
+
+            const optionId = visibleOptionIdsBySourceIndex.get(sourceIndex)
+            if (optionId === undefined || assignedOptionIds.has(optionId)) {
+              continue
+            }
+
+            collectedOptionIds.push(optionId)
+          }
         }
 
         const normalizedOptionIds = sortOptionIdsByVisibleOrder(
@@ -145,7 +168,7 @@ export const FilterGrid = ({
         groupsById: groups,
       }
     },
-    [entityConfig?.DefaultFilterGroups]
+    [entityConfig?.DefaultFilterGroups, normalizeConfigId]
   )
 
   React.useEffect(() => {
@@ -172,6 +195,7 @@ export const FilterGrid = ({
       const options = entityConfig.FilterOptions?.map((option, index) => {
         return {
           FilterOptionConfig: option,
+          optionId: normalizeConfigId(option.Id),
           sourceIndex: index,
         }
       })
@@ -184,7 +208,7 @@ export const FilterGrid = ({
       }
     }
     getData()
-  }, [entityConfig, crm, getDefaultFilterState, clearDragState])
+  }, [entityConfig, crm, getDefaultFilterState, clearDragState, normalizeConfigId])
 
   const handleAddCondition = (): void => {
     setVisibleFilterOptions((previous) => [

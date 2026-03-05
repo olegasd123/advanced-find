@@ -151,13 +151,28 @@ export const getDefaultSortRules = <T extends { columnKey: string }>(
   }
 
   const uniqueRules: SortRule[] = []
+  const columnsById = new Map<string, T>()
+  for (const column of columns) {
+    const rawId = (column as { id?: string }).id
+    const normalizedId = rawId?.trim().toLowerCase()
+    if (normalizedId && !columnsById.has(normalizedId)) {
+      columnsById.set(normalizedId, column)
+    }
+  }
+
   for (const rule of defaultSort) {
-    if (!rule || typeof rule.ColumnNumber !== 'number' || !Number.isFinite(rule.ColumnNumber)) {
+    if (!rule) {
       continue
     }
 
-    const normalizedColumnIndex = Math.trunc(rule.ColumnNumber) - 1
-    const column = columns.at(normalizedColumnIndex)
+    const normalizedColumnId = rule.ColumnId?.trim().toLowerCase()
+    let column = normalizedColumnId ? columnsById.get(normalizedColumnId) : undefined
+
+    if (!column && typeof rule.ColumnNumber === 'number' && Number.isFinite(rule.ColumnNumber)) {
+      const normalizedColumnIndex = Math.trunc(rule.ColumnNumber) - 1
+      column = columns.at(normalizedColumnIndex)
+    }
+
     if (!column) {
       continue
     }

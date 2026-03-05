@@ -6,6 +6,7 @@
         "ResultView": {
           "TableColumns": [
             {
+              "Id": "invoice-name",
               "AttributeNames": ["name"],
               "DisplayName": "Name",
               "Width": "220"
@@ -14,6 +15,7 @@
               "AttributeNames": ["invoicenumber"]
             },
             {
+              "Id": "invoice-created-by",
               "EntityName": "systemuser",
               "FromAttribute": "createdby",
               "RelatedTo": {
@@ -31,11 +33,11 @@
           },
           "DefaultSort": [
             {
-              "ColumnNumber": 3,
+              "ColumnId": "invoice-created-by",
               "IsAscending": true
             },
             {
-              "ColumnNumber": 1,
+              "ColumnId": "invoice-name",
               "IsAscending": true
             }
           ]
@@ -153,6 +155,7 @@
             "CategoryDisplayName": "General"
           },
           {
+            "Id": "account-name-filter",
             "AttributeName": "name",
             "Default": {
               "IsShowed": true
@@ -160,6 +163,7 @@
             "Groupable": false
           },
           {
+            "Id": "account-category-filter",
             "AttributeName": "accountcategorycode",
             "Default": {
               "IsShowed": true,
@@ -187,7 +191,7 @@
         ],
         "DefaultFilterGroups": [
           {
-            "FilterOptionIndexes": [1, 2],
+            "FilterOptionIds": ["account-name-filter", "account-category-filter"],
             "Operator": "and",
             "GroupTitle": "Title if the group",
             "IsOperatorChangeable": false,

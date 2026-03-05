@@ -7,6 +7,7 @@ export interface SearchTableColumnAttribute {
 
 export interface SearchTableColumn {
   sourceColumn: TableColumnConfig
+  id?: string
   columnKey: string
   chain: TableColumnConfig[]
   attributes: SearchTableColumnAttribute[]
@@ -19,6 +20,11 @@ export interface SearchTableColumn {
 interface LegacyTableColumnConfig extends TableColumnConfig {
   Attributes?: string[]
   AttributeName?: string
+}
+
+const normalizeConfigId = (configId: string | undefined): string | undefined => {
+  const normalized = configId?.trim()
+  return normalized ? normalized.toLowerCase() : undefined
 }
 
 export const getTableColumnChain = (column?: TableColumnConfig): TableColumnConfig[] => {
@@ -174,6 +180,7 @@ export const resolveSearchTableColumns = (entityConfig: EntityConfig): SearchTab
 
     return {
       sourceColumn: column,
+      id: normalizeConfigId(column.Id),
       columnKey: createColumnKey(index),
       chain,
       attributes,

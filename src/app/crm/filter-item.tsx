@@ -80,7 +80,7 @@ export const FilterItem = ({
   const currentConditionRef = React.useRef<AppliedFilterCondition | undefined>(currentCondition)
   const hasInsetGroupDivider = groupPosition === 'first' || groupPosition === 'middle'
 
-  const localization = useAppConfiguration()?.SearchScheme?.Localization
+  const localization = useAppConfiguration().appConfig?.SearchScheme?.Localization
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
   const visibleOptions = React.useMemo(() => {
     const next: FilterOption[] = []
