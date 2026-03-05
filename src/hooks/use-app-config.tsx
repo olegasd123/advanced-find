@@ -1,20 +1,20 @@
 import * as React from 'react'
 import { AppConfig } from '../libs/config/app-config'
 
-interface AppConfigurationState {
+interface AppConfigState {
   appConfig: AppConfig | null
   isLoading: boolean
   errorMessage?: string
 }
 
-const AppConfigurationContext = React.createContext<AppConfigurationState>({
+const AppConfigContext = React.createContext<AppConfigState>({
   appConfig: null,
   isLoading: true,
 })
 
-export const useAppConfiguration = () => React.useContext(AppConfigurationContext)
+export const useAppConfig = () => React.useContext(AppConfigContext)
 
-export const AppConfigurationProvider = ({ children }: { children: React.ReactNode }) => {
+export const AppConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [appConfig, setAppConfig] = React.useState<AppConfig | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [errorMessage, setErrorMessage] = React.useState<string>()
@@ -22,7 +22,7 @@ export const AppConfigurationProvider = ({ children }: { children: React.ReactNo
   React.useEffect(() => {
     let isCancelled = false
 
-    const getAppConfig = async () => {
+    const loadAppConfig = async () => {
       const path =
         import.meta.env.MODE === 'crm' || import.meta.env.MODE === 'crm-dev'
           ? `./app-config.json`
@@ -49,7 +49,7 @@ export const AppConfigurationProvider = ({ children }: { children: React.ReactNo
 
         setAppConfig(null)
         setErrorMessage('Failed to load app configuration.')
-        console.error('AppConfigurationProvider', error)
+        console.error('AppConfigProvider', error)
       } finally {
         if (!isCancelled) {
           setIsLoading(false)
@@ -57,7 +57,7 @@ export const AppConfigurationProvider = ({ children }: { children: React.ReactNo
       }
     }
 
-    getAppConfig()
+    loadAppConfig()
 
     return () => {
       isCancelled = true
@@ -65,8 +65,8 @@ export const AppConfigurationProvider = ({ children }: { children: React.ReactNo
   }, [])
 
   return (
-    <AppConfigurationContext value={{ appConfig, isLoading, errorMessage }}>
+    <AppConfigContext value={{ appConfig, isLoading, errorMessage }}>
       {children}
-    </AppConfigurationContext>
+    </AppConfigContext>
   )
 }

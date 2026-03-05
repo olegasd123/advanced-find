@@ -68,7 +68,7 @@ export const usePagination = (
     [currentPage, totalPages]
   )
 
-  const displaySummaryTemplate = pagination?.DisplaySummary?.trim()
+  const displaySummaryTemplate = pagination?.SummaryTemplate?.trim()
   const isSummaryVisible = Boolean(isPaginationEnabled && displaySummaryTemplate)
   const paginationSummaryText = React.useMemo(() => {
     if (!isSummaryVisible || !displaySummaryTemplate) {

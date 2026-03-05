@@ -93,7 +93,7 @@ export const FilterGrid = ({
       const defaultVisibleFilterOptions =
         options
           ?.filter(
-            (filterOption) => filterOption?.FilterOptionConfig?.Default?.IsShowed
+            (filterOption) => filterOption?.FilterOptionConfig?.Default?.IsShown
           )
           .map((filterOption) => ({
             id: ++optionIdRef.current,
@@ -156,7 +156,7 @@ export const FilterGrid = ({
           id: groupId,
           operator: normalizeGroupOperator(filterGroup.Operator),
           optionIds: normalizedOptionIds,
-          isOperatorChangeable: filterGroup.IsOperatorChangeable !== false,
+          isOperatorChangeable: filterGroup.IsOperatorEditable !== false,
           isRemovable: filterGroup.IsRemovable !== false,
           title: normalizeGroupTitle(filterGroup.GroupTitle),
         }

@@ -10,7 +10,7 @@ import {
 import { ComboboxOptionCategory } from '../../components/controls/combobox-option-category'
 import { FilterOption } from './filter-grid'
 import { FilterItemValue } from './filter-item-value'
-import { useAppConfiguration } from '../../hooks/use-app-config'
+import { useAppConfig } from '../../hooks/use-app-config'
 import {
   CrmFilterConditionOption,
   getCrmFilterConditionsOptions,
@@ -95,7 +95,7 @@ export const FilterItem = ({
   const currentConditionRef = React.useRef<AppliedFilterCondition | undefined>(currentCondition)
   const hasInsetGroupDivider = groupPosition === 'first' || groupPosition === 'middle'
 
-  const localization = useAppConfiguration().appConfig?.SearchScheme?.Localization
+  const localization = useAppConfig().appConfig?.SearchSchema?.Localization
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
   const normalizeCategoryId = React.useCallback((value: string | undefined): string | undefined => {
     const normalized = value?.trim()
@@ -205,7 +205,7 @@ export const FilterItem = ({
 
     const nextFilterConditions = getCrmFilterConditionsOptions(
       targetFilterOption?.AttributeType,
-      localization?.CrmFilterConditions,
+      localization?.FilterConditionLabels,
       targetFilterOption?.Selection?.Multiple
     )
     setFilterConditions(nextFilterConditions)
@@ -222,7 +222,7 @@ export const FilterItem = ({
     setSelectedConditionDisplayValues(
       persistedCondition?.displayValues ? [...persistedCondition.displayValues] : undefined
     )
-  }, [currentOption, localization?.CrmFilterConditions, options])
+  }, [currentOption, localization?.FilterConditionLabels, options])
 
   const handleAttributeChanged = (value: FilterOptionEntry | null): void => {
     if (!value || value.kind !== 'option') {
@@ -234,7 +234,7 @@ export const FilterItem = ({
 
     const options = getCrmFilterConditionsOptions(
       targetFilterOptionValue?.AttributeType,
-      localization?.CrmFilterConditions,
+      localization?.FilterConditionLabels,
       targetFilterOptionValue?.Selection?.Multiple
     )
     setFilterConditions(options)

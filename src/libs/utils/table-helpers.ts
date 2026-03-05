@@ -55,10 +55,10 @@ export const getPaginationOptions = (
     }
   })
 
-  if (pagination.ListItemAll) {
+  if (pagination.AllOptionLabel) {
     options.push({
       value: pageSizeAllValue,
-      label: pagination.ListItemAll,
+      label: pagination.AllOptionLabel,
     })
   }
 
@@ -168,8 +168,8 @@ export const getDefaultSortRules = <T extends { columnKey: string }>(
     const normalizedColumnId = rule.ColumnId?.trim().toLowerCase()
     let column = normalizedColumnId ? columnsById.get(normalizedColumnId) : undefined
 
-    if (!column && typeof rule.ColumnNumber === 'number' && Number.isFinite(rule.ColumnNumber)) {
-      const normalizedColumnIndex = Math.trunc(rule.ColumnNumber) - 1
+    if (!column && typeof rule.ColumnIndex === 'number' && Number.isFinite(rule.ColumnIndex)) {
+      const normalizedColumnIndex = Math.trunc(rule.ColumnIndex) - 1
       column = columns.at(normalizedColumnIndex)
     }
 

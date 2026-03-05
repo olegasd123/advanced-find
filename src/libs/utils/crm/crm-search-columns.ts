@@ -93,7 +93,7 @@ const getResolvedTableColumnAttributes = (column: TableColumnConfig): string[] =
 }
 
 const getTableColumnAttributesFormat = (column: TableColumnConfig): string | undefined => {
-  const attributesFormat = column.AttributesFormat?.trim()
+  const attributesFormat = column.AttributeFormat?.trim()
   return attributesFormat ? attributesFormat : undefined
 }
 
@@ -131,7 +131,7 @@ export const createRootSearchColumn = (attributeName: string, index: number): Se
 export const resolveSearchTableColumns = (entityConfig: EntityConfig): SearchTableColumn[] => {
   const relationPathById = getRelationPathById(entityConfig)
 
-  return entityConfig.ResultView.TableColumns
+  return entityConfig.ResultView.Columns
     .map((column, index) => {
       const chain = getTableColumnChain(column, relationPathById)
       const attributeNames = getResolvedTableColumnAttributes(column)

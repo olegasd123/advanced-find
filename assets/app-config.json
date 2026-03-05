@@ -1,5 +1,5 @@
 {
-  "SearchScheme": {
+  "SearchSchema": {
     "Entities": [
       {
         "LogicalName": "invoice",
@@ -57,7 +57,7 @@
             "AttributeName": "invoicenumber",
             "DisplayName": "Invoice number",
             "Default": {
-              "IsShowed": true,
+              "IsShown": true,
               "Condition": "ne",
               "Values": ["1"],
               "IsAttributeDisabled": true,
@@ -75,7 +75,7 @@
             "CategoryId": "general",
             "AttributeName": "name",
             "Default": {
-              "IsShowed": true,
+              "IsShown": true,
               "Values": ["invoice name 1"]
             }
           },
@@ -83,7 +83,7 @@
             "CategoryId": "general",
             "AttributeName": "createdby",
             "Default": {
-              "IsShowed": true
+              "IsShown": true
             },
             "Lookup": {
               "AttributeNames": ["lastname"]
@@ -94,7 +94,7 @@
             "PathId": "invoice-to-detail",
             "AttributeName": "priceperunit",
             "Default": {
-              "IsShowed": true
+              "IsShown": true
             }
           },
           {
@@ -111,7 +111,7 @@
           }
         ],
         "ResultView": {
-          "TableColumns": [
+          "Columns": [
             {
               "Id": "invoice-name",
               "AttributeNames": ["name"],
@@ -130,8 +130,8 @@
           "ShowAppliedFilters": true,
           "Pagination": {
             "List": [25, 50, 100],
-            "ListItemAll": "All",
-            "DisplaySummary": "Showing {0} to {1} of {2} results"
+            "AllOptionLabel": "All",
+            "SummaryTemplate": "Showing {0} to {1} of {2} results"
           },
           "DefaultSort": [
             {
@@ -171,7 +171,7 @@
             "CategoryId": "general",
             "AttributeName": "name",
             "Default": {
-              "IsShowed": true
+              "IsShown": true
             },
             "Groupable": false
           },
@@ -180,7 +180,7 @@
             "CategoryId": "general",
             "AttributeName": "accountcategorycode",
             "Default": {
-              "IsShowed": true,
+              "IsShown": true,
               "Values": [1]
             },
             "Selection": {
@@ -191,7 +191,7 @@
             "CategoryId": "general",
             "AttributeName": "createdby",
             "Default": {
-              "IsShowed": true
+              "IsShown": true
             },
             "Lookup": {
               "AttributeNames": ["firstname", "lastname"],
@@ -209,16 +209,16 @@
             "FilterOptionIds": ["account-name-filter", "account-category-filter"],
             "Operator": "and",
             "GroupTitle": "Title of the group",
-            "IsOperatorChangeable": false,
+            "IsOperatorEditable": false,
             "IsRemovable": false
           }
         ],
         "ResultView": {
           "ShowAppliedFilters": true,
-          "TableColumns": [
+          "Columns": [
             {
               "AttributeNames": ["name", "accountnumber"],
-              "AttributesFormat": "{0} ({1})",
+              "AttributeFormat": "{0} ({1})",
               "DisplayName": "Account info"
             },
             {
@@ -228,14 +228,14 @@
           ],
           "Pagination": {
             "List": [25, 50, 100],
-            "ListItemAll": "All",
-            "DisplaySummary": "Showing {0} to {1} of {2} results"
+            "AllOptionLabel": "All",
+            "SummaryTemplate": "Showing {0} to {1} of {2} results"
           }
         }
       }
     ],
     "Localization": {
-      "CrmFilterConditions": {
+      "FilterConditionLabels": {
         "eq": "Equal",
         "ne": "Not equal",
         "in": "In",

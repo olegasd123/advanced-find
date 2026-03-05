@@ -1,10 +1,10 @@
-interface FilterOptionsDefaultConfig {
+interface FilterOptionDefaultConfig {
   CannotBeRemoved?: boolean
   Condition?: string
   OrderedBy?: number
   IsAttributeDisabled?: boolean
   IsDisabled?: boolean
-  IsShowed?: boolean
+  IsShown?: boolean
   Values?: Array<string | number>
 }
 
@@ -14,26 +14,26 @@ export interface DefaultFilterGroupConfig {
   FilterOptionIds?: string[]
   FilterOptionIndexes?: number[]
   Operator?: FilterGroupOperator
-  IsOperatorChangeable?: boolean
+  IsOperatorEditable?: boolean
   IsRemovable?: boolean
   GroupTitle?: string
 }
 
 export interface ResultViewPaginationConfig {
   List?: number[]
-  ListItemAll?: string
-  DisplaySummary?: string
+  AllOptionLabel?: string
+  SummaryTemplate?: string
 }
 
 export interface ResultViewDefaultSortConfig {
   ColumnId?: string
-  ColumnNumber?: number
+  ColumnIndex?: number
   IsAscending?: boolean
 }
 
 export interface ResultViewConfig {
   Pagination?: ResultViewPaginationConfig
-  TableColumns: TableColumnConfig[]
+  Columns: TableColumnConfig[]
   DefaultSort?: ResultViewDefaultSortConfig[]
   ShowAppliedFilters?: boolean
 }
@@ -43,18 +43,18 @@ export interface TableColumnConfig {
   PathId?: string
   Path?: RelationPathStepConfig[]
   AttributeNames?: string[]
-  AttributesFormat?: string
+  AttributeFormat?: string
   DisplayName?: string
   Width?: number | string
 }
 
-interface SearchSchemeConfig {
+interface SearchSchemaConfig {
   Entities: EntityConfig[]
   Localization: LocalizationConfig
 }
 
 interface LocalizationConfig {
-  CrmFilterConditions?: Record<string, string>
+  FilterConditionLabels?: Record<string, string>
 }
 
 interface SelectionConfig {
@@ -69,7 +69,7 @@ interface LookupConfig {
 }
 
 export interface AppConfig {
-  SearchScheme?: SearchSchemeConfig
+  SearchSchema?: SearchSchemaConfig
 }
 
 export interface EntityConfig {
@@ -107,7 +107,7 @@ export interface FilterOptionConfig {
   AttributeType?: string
   CategoryId?: string
   EntityName?: string
-  Default?: FilterOptionsDefaultConfig
+  Default?: FilterOptionDefaultConfig
   Groupable?: boolean
   Lookup?: LookupConfig
   Selection?: SelectionConfig

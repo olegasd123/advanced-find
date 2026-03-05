@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
-import { useAppConfiguration } from '../../hooks/use-app-config'
+import { useAppConfig } from '../../hooks/use-app-config'
 import { EntityMetadata } from '../../libs/data/crm/crm-repository'
 import {
   EntityConfig,
@@ -124,11 +124,11 @@ export const Search = () => {
   const [resultsError, setResultsError] = React.useState<string>()
   const tableColumnsRequestIdRef = React.useRef(0)
 
-  const appConfigurationState = useAppConfiguration()
-  const appConfiguration = appConfigurationState.appConfig
+  const appConfigState = useAppConfig()
+  const appConfig = appConfigState.appConfig
   const crmRepository = useCrmRepository()
 
-  const configEntities = appConfiguration?.SearchScheme?.Entities
+  const configEntities = appConfig?.SearchSchema?.Entities
   const resultViewPagination: ResultViewPaginationConfig | undefined =
     currentEntityConfig?.ResultView.Pagination
   const resultViewDefaultSort: ResultViewDefaultSortConfig[] | undefined =
@@ -355,12 +355,12 @@ export const Search = () => {
     }
   }
 
-  if (appConfigurationState.isLoading) {
+  if (appConfigState.isLoading) {
     return <div className="py-6 text-zinc-600">Loading app configuration...</div>
   }
 
-  if (appConfigurationState.errorMessage) {
-    return <div className="py-6 text-rose-700">{appConfigurationState.errorMessage}</div>
+  if (appConfigState.errorMessage) {
+    return <div className="py-6 text-rose-700">{appConfigState.errorMessage}</div>
   }
 
   if (!configEntities || configEntities.length === 0) {
