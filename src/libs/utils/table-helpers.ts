@@ -166,12 +166,7 @@ export const getDefaultSortRules = <T extends { columnKey: string }>(
     }
 
     const normalizedColumnId = rule.ColumnId?.trim().toLowerCase()
-    let column = normalizedColumnId ? columnsById.get(normalizedColumnId) : undefined
-
-    if (!column && typeof rule.ColumnIndex === 'number' && Number.isFinite(rule.ColumnIndex)) {
-      const normalizedColumnIndex = Math.trunc(rule.ColumnIndex) - 1
-      column = columns.at(normalizedColumnIndex)
-    }
+    const column = normalizedColumnId ? columnsById.get(normalizedColumnId) : undefined
 
     if (!column) {
       continue

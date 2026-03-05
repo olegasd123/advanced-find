@@ -346,8 +346,7 @@ Defines the initial sort order of the results table. Multiple entries are applie
 
 | Property | Type | Default | Description |
 |---|---|---|---|
-| `ColumnId` | string | - | References a `Columns.Id`. Mutually exclusive with `ColumnIndex`. |
-| `ColumnIndex` | number | - | Alternative: 1-based column index. Mutually exclusive with `ColumnId`. |
+| `ColumnId` | string | - | References a `Columns.Id` (case-insensitive). This is required. |
 | `IsAscending` | boolean | `true` | Sort direction. `true` for ascending, `false` for descending. |
 
 ---

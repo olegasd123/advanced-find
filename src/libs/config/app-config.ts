@@ -26,8 +26,7 @@ export interface ResultViewPaginationConfig {
 }
 
 export interface ResultViewDefaultSortConfig {
-  ColumnId?: string
-  ColumnIndex?: number
+  ColumnId: string
   IsAscending?: boolean
 }
 
