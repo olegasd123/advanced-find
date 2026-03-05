@@ -62,8 +62,7 @@
               "Multiple": true,
               "MinItems": 1,
               "MaxItems": 2
-            },
-            "Control": ""
+            }
           },
           {
             "AttributeName": "name",
@@ -190,7 +189,7 @@
           {
             "FilterOptionIndexes": [1, 2],
             "Operator": "and",
-            "GroupTitle": "Title if the group has more than 1 filter option",
+            "GroupTitle": "Title if the group",
             "IsOperatorChangeable": false,
             "IsRemovable": false
           }

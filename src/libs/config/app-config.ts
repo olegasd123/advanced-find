@@ -86,7 +86,6 @@ export interface FilterOptionConfig {
   ToAttribute?: string
   AttributeType?: string
   CategoryDisplayName?: string
-  Control?: string
   EntityName?: string
   Default?: FilterOptionsDefaultConfig
   Groupable?: boolean
