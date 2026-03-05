@@ -76,10 +76,16 @@ export interface AppConfig {
 
 export interface EntityConfig {
   FilterUniqueOptionsOnly?: boolean
+  FilterCategories?: FilterCategoryConfig[]
   FilterOptions: FilterOptionConfig[]
   DefaultFilterGroups?: DefaultFilterGroupConfig[]
   LogicalName: string
   ResultView: ResultViewConfig
+}
+
+export interface FilterCategoryConfig {
+  Id: string
+  DisplayName: string
 }
 
 export interface FilterOptionConfig {
@@ -89,7 +95,7 @@ export interface FilterOptionConfig {
   FromAttribute?: string
   ToAttribute?: string
   AttributeType?: string
-  CategoryDisplayName?: string
+  CategoryId?: string
   EntityName?: string
   Default?: FilterOptionsDefaultConfig
   Groupable?: boolean

@@ -3,6 +3,97 @@
     "Entities": [
       {
         "LogicalName": "invoice",
+        "FilterCategories": [
+          {
+            "Id": "general",
+            "DisplayName": "General"
+          },
+          {
+            "Id": "misc",
+            "DisplayName": "Misc"
+          }
+        ],
+        "FilterUniqueOptionsOnly": true,
+        "FilterOptions": [
+          {
+            "CategoryId": "general",
+            "AttributeName": "invoicenumber",
+            "EntityName": "invoice",
+            "DisplayName": "Invoice number",
+            "Default": {
+              "IsShowed": true,
+              "Condition": "ne",
+              "Values": ["1"],
+              "IsAttributeDisabled": true,
+              "IsDisabled": false,
+              "CannotBeRemoved": true
+            },
+            "Groupable": false,
+            "Selection": {
+              "Multiple": true,
+              "MinItems": 1,
+              "MaxItems": 2
+            }
+          },
+          {
+            "CategoryId": "general",
+            "AttributeName": "name",
+            "Default": {
+              "IsShowed": true,
+              "Values": ["invoice name 1"]
+            }
+          },
+          {
+            "CategoryId": "general",
+            "AttributeName": "createdby",
+            "Default": {
+              "IsShowed": true
+            },
+            "Lookup": {
+              "AttributeNames": ["lastname"]
+            }
+          },
+          {
+            "CategoryId": "misc",
+            "EntityName": "invoice",
+            "FromAttribute": "invoiceid",
+            "RelatedTo": {
+              "ToAttribute": "invoiceid",
+              "EntityName": "invoicedetail",
+              "AttributeName": "priceperunit",
+              "Default": {
+                "IsShowed": true
+              }
+            }
+          },
+          {
+            "CategoryId": "misc",
+            "EntityName": "invoice",
+            "FromAttribute": "invoiceid",
+            "RelatedTo": {
+              "ToAttribute": "invoiceid",
+              "EntityName": "invoicedetail",
+              "AttributeName": "priceperunit",
+              "DisplayName": "Custom unit price"
+            }
+          },
+          {
+            "CategoryId": "misc",
+            "EntityName": "invoice",
+            "FromAttribute": "invoiceid",
+            "RelatedTo": {
+              "ToAttribute": "invoiceid",
+              "EntityName": "invoicedetail",
+              "FromAttribute": "productid",
+              "RelatedTo": {
+                "ToAttribute": "productid",
+                "EntityName": "product",
+                "AttributeName": "name",
+                "DisplayName": "Product name"
+              }
+            }
+          }
+        ],
         "ResultView": {
           "TableColumns": [
             {
@@ -41,91 +132,64 @@
               "IsAscending": true
             }
           ]
-        },
-        "FilterUniqueOptionsOnly": true,
+        }
+      },
+      {
+        "LogicalName": "account",
+        "FilterCategories": [
+          {
+            "Id": "general",
+            "DisplayName": "General"
+          }
+        ],
         "FilterOptions": [
           {
-            "CategoryDisplayName": "General"
-          },
-          {
-            "AttributeName": "invoicenumber",
-            "EntityName": "invoice",
-            "DisplayName": "Invoice number",
-            "Default": {
-              "IsShowed": true,
-              "Condition": "ne",
-              "Values": ["1"],
-              "IsAttributeDisabled": true,
-              "IsDisabled": false,
-              "CannotBeRemoved": true
-            },
-            "Groupable": false,
-            "Selection": {
-              "Multiple": true,
-              "MinItems": 1,
-              "MaxItems": 2
-            }
-          },
-          {
+            "Id": "account-name-filter",
+            "CategoryId": "general",
             "AttributeName": "name",
             "Default": {
+              "IsShowed": true
+            },
+            "Groupable": false
+          },
+          {
+            "Id": "account-category-filter",
+            "CategoryId": "general",
+            "AttributeName": "accountcategorycode",
+            "Default": {
               "IsShowed": true,
-              "Values": ["invoice name 1"]
+              "Values": [1]
+            },
+            "Selection": {
+              "Multiple": false
             }
           },
           {
+            "CategoryId": "general",
             "AttributeName": "createdby",
             "Default": {
               "IsShowed": true
             },
             "Lookup": {
-              "AttributeNames": ["lastname"]
-            }
-          },
-          {
-            "CategoryDisplayName": "Misc"
-          },
-          {
-            "EntityName": "invoice",
-            "FromAttribute": "invoiceid",
-            "RelatedTo": {
-              "ToAttribute": "invoiceid",
-              "EntityName": "invoicedetail",
-              "AttributeName": "priceperunit",
-              "Default": {
-                "IsShowed": true
-              }
-            }
-          },
-          {
-            "EntityName": "invoice",
-            "FromAttribute": "invoiceid",
-            "RelatedTo": {
-              "ToAttribute": "invoiceid",
-              "EntityName": "invoicedetail",
-              "AttributeName": "priceperunit",
-              "DisplayName": "Custom unit price"
-            }
-          },
-          {
-            "EntityName": "invoice",
-            "FromAttribute": "invoiceid",
-            "RelatedTo": {
-              "ToAttribute": "invoiceid",
-              "EntityName": "invoicedetail",
-              "FromAttribute": "productid",
-              "RelatedTo": {
-                "ToAttribute": "productid",
-                "EntityName": "product",
-                "AttributeName": "name",
-                "DisplayName": "Product name"
-              }
+              "AttributeNames": ["firstname", "lastname"],
+              "AttributeFormat": "{0} {1}"
+            },
+            "Selection": {
+              "Multiple": true,
+              "MinItems": 1,
+              "MaxItems": 2
             }
           }
-        ]
-      },
-      {
-        "LogicalName": "account",
+        ],
+        "DefaultFilterGroups": [
+          {
+            "FilterOptionIds": ["account-name-filter", "account-category-filter"],
+            "Operator": "and",
+            "GroupTitle": "Title of the group",
+            "IsOperatorChangeable": false,
+            "IsRemovable": false
+          }
+        ],
         "ResultView": {
           "ShowAppliedFilters": true,
           "TableColumns": [
@@ -149,55 +213,7 @@
             "ListItemAll": "All",
             "DisplaySummary": "Showing {0} to {1} of {2} results"
           }
-        },
-        "FilterOptions": [
-          {
-            "CategoryDisplayName": "General"
-          },
-          {
-            "Id": "account-name-filter",
-            "AttributeName": "name",
-            "Default": {
-              "IsShowed": true
-            },
-            "Groupable": false
-          },
-          {
-            "Id": "account-category-filter",
-            "AttributeName": "accountcategorycode",
-            "Default": {
-              "IsShowed": true,
-              "Values": [1]
-            },
-            "Selection": {
-              "Multiple": false
-            }
-          },
-          {
-            "AttributeName": "createdby",
-            "Default": {
-              "IsShowed": true
-            },
-            "Lookup": {
-              "AttributeNames": ["firstname", "lastname"],
-              "AttributeFormat": "{0} {1}"
-            },
-            "Selection": {
-              "Multiple": true,
-              "MinItems": 1,
-              "MaxItems": 2
-            }
-          }
-        ],
-        "DefaultFilterGroups": [
-          {
-            "FilterOptionIds": ["account-name-filter", "account-category-filter"],
-            "Operator": "and",
-            "GroupTitle": "Title if the group",
-            "IsOperatorChangeable": false,
-            "IsRemovable": false
-          }
-        ]
+        }
       }
     ],
     "Localization": {

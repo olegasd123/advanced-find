@@ -29,13 +29,11 @@ export const fillOptionsWithMetadataInfo = async (
 ) => {
   const attributesNames = filterOptions
     ?.map((i) => {
-      if (!i.CategoryDisplayName) {
-        const option = getTargetFilterOption(i)
-        if (option && option.AttributeName && !option.EntityName) {
-          option.EntityName = currentEntity
-        }
-        return option
+      const option = getTargetFilterOption(i)
+      if (option && option.AttributeName && !option.EntityName) {
+        option.EntityName = currentEntity
       }
+      return option
     })
     .filter((i) => typeof i !== 'undefined')
 

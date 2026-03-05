@@ -17,14 +17,28 @@ import {
   getTargetFilterOption,
 } from '../../libs/utils/crm/filter'
 import { AppliedFilterCondition, ConditionValue } from '../../libs/utils/crm/crm-search'
-import { FilterOptionConfig } from '../../libs/config/app-config'
+import { FilterCategoryConfig, FilterOptionConfig } from '../../libs/config/app-config'
 import clsx from 'clsx'
 
 const EMPTY_FILTER_OPTION: FilterOption = {}
 
+interface FilterOptionCategoryEntry {
+  kind: 'category'
+  categoryId: string
+  displayName: string
+}
+
+interface FilterOptionValueEntry {
+  kind: 'option'
+  option: FilterOption
+}
+
+type FilterOptionEntry = FilterOptionCategoryEntry | FilterOptionValueEntry
+
 export const FilterItem = ({
   optionId,
   options,
+  categories,
   selectedFilterOptions,
   currentOption,
   currentCondition,
@@ -42,6 +56,7 @@ export const FilterItem = ({
 }: {
   optionId: number
   options: FilterOption[]
+  categories: FilterCategoryConfig[]
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
   currentOption?: FilterOption
   currentCondition?: AppliedFilterCondition
@@ -82,19 +97,27 @@ export const FilterItem = ({
 
   const localization = useAppConfiguration().appConfig?.SearchScheme?.Localization
   const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
+  const normalizeCategoryId = React.useCallback((value: string | undefined): string | undefined => {
+    const normalized = value?.trim()
+    return normalized ? normalized.toLowerCase() : undefined
+  }, [])
+  const categoryDisplayNameById = React.useMemo(() => {
+    const map = new Map<string, string>()
+    for (const category of categories) {
+      const categoryId = normalizeCategoryId(category.Id)
+      const displayName = category.DisplayName?.trim()
+      if (categoryId && displayName && !map.has(categoryId)) {
+        map.set(categoryId, displayName)
+      }
+    }
+    return map
+  }, [categories, normalizeCategoryId])
   const visibleOptions = React.useMemo(() => {
-    const next: FilterOption[] = []
-    let pendingCategory: FilterOption | undefined
+    const next: FilterOptionEntry[] = []
+    const shownCategoryIds = new Set<string>()
 
     for (const option of options) {
       const config = option.FilterOptionConfig
-      const categoryDisplayName = config?.CategoryDisplayName?.trim()
-      const isCategory = typeof config?.CategoryDisplayName === 'string'
-
-      if (isCategory) {
-        pendingCategory = categoryDisplayName ? option : undefined
-        continue
-      }
 
       if (
         !config ||
@@ -103,26 +126,51 @@ export const FilterItem = ({
         continue
       }
 
-      if (pendingCategory) {
-        next.push(pendingCategory)
-        pendingCategory = undefined
+      const categoryId = normalizeCategoryId(config.CategoryId)
+      const categoryDisplayName = categoryId ? categoryDisplayNameById.get(categoryId) : undefined
+      if (categoryId && categoryDisplayName && !shownCategoryIds.has(categoryId)) {
+        next.push({
+          kind: 'category',
+          categoryId,
+          displayName: categoryDisplayName,
+        })
+        shownCategoryIds.add(categoryId)
       }
 
-      next.push(option)
+      next.push({
+        kind: 'option',
+        option,
+      })
     }
 
     return next
-  }, [options, selectedAttribute?.FilterOptionConfig, selectedFilterOptions])
+  }, [
+    categoryDisplayNameById,
+    normalizeCategoryId,
+    options,
+    selectedAttribute?.FilterOptionConfig,
+    selectedFilterOptions,
+  ])
 
   const compareFilterOption = React.useCallback(
-    (left: FilterOption, right: FilterOption): boolean => {
+    (left: FilterOptionEntry, right: FilterOptionEntry): boolean => {
+      if (left.kind !== 'option' || right.kind !== 'option') {
+        return false
+      }
+
       return (
-        left.FilterOptionConfig === right.FilterOptionConfig &&
-        left.sourceIndex === right.sourceIndex
+        left.option.FilterOptionConfig === right.option.FilterOptionConfig &&
+        left.option.sourceIndex === right.option.sourceIndex
       )
     },
     []
   )
+  const selectedAttributeEntry = React.useMemo<FilterOptionEntry>(() => {
+    return {
+      kind: 'option',
+      option: selectedAttribute,
+    }
+  }, [selectedAttribute])
 
   React.useEffect(() => {
     currentConditionRef.current = currentCondition
@@ -176,9 +224,13 @@ export const FilterItem = ({
     )
   }, [currentOption, localization?.CrmFilterConditions, options])
 
-  const handleAttributeChanged = (value: FilterOption | null): void => {
-    const targetFilterOptionValue = getTargetFilterOption(value?.FilterOptionConfig)
-    setSelectedAttribute(value ?? EMPTY_FILTER_OPTION)
+  const handleAttributeChanged = (value: FilterOptionEntry | null): void => {
+    if (!value || value.kind !== 'option') {
+      return
+    }
+
+    const targetFilterOptionValue = getTargetFilterOption(value.option?.FilterOptionConfig)
+    setSelectedAttribute(value.option ?? EMPTY_FILTER_OPTION)
 
     const options = getCrmFilterConditionsOptions(
       targetFilterOptionValue?.AttributeType,
@@ -304,24 +356,24 @@ export const FilterItem = ({
         <Combobox
           options={visibleOptions}
           by={compareFilterOption}
-          displayValue={(option: FilterOption) =>
-            getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName
+          displayValue={(option: FilterOptionEntry) =>
+            option.kind === 'option'
+              ? getTargetFilterOption(option.option?.FilterOptionConfig)?.DisplayName
+              : undefined
           }
-          value={selectedAttribute}
+          value={selectedAttributeEntry}
           disabled={isDisabled || isAttributeDisabled}
           onChange={handleAttributeChanged}
         >
           {(option) => {
-            const categoryDisplayName = option?.FilterOptionConfig?.CategoryDisplayName?.trim()
-
-            return categoryDisplayName ? (
+            return option.kind === 'category' ? (
               <ComboboxOptionCategory className="bg-zinc-200/60 dark:text-white">
-                {categoryDisplayName}
+                {option.displayName}
               </ComboboxOptionCategory>
             ) : (
               <ComboboxOption value={option}>
                 <ComboboxLabel>
-                  {getTargetFilterOption(option?.FilterOptionConfig)?.DisplayName}
+                  {getTargetFilterOption(option.option?.FilterOptionConfig)?.DisplayName}
                 </ComboboxLabel>
               </ComboboxOption>
             )
