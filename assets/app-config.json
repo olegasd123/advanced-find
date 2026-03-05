@@ -3,6 +3,43 @@
     "Entities": [
       {
         "LogicalName": "invoice",
+        "RelationPaths": [
+          {
+            "Id": "invoice-created-by",
+            "Steps": [
+              {
+                "EntityName": "systemuser",
+                "FromAttribute": "createdby",
+                "ToAttribute": "systemuserid"
+              }
+            ]
+          },
+          {
+            "Id": "invoice-to-detail",
+            "Steps": [
+              {
+                "EntityName": "invoicedetail",
+                "FromAttribute": "invoiceid",
+                "ToAttribute": "invoiceid"
+              }
+            ]
+          },
+          {
+            "Id": "invoice-to-product",
+            "Steps": [
+              {
+                "EntityName": "invoicedetail",
+                "FromAttribute": "invoiceid",
+                "ToAttribute": "invoiceid"
+              },
+              {
+                "EntityName": "product",
+                "FromAttribute": "productid",
+                "ToAttribute": "productid"
+              }
+            ]
+          }
+        ],
         "FilterCategories": [
           {
             "Id": "general",
@@ -18,7 +55,6 @@
           {
             "CategoryId": "general",
             "AttributeName": "invoicenumber",
-            "EntityName": "invoice",
             "DisplayName": "Invoice number",
             "Default": {
               "IsShowed": true,
@@ -55,43 +91,23 @@
           },
           {
             "CategoryId": "misc",
-            "EntityName": "invoice",
-            "FromAttribute": "invoiceid",
-            "RelatedTo": {
-              "ToAttribute": "invoiceid",
-              "EntityName": "invoicedetail",
-              "AttributeName": "priceperunit",
-              "Default": {
-                "IsShowed": true
-              }
+            "PathId": "invoice-to-detail",
+            "AttributeName": "priceperunit",
+            "Default": {
+              "IsShowed": true
             }
           },
           {
             "CategoryId": "misc",
-            "EntityName": "invoice",
-            "FromAttribute": "invoiceid",
-            "RelatedTo": {
-              "ToAttribute": "invoiceid",
-              "EntityName": "invoicedetail",
-              "AttributeName": "priceperunit",
-              "DisplayName": "Custom unit price"
-            }
+            "PathId": "invoice-to-detail",
+            "AttributeName": "priceperunit",
+            "DisplayName": "Custom unit price"
           },
           {
             "CategoryId": "misc",
-            "EntityName": "invoice",
-            "FromAttribute": "invoiceid",
-            "RelatedTo": {
-              "ToAttribute": "invoiceid",
-              "EntityName": "invoicedetail",
-              "FromAttribute": "productid",
-              "RelatedTo": {
-                "ToAttribute": "productid",
-                "EntityName": "product",
-                "AttributeName": "name",
-                "DisplayName": "Product name"
-              }
-            }
+            "PathId": "invoice-to-product",
+            "AttributeName": "name",
+            "DisplayName": "Product name"
           }
         ],
         "ResultView": {
@@ -107,13 +123,8 @@
             },
             {
               "Id": "invoice-created-by",
-              "EntityName": "systemuser",
-              "FromAttribute": "createdby",
-              "RelatedTo": {
-                "ToAttribute": "systemuserid",
-                "EntityName": "systemuser",
-                "AttributeNames": ["fullname"]
-              }
+              "PathId": "invoice-created-by",
+              "AttributeNames": ["fullname"]
             }
           ],
           "ShowAppliedFilters": true,
@@ -136,6 +147,18 @@
       },
       {
         "LogicalName": "account",
+        "RelationPaths": [
+          {
+            "Id": "account-created-by",
+            "Steps": [
+              {
+                "EntityName": "systemuser",
+                "FromAttribute": "createdby",
+                "ToAttribute": "systemuserid"
+              }
+            ]
+          }
+        ],
         "FilterCategories": [
           {
             "Id": "general",
@@ -199,13 +222,8 @@
               "DisplayName": "Account info"
             },
             {
-              "EntityName": "systemuser",
-              "FromAttribute": "createdby",
-              "RelatedTo": {
-                "ToAttribute": "systemuserid",
-                "EntityName": "systemuser",
-                "AttributeNames": ["fullname"]
-              }
+              "PathId": "account-created-by",
+              "AttributeNames": ["fullname"]
             }
           ],
           "Pagination": {

@@ -1,6 +1,7 @@
-import { FilterOptionConfig } from '../../config/app-config'
+import { FilterOptionConfig, RelationPathStepConfig } from '../../config/app-config'
 import { AttributeMetadata } from '../../data/crm/crm-repository'
 import { createLogger } from '../logger'
+import { getPathTargetEntityName, resolveConfigPath } from './relation-path'
 
 const logger = createLogger('filter-utils')
 
@@ -13,25 +14,31 @@ export interface CrmFilterConditionOption {
 export const getTargetFilterOption = (
   option?: FilterOptionConfig
 ): FilterOptionConfig | undefined => {
-  if (option?.RelatedTo) {
-    return getTargetFilterOption(option?.RelatedTo)
-  }
   return option
 }
 
 export const fillOptionsWithMetadataInfo = async (
   currentEntity?: string,
   filterOptions?: FilterOptionConfig[],
+  relationPathById?: Map<string, RelationPathStepConfig[]>,
   getAttributeMetadata?: (
     entityLogicalName: string,
     attributesLogicalNames: string[]
   ) => Promise<AttributeMetadata[]> | undefined
 ) => {
+  const resolvedPathById = relationPathById ?? new Map<string, RelationPathStepConfig[]>()
   const attributesNames = filterOptions
     ?.map((i) => {
       const option = getTargetFilterOption(i)
-      if (option && option.AttributeName && !option.EntityName) {
-        option.EntityName = currentEntity
+      if (option && option.AttributeName) {
+        const relationPath = resolveConfigPath(resolvedPathById, option.PathId, option.Path)
+        if (relationPath.length > 0) {
+          option.Path = relationPath
+        }
+
+        if (!option.EntityName && currentEntity) {
+          option.EntityName = getPathTargetEntityName(currentEntity, relationPath)
+        }
       }
       return option
     })
@@ -39,7 +46,7 @@ export const fillOptionsWithMetadataInfo = async (
 
   if (attributesNames?.length ?? 0 > 0) {
     const groupedAttributesNames = attributesNames?.reduce((p, c) => {
-      if (c?.EntityName || c?.AttributeName) {
+      if (c?.EntityName && c?.AttributeName) {
         p[c.EntityName!] = p[c.EntityName!] || []
 
         if (!p[c.EntityName!].includes(c.AttributeName!)) {

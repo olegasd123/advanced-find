@@ -1,4 +1,4 @@
-import { FilterOptionConfig } from '../../config/app-config'
+import { FilterOptionConfig, RelationPathStepConfig } from '../../config/app-config'
 import { getTargetFilterOption } from './filter'
 import { createRootSearchColumn, SearchTableColumn } from './crm-search-columns'
 import {
@@ -33,27 +33,6 @@ interface FetchLinkNode {
   attributes: Map<string, FetchAttributeNode>
   filterContext: FilterConditionContext
   children: Map<string, FetchLinkNode>
-}
-
-interface LinkPathItem {
-  EntityName?: string
-  FromAttribute?: string
-  ToAttribute?: string
-}
-
-const getFilterOptionChain = (filterOption?: FilterOptionConfig): FilterOptionConfig[] => {
-  if (!filterOption) {
-    return []
-  }
-
-  const chain: FilterOptionConfig[] = []
-  let current: FilterOptionConfig | undefined = filterOption
-  while (current) {
-    chain.push(current)
-    current = current.RelatedTo
-  }
-
-  return chain
 }
 
 const createFilterConditionContext = (): FilterConditionContext => ({
@@ -209,23 +188,20 @@ const getOrCreateLinkNode = (
 }
 
 const ensureLinkNodeForChain = (
-  chain: LinkPathItem[],
+  chain: RelationPathStepConfig[],
   rootLinks: Map<string, FetchLinkNode>
 ): { canLink: boolean; node?: FetchLinkNode } => {
-  if (chain.length <= 1) {
+  if (chain.length === 0) {
     return { canLink: true }
   }
 
   let currentParentLinks = rootLinks
   let currentNode: FetchLinkNode | undefined
 
-  for (let index = 0; index < chain.length - 1; index++) {
-    const parentItem = chain[index]
-    const childItem = chain[index + 1]
-
-    const linkToAttribute = parentItem.FromAttribute
-    const linkFromAttribute = childItem.ToAttribute
-    const childEntityName = childItem.EntityName
+  for (const pathStep of chain) {
+    const linkToAttribute = pathStep.FromAttribute
+    const linkFromAttribute = pathStep.ToAttribute
+    const childEntityName = pathStep.EntityName
 
     if (!linkToAttribute || !linkFromAttribute || !childEntityName) {
       return { canLink: false }
@@ -304,13 +280,18 @@ export const buildCrmFetchXml = (
       continue
     }
 
-    const optionChain = getFilterOptionChain(sourceFilterOption)
-    if (optionChain.length <= 1) {
+    const optionPath = sourceFilterOption?.Path ?? []
+    const hasDeclaredPath = Boolean(sourceFilterOption?.PathId || sourceFilterOption?.Path)
+
+    if (!hasDeclaredPath) {
       addConditionToContext(rootFilterContext, condition, conditionXml)
       continue
     }
+    if (optionPath.length === 0) {
+      continue
+    }
 
-    const linkNode = ensureLinkNodeForChain(optionChain, rootLinks)
+    const linkNode = ensureLinkNodeForChain(optionPath, rootLinks)
     if (!linkNode.canLink || !linkNode.node) {
       continue
     }

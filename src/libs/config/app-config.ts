@@ -40,14 +40,12 @@ export interface ResultViewConfig {
 
 export interface TableColumnConfig {
   Id?: string
+  PathId?: string
+  Path?: RelationPathStepConfig[]
   AttributeNames?: string[]
   AttributesFormat?: string
   DisplayName?: string
   Width?: number | string
-  EntityName?: string
-  FromAttribute?: string
-  ToAttribute?: string
-  RelatedTo?: TableColumnConfig
 }
 
 interface SearchSchemeConfig {
@@ -77,6 +75,7 @@ export interface AppConfig {
 export interface EntityConfig {
   FilterUniqueOptionsOnly?: boolean
   FilterCategories?: FilterCategoryConfig[]
+  RelationPaths?: RelationPathConfig[]
   FilterOptions: FilterOptionConfig[]
   DefaultFilterGroups?: DefaultFilterGroupConfig[]
   LogicalName: string
@@ -88,12 +87,23 @@ export interface FilterCategoryConfig {
   DisplayName: string
 }
 
+export interface RelationPathStepConfig {
+  EntityName: string
+  FromAttribute: string
+  ToAttribute: string
+}
+
+export interface RelationPathConfig {
+  Id: string
+  Steps: RelationPathStepConfig[]
+}
+
 export interface FilterOptionConfig {
   Id?: string
+  PathId?: string
+  Path?: RelationPathStepConfig[]
   DisplayName?: string
   AttributeName?: string
-  FromAttribute?: string
-  ToAttribute?: string
   AttributeType?: string
   CategoryId?: string
   EntityName?: string
@@ -101,5 +111,4 @@ export interface FilterOptionConfig {
   Groupable?: boolean
   Lookup?: LookupConfig
   Selection?: SelectionConfig
-  RelatedTo?: FilterOptionConfig
 }

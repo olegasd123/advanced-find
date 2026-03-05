@@ -1,4 +1,5 @@
-import { EntityConfig, TableColumnConfig } from '../../config/app-config'
+import { EntityConfig, RelationPathStepConfig, TableColumnConfig } from '../../config/app-config'
+import { getNormalizedConfigId, getPathTargetEntityName, getRelationPathById, resolveConfigPath } from './relation-path'
 
 export interface SearchTableColumnAttribute {
   attributeName: string
@@ -9,7 +10,7 @@ export interface SearchTableColumn {
   sourceColumn: TableColumnConfig
   id?: string
   columnKey: string
-  chain: TableColumnConfig[]
+  chain: RelationPathStepConfig[]
   attributes: SearchTableColumnAttribute[]
   attributesFormat?: string
   entityName: string
@@ -22,47 +23,35 @@ interface LegacyTableColumnConfig extends TableColumnConfig {
   AttributeName?: string
 }
 
-const normalizeConfigId = (configId: string | undefined): string | undefined => {
-  const normalized = configId?.trim()
-  return normalized ? normalized.toLowerCase() : undefined
-}
-
-export const getTableColumnChain = (column?: TableColumnConfig): TableColumnConfig[] => {
+export const getTableColumnChain = (
+  column: TableColumnConfig | undefined,
+  relationPathById: Map<string, RelationPathStepConfig[]> = new Map()
+): RelationPathStepConfig[] => {
   if (!column) {
     return []
   }
 
-  const chain: TableColumnConfig[] = []
-  let current: TableColumnConfig | undefined = column
-  while (current) {
-    chain.push(current)
-    current = current.RelatedTo
-  }
-
-  return chain
+  return resolveConfigPath(relationPathById, column.PathId, column.Path)
 }
 
-export const getTargetTableColumn = (column?: TableColumnConfig): TableColumnConfig | undefined => {
+export const getTargetTableColumn = (
+  entityConfig: EntityConfig,
+  column: TableColumnConfig | undefined,
+  relationPathById: Map<string, RelationPathStepConfig[]> = getRelationPathById(entityConfig)
+): { EntityName: string } | undefined => {
   if (!column) {
     return undefined
   }
 
-  if (column.RelatedTo) {
-    return getTargetTableColumn(column.RelatedTo)
+  const chain = getTableColumnChain(column, relationPathById)
+  return {
+    EntityName: getPathTargetEntityName(entityConfig.LogicalName, chain),
   }
-
-  return column
 }
 
-const getTableColumnDisplayName = (chain: TableColumnConfig[]): string | undefined => {
-  for (let index = chain.length - 1; index >= 0; index--) {
-    const displayName = chain[index].DisplayName
-    if (displayName && displayName.length > 0) {
-      return displayName
-    }
-  }
-
-  return undefined
+const getTableColumnDisplayName = (column: TableColumnConfig): string | undefined => {
+  const displayName = column.DisplayName?.trim()
+  return displayName ? displayName : undefined
 }
 
 const getLegacyAttributeName = (column?: TableColumnConfig): string | undefined => {
@@ -89,20 +78,7 @@ const getTableColumnAttributes = (column?: TableColumnConfig): string[] => {
     .filter((attributeName) => attributeName.length > 0)
 }
 
-const getResolvedTableColumnAttributes = (
-  column: TableColumnConfig,
-  targetColumn?: TableColumnConfig
-): string[] => {
-  const targetAttributes = getTableColumnAttributes(targetColumn)
-  if (targetAttributes.length > 0) {
-    return targetAttributes
-  }
-
-  const targetLegacyAttributeName = getLegacyAttributeName(targetColumn)
-  if (targetLegacyAttributeName) {
-    return [targetLegacyAttributeName]
-  }
-
+const getResolvedTableColumnAttributes = (column: TableColumnConfig): string[] => {
   const sourceAttributes = getTableColumnAttributes(column)
   if (sourceAttributes.length > 0) {
     return sourceAttributes
@@ -116,15 +92,9 @@ const getResolvedTableColumnAttributes = (
   return []
 }
 
-const getTableColumnAttributesFormat = (chain: TableColumnConfig[]): string | undefined => {
-  for (let index = chain.length - 1; index >= 0; index--) {
-    const attributesFormat = chain[index].AttributesFormat
-    if (attributesFormat && attributesFormat.trim().length > 0) {
-      return attributesFormat
-    }
-  }
-
-  return undefined
+const getTableColumnAttributesFormat = (column: TableColumnConfig): string | undefined => {
+  const attributesFormat = column.AttributesFormat?.trim()
+  return attributesFormat ? attributesFormat : undefined
 }
 
 export const createColumnKey = (columnIndex: number): string => {
@@ -146,11 +116,7 @@ export const createRootSearchColumn = (attributeName: string, index: number): Se
       AttributeNames: [attributeName],
     },
     columnKey: createColumnKey(index),
-    chain: [
-      {
-        AttributeNames: [attributeName],
-      },
-    ],
+    chain: [],
     attributes: [
       {
         attributeName,
@@ -163,33 +129,34 @@ export const createRootSearchColumn = (attributeName: string, index: number): Se
 }
 
 export const resolveSearchTableColumns = (entityConfig: EntityConfig): SearchTableColumn[] => {
-  return entityConfig.ResultView.TableColumns.map((column, index) => {
-    const chain = getTableColumnChain(column)
-    const targetColumn = getTargetTableColumn(column)
-    const attributeNames = getResolvedTableColumnAttributes(column, targetColumn)
-    const entityName = targetColumn?.EntityName ?? entityConfig.LogicalName
-    const isRootColumn =
-      chain.length <= 1 &&
-      (!targetColumn?.EntityName || targetColumn.EntityName === entityConfig.LogicalName)
-    const attributes = attributeNames.map((attributeName, attributeIndex) => ({
-      attributeName,
-      valueKey: isRootColumn
-        ? attributeName
-        : createColumnValueKey(index, attributeName, attributeIndex),
-    }))
+  const relationPathById = getRelationPathById(entityConfig)
 
-    return {
-      sourceColumn: column,
-      id: normalizeConfigId(column.Id),
-      columnKey: createColumnKey(index),
-      chain,
-      attributes,
-      attributesFormat: getTableColumnAttributesFormat(chain),
-      entityName,
-      displayName: getTableColumnDisplayName(chain),
-      isRootColumn,
-    }
-  }).filter((column) => column.attributes.length > 0)
+  return entityConfig.ResultView.TableColumns
+    .map((column, index) => {
+      const chain = getTableColumnChain(column, relationPathById)
+      const attributeNames = getResolvedTableColumnAttributes(column)
+      const entityName = getPathTargetEntityName(entityConfig.LogicalName, chain)
+      const isRootColumn = chain.length === 0
+      const attributes = attributeNames.map((attributeName, attributeIndex) => ({
+        attributeName,
+        valueKey: isRootColumn
+          ? attributeName
+          : createColumnValueKey(index, attributeName, attributeIndex),
+      }))
+
+      return {
+        sourceColumn: column,
+        id: getNormalizedConfigId(column.Id),
+        columnKey: createColumnKey(index),
+        chain,
+        attributes,
+        attributesFormat: getTableColumnAttributesFormat(column),
+        entityName,
+        displayName: getTableColumnDisplayName(column),
+        isRootColumn,
+      }
+    })
+    .filter((column) => column.attributes.length > 0)
 }
 
 export const getSearchSelectColumns = (entityConfig: EntityConfig): string[] => {

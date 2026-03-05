@@ -13,6 +13,7 @@ import { useCrmRepository } from '../../hooks/use-crm-repository'
 import { fillOptionsWithMetadataInfo } from '../../libs/utils/crm/filter'
 import { AppliedFilterCondition } from '../../libs/utils/crm/crm-search'
 import clsx from 'clsx'
+import { getNormalizedConfigId, getRelationPathById } from '../../libs/utils/crm/relation-path'
 import {
   cloneGroups,
   compactGroups,
@@ -44,10 +45,10 @@ export const FilterGrid = ({
   const requestIdRef = React.useRef(0)
   const optionIdRef = React.useRef(0)
   const groupIdRef = React.useRef(0)
-  const normalizeConfigId = React.useCallback((value: string | undefined): string | undefined => {
-    const normalized = value?.trim()
-    return normalized ? normalized.toLowerCase() : undefined
-  }, [])
+  const relationPathById = React.useMemo(
+    () => (entityConfig ? getRelationPathById(entityConfig) : new Map()),
+    [entityConfig]
+  )
 
   const isGroupableByOptionId = React.useMemo(() => {
     const map = new Map<number, boolean>()
@@ -115,7 +116,7 @@ export const FilterGrid = ({
       for (const filterGroup of entityConfig?.DefaultFilterGroups ?? []) {
         const collectedOptionIds: number[] = []
         const filterOptionIds = (filterGroup.FilterOptionIds ?? [])
-          .map(normalizeConfigId)
+          .map(getNormalizedConfigId)
           .filter((id): id is string => Boolean(id))
 
         if (filterOptionIds.length > 0) {
@@ -170,7 +171,7 @@ export const FilterGrid = ({
         groupsById: groups,
       }
     },
-    [entityConfig?.DefaultFilterGroups, normalizeConfigId]
+    [entityConfig?.DefaultFilterGroups]
   )
 
   React.useEffect(() => {
@@ -191,13 +192,14 @@ export const FilterGrid = ({
       await fillOptionsWithMetadataInfo(
         entityConfig?.LogicalName,
         entityConfig?.FilterOptions,
+        relationPathById,
         (entityLogicalName, groupedMissedDisplayNames) =>
           crm?.getAttributesMetadata(entityLogicalName, groupedMissedDisplayNames)
       )
       const options = entityConfig.FilterOptions?.map((option, index) => {
         return {
           FilterOptionConfig: option,
-          optionId: normalizeConfigId(option.Id),
+          optionId: getNormalizedConfigId(option.Id),
           sourceIndex: index,
         }
       })
@@ -210,7 +212,7 @@ export const FilterGrid = ({
       }
     }
     getData()
-  }, [entityConfig, crm, getDefaultFilterState, clearDragState, normalizeConfigId])
+  }, [entityConfig, crm, getDefaultFilterState, clearDragState, relationPathById])
 
   const handleAddCondition = (): void => {
     setVisibleFilterOptions((previous) => [
