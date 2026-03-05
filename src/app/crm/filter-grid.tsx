@@ -6,8 +6,8 @@ import { EntityConfig, FilterGroupOperator, FilterOptionConfig } from '../../lib
 import { FilterItem } from './filter-item'
 import { FilterCommandRow } from './filter-command-row'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
-import { fillOptionsWithMetadataInfo } from '../../libs/utils/filter'
-import { AppliedFilterCondition } from '../../libs/utils/crm-search'
+import { fillOptionsWithMetadataInfo } from '../../libs/utils/crm/filter'
+import { AppliedFilterCondition } from '../../libs/utils/crm/crm-search'
 import clsx from 'clsx'
 import {
   cloneGroups,

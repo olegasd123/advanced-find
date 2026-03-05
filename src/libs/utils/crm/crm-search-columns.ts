@@ -1,4 +1,4 @@
-import { EntityConfig, TableColumnConfig } from '../config/app-config'
+import { EntityConfig, TableColumnConfig } from '../../config/app-config'
 
 export interface SearchTableColumnAttribute {
   attributeName: string

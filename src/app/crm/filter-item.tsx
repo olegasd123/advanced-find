@@ -15,8 +15,8 @@ import {
   CrmFilterConditionOption,
   getCrmFilterConditionsOptions,
   getTargetFilterOption,
-} from '../../libs/utils/filter'
-import { AppliedFilterCondition, ConditionValue } from '../../libs/utils/crm-search'
+} from '../../libs/utils/crm/filter'
+import { AppliedFilterCondition, ConditionValue } from '../../libs/utils/crm/crm-search'
 import { FilterOptionConfig } from '../../libs/config/app-config'
 import clsx from 'clsx'
 

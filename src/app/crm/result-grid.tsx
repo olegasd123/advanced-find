@@ -31,18 +31,19 @@ import {
   ResultViewDefaultSortConfig,
   ResultViewPaginationConfig,
 } from '../../libs/config/app-config'
-import { AppliedFilterCondition, SearchTableColumn } from '../../libs/utils/crm-search'
+import { AppliedFilterCondition, SearchTableColumn } from '../../libs/utils/crm/crm-search'
 import {
   getColumnCellValue,
   getColumnHeader,
+  getDefaultColumnWidth,
   getAppliedFilterDescriptions,
   getAppliedFiltersText,
 } from './result-grid.helpers'
 import { ExpandableCellText } from './expandable-cell-text'
-import { useColumnResize } from './use-column-resize'
-import { useColumnVisibility } from './use-column-visibility'
-import { usePagination } from './use-pagination'
-import { useTableSort } from './use-table-sort'
+import { useColumnResize } from '../../hooks/use-column-resize'
+import { useColumnVisibility } from '../../hooks/use-column-visibility'
+import { usePagination } from '../../hooks/use-pagination'
+import { useTableSort } from '../../hooks/use-table-sort'
 
 export const ResultGrid = ({
   results,
@@ -99,7 +100,7 @@ export const ResultGrid = ({
   }, [results, tableSearchText, visibleColumns])
 
   const { sortedRows, visibleSortRules, visibleSortRuleByColumnKey, handleSortChanged } =
-    useTableSort(filteredRows, columns, visibleColumns, defaultSort)
+    useTableSort(filteredRows, columns, visibleColumns, getColumnCellValue, defaultSort)
 
   const {
     currentPage,
@@ -115,7 +116,10 @@ export const ResultGrid = ({
     handlePageButtonClick,
   } = usePagination(sortedRows, filteredRows.length, pagination)
 
-  const { columnWidthsByKey, columnResizeState, handleColumnResizeStart } = useColumnResize(columns)
+  const { columnWidthsByKey, columnResizeState, handleColumnResizeStart } = useColumnResize(
+    columns,
+    getDefaultColumnWidth
+  )
 
   const [expandedCellKeys, setExpandedCellKeys] = React.useState<Set<string>>(new Set())
 

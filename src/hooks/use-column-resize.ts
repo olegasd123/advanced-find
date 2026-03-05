@@ -1,8 +1,10 @@
 import * as React from 'react'
-import { SearchTableColumn } from '../../libs/utils/crm-search'
-import { ColumnResizeState, getDefaultColumnWidth, minColumnWidth } from './result-grid.helpers'
+import { ColumnResizeState, minColumnWidth } from '../libs/utils/table-helpers'
 
-export const useColumnResize = (columns: SearchTableColumn[]) => {
+export const useColumnResize = <T extends { columnKey: string }>(
+  columns: T[],
+  getDefaultWidth?: (column: T) => number | undefined
+) => {
   const [columnWidthsByKey, setColumnWidthsByKey] = React.useState<Record<string, number>>({})
   const [columnResizeState, setColumnResizeState] = React.useState<ColumnResizeState | null>(null)
 
@@ -14,14 +16,14 @@ export const useColumnResize = (columns: SearchTableColumn[]) => {
 
     const nextDefaultWidths: Record<string, number> = {}
     for (const column of columns) {
-      const columnDefaultWidth = getDefaultColumnWidth(column)
+      const columnDefaultWidth = getDefaultWidth?.(column)
       if (columnDefaultWidth !== undefined) {
         nextDefaultWidths[column.columnKey] = columnDefaultWidth
       }
     }
 
     setColumnWidthsByKey(nextDefaultWidths)
-  }, [columns])
+  }, [columns, getDefaultWidth])
 
   React.useEffect(() => {
     if (!columnResizeState) {

@@ -1,5 +1,5 @@
 import { FilterGroupOperator, FilterOptionConfig } from '../../libs/config/app-config'
-import { normalizeGroupOperator } from '../../libs/utils/crm-search'
+import { normalizeGroupOperator } from '../../libs/utils/crm/crm-search'
 
 // --- Types ---
 

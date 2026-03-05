@@ -1,6 +1,6 @@
-import { FilterOptionConfig } from '../config/app-config'
-import { AttributeMetadata } from '../repositories/crm-repository'
-import { createLogger } from './logger'
+import { FilterOptionConfig } from '../../config/app-config'
+import { AttributeMetadata } from '../../data/crm/crm-repository'
+import { createLogger } from '../logger'
 
 const logger = createLogger('filter-utils')
 

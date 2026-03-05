@@ -1,9 +1,6 @@
-import { FilterOptionConfig } from '../config/app-config'
+import { FilterOptionConfig } from '../../config/app-config'
 import { getTargetFilterOption } from './filter'
-import {
-  createRootSearchColumn,
-  SearchTableColumn,
-} from './crm-search-columns'
+import { createRootSearchColumn, SearchTableColumn } from './crm-search-columns'
 import {
   AppliedFilterCondition,
   escapeXml,
@@ -12,7 +9,7 @@ import {
   parseValues,
   toFetchValue,
 } from './crm-search'
-import type { FilterGroupOperator } from '../config/app-config'
+import type { FilterGroupOperator } from '../../config/app-config'
 
 interface FetchAttributeNode {
   name: string

@@ -1,6 +1,6 @@
 import * as React from 'react'
-import CrmRepository, { CrmData } from '../libs/repositories/crm-repository'
-import MockCrmRepository from '../libs/repositories/mock-crm-repository'
+import CrmRepository, { CrmData } from '../libs/data/crm/crm-repository'
+import MockCrmRepository from '../libs/data/crm/mock-crm-repository'
 
 const CrmRepositoryContext = React.createContext<CrmData | null>(null)
 

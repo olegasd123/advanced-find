@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
 import { useAppConfiguration } from '../../hooks/use-app-config'
-import { EntityMetadata } from '../../libs/repositories/crm-repository'
+import { EntityMetadata } from '../../libs/data/crm/crm-repository'
 import {
   EntityConfig,
   ResultViewDefaultSortConfig,
@@ -17,7 +17,7 @@ import {
   buildCrmFetchXml,
   resolveSearchTableColumns,
   SearchTableColumn,
-} from '../../libs/utils/crm-search'
+} from '../../libs/utils/crm/crm-search'
 
 const logger = createLogger('Search')
 const resultIdsChunkSize = 120

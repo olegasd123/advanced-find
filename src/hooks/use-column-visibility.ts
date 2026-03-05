@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { SearchTableColumn } from '../../libs/utils/crm-search'
 
-export const useColumnVisibility = (
-  columns: SearchTableColumn[],
+export const useColumnVisibility = <T extends { columnKey: string }>(
+  columns: T[],
   columnVisibilityStorageKey?: string
 ) => {
   const localStorageKey = React.useMemo(() => {

@@ -1,17 +1,12 @@
 import * as React from 'react'
-import { ResultViewDefaultSortConfig } from '../../libs/config/app-config'
-import { SearchTableColumn } from '../../libs/utils/crm-search'
-import {
-  compareCellValues,
-  getColumnCellValue,
-  getDefaultSortRules,
-  SortRule,
-} from './result-grid.helpers'
+import { ResultViewDefaultSortConfig } from '../libs/config/app-config'
+import { compareCellValues, getDefaultSortRules, SortRule } from '../libs/utils/table-helpers'
 
-export const useTableSort = (
+export const useTableSort = <T extends { columnKey: string }>(
   filteredRows: Record<string, unknown>[],
-  columns: SearchTableColumn[],
-  visibleColumns: SearchTableColumn[],
+  columns: T[],
+  visibleColumns: T[],
+  getCellValue: (column: T, row: Record<string, unknown>) => string,
   defaultSort?: ResultViewDefaultSortConfig[]
 ) => {
   const [sortRules, setSortRules] = React.useState<SortRule[]>([])
@@ -45,8 +40,8 @@ export const useTableSort = (
             continue
           }
 
-          const leftValue = getColumnCellValue(column, left.row)
-          const rightValue = getColumnCellValue(column, right.row)
+          const leftValue = getCellValue(column, left.row)
+          const rightValue = getCellValue(column, right.row)
           const compareResult = compareCellValues(leftValue, rightValue)
           if (compareResult !== 0) {
             return rule.isAscending ? compareResult : -compareResult
@@ -56,7 +51,7 @@ export const useTableSort = (
         return left.index - right.index
       })
       .map((item) => item.row)
-  }, [filteredRows, visibleColumns, visibleSortRules])
+  }, [filteredRows, getCellValue, visibleColumns, visibleSortRules])
 
   const visibleSortRuleByColumnKey = React.useMemo(() => {
     return new Map(visibleSortRules.map((rule) => [rule.columnKey, rule]))

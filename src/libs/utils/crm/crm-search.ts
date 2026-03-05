@@ -1,4 +1,4 @@
-import { FilterGroupOperator, FilterOptionConfig } from '../config/app-config'
+import { FilterGroupOperator, FilterOptionConfig } from '../../config/app-config'
 import { getTargetFilterOption } from './filter'
 
 // Re-export column resolution types and functions
