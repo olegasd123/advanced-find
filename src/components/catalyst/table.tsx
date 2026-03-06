@@ -3,7 +3,7 @@
 import clsx from 'clsx'
 import type React from 'react'
 import { createContext, useContext, useState } from 'react'
-import { Link } from '../../../vendor/catalyst-ui-kit/typescript/link'
+import { Link } from './link'
 
 const TableContext = createContext<{
   bleed: boolean

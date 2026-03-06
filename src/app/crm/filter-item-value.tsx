@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/controls/combobox'
+import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/catalyst/combobox'
 import {
   Listbox,
   ListboxLabel,
   ListboxOption,
-} from '../../../vendor/catalyst-ui-kit/typescript/listbox'
-import { Input } from '../../../vendor/catalyst-ui-kit/typescript/input'
+} from '../../components/catalyst/listbox'
+import { Input } from '../../components/catalyst/input'
 import { FilterOptionConfig } from '../../libs/config/app-config'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
 import { createLogger } from '../../libs/utils/logger'

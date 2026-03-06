@@ -2,7 +2,7 @@
 
 import clsx from 'clsx'
 import type React from 'react'
-import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
+import { Button } from './button'
 
 export function Pagination({
   'aria-label': ariaLabel = 'Page navigation',

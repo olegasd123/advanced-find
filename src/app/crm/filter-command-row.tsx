@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { PlusIcon, MagnifyingGlassIcon, ArrowPathIcon } from '@heroicons/react/16/solid'
-import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
+import { Button } from '../../components/catalyst/button'
 import {
   Alert,
   AlertActions,
   AlertDescription,
   AlertTitle,
-} from '../../../vendor/catalyst-ui-kit/typescript/alert'
+} from '../../components/catalyst/alert'
 import clsx from 'clsx'
 
 export type CommandRowLocation = 'header' | 'footer'
