@@ -29,20 +29,12 @@ This document defines the shared coding standards for the advanced-find project.
 - Put domain/business models in domain-specific files in `src/libs/types/`.
 - Import domain types from `src/libs/types/*` in new code.
 - Import app config schema types from `src/libs/types/*` in new code.
-- See `docs/ai-model-rules.md` for the AI model checklist.
 
 ## Styling & Layout
 
-- Use the design tokens defined in the asset configuration (see `assets/app-config.json`) rather than hard-coded color values.
+- Use the design tokens defined in the asset configuration (see `assets/*.json`) rather than hard-coded color values.
 - Prefer CSS modules or scoped styles; avoid global overrides unless editing the base theme.
 - Respect responsive breakpoints documented in design specs; components must collapse gracefully on smaller viewports.
-
-## Data Layer & Hooks
-
-- Repositories under `src/libs/repositories` are the single source of truth for data access; UI layers must not call `fetch` directly.
-- Use hooks under `src/hooks` to encapsulate data fetching and caching concerns (e.g., `useCrmRepository`); components should consume already-shaped data.
-- Handle loading, empty, and error states explicitly; never leave consumers guessing how to respond.
-- When mocking repositories (e.g., for storybooks or tests) ensure mock data lives under `mock-data` and mirrors real schema keys.
 
 ## File, Import, and Naming Conventions
 
@@ -61,6 +53,6 @@ This document defines the shared coding standards for the advanced-find project.
 
 ## Documentation & Comments
 
-- Keep README-level docs in `docs/`; inline code comments should describe _why_ something exists, not _what_ it does.
 - Update existing docs when touching a feature—they are part of the deliverable.
+- Keep README-level docs in `docs/`; inline code comments should describe _why_ something exists, not _what_ it does.
 - Complex workflows (e.g., deployment scripts) need step-by-step instructions in `docs/` to remain reproducible.
