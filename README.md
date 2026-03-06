@@ -31,6 +31,16 @@ npm run dev
 
 The dev server starts at `http://localhost:5173` by default.
 
+### Environment Variables
+
+Set runtime values in `.env`:
+
+| Variable                            | Default | Description                                                                 |
+| ----------------------------------- | ------- | --------------------------------------------------------------------------- |
+| `VITE_CRM_API_VERSION`              | `v9.2`  | CRM Web API version used for metadata and data requests.                    |
+| `VITE_SEARCH_RESULT_IDS_CHUNK_SIZE` | `120`   | Number of IDs per final FetchXML `in` query in two-pass search.             |
+| `VITE_FILTER_DRAG_THRESHOLD_PX`     | `6`     | Pointer movement (in px) required before drag-and-drop starts in filter UI. |
+
 ### Available Scripts
 
 | Script                        | Description                           |

@@ -1,6 +1,7 @@
 import { FilterOptionConfig } from '../../libs/types/app-config.types'
 import { FilterGroupOperator } from '../../libs/types/filter.types'
 import { normalizeGroupOperator } from '../../libs/utils/crm/crm-search'
+import { filterDragThresholdPx } from '../../libs/utils/env'
 
 // --- Types ---
 
@@ -31,7 +32,7 @@ export interface DefaultFilterState {
 
 // --- Constants ---
 
-export const DRAG_MOVEMENT_THRESHOLD_PX = 6
+export const DRAG_MOVEMENT_THRESHOLD_PX = filterDragThresholdPx
 
 // --- Pure helpers ---
 
