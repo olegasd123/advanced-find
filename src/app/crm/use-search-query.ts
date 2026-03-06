@@ -12,7 +12,7 @@ import {
 const logger = createLogger('useSearchQuery')
 const resultIdsChunkSize = 120
 
-interface SearchBranchPlan {
+export interface SearchBranchPlan {
   requiresTwoPass: boolean
   branches: AppliedFilterCondition[][]
 }
@@ -32,7 +32,7 @@ interface UseSearchQueryResult {
   resetResults: () => void
 }
 
-const normalizeResponseItems = (response: unknown): Record<string, unknown>[] => {
+export const normalizeResponseItems = (response: unknown): Record<string, unknown>[] => {
   const items = Array.isArray(response)
     ? response
     : response && typeof response === 'object' && 'value' in response
@@ -50,7 +50,9 @@ const removeConditionGroupInfo = (condition: AppliedFilterCondition): AppliedFil
   }
 }
 
-const buildSearchBranchPlan = (conditions: AppliedFilterCondition[]): SearchBranchPlan => {
+export const buildSearchBranchPlan = (
+  conditions: AppliedFilterCondition[]
+): SearchBranchPlan => {
   const groupedConditions = new Map<
     number,
     { operator: AppliedFilterCondition['groupOperator']; conditions: AppliedFilterCondition[] }
@@ -104,7 +106,7 @@ const buildSearchBranchPlan = (conditions: AppliedFilterCondition[]): SearchBran
   return { requiresTwoPass: true, branches: fullBranches }
 }
 
-const splitIntoChunks = <T,>(items: T[], chunkSize: number): T[][] => {
+export const splitIntoChunks = <T,>(items: T[], chunkSize: number): T[][] => {
   if (items.length === 0) {
     return []
   }
@@ -114,6 +116,37 @@ const splitIntoChunks = <T,>(items: T[], chunkSize: number): T[][] => {
     chunks.push(items.slice(index, index + chunkSize))
   }
   return chunks
+}
+
+export const collectUniqueResultIds = (
+  response: unknown,
+  primaryIdAttribute: string
+): string[] => {
+  const ids = new Set<string>()
+  for (const item of normalizeResponseItems(response)) {
+    const rawId = item[primaryIdAttribute]
+    if (rawId !== undefined && rawId !== null) {
+      ids.add(String(rawId))
+    }
+  }
+
+  return Array.from(ids)
+}
+
+export const dedupeRowsByPrimaryId = (
+  rows: Record<string, unknown>[],
+  primaryIdAttribute: string
+): Record<string, unknown>[] => {
+  const uniqueRowsById = new Map<string, Record<string, unknown>>()
+  for (const row of rows) {
+    const rawId = row[primaryIdAttribute]
+    if (rawId === undefined || rawId === null) {
+      continue
+    }
+    uniqueRowsById.set(String(rawId), row)
+  }
+
+  return Array.from(uniqueRowsById.values())
 }
 
 export const useSearchQuery = ({
@@ -203,12 +236,9 @@ export const useSearchQuery = ({
             return
           }
 
-          const branchItems = normalizeResponseItems(branchResponse)
-          for (const item of branchItems) {
-            const rawId = item[primaryIdAttribute]
-            if (rawId !== undefined && rawId !== null) {
-              resultIds.add(String(rawId))
-            }
+          const branchIds = collectUniqueResultIds(branchResponse, primaryIdAttribute)
+          for (const id of branchIds) {
+            resultIds.add(id)
           }
         }
 
@@ -239,16 +269,7 @@ export const useSearchQuery = ({
           resultRows.push(...normalizeResponseItems(finalResponse))
         }
 
-        const uniqueRowsById = new Map<string, Record<string, unknown>>()
-        for (const row of resultRows) {
-          const rawId = row[primaryIdAttribute]
-          if (rawId === undefined || rawId === null) {
-            continue
-          }
-          uniqueRowsById.set(String(rawId), row)
-        }
-
-        setResults(Array.from(uniqueRowsById.values()))
+        setResults(dedupeRowsByPrimaryId(resultRows, primaryIdAttribute))
       } catch (error) {
         if (isRequestStale()) {
           return
