@@ -7,7 +7,7 @@ import {
   ResultViewDefaultSortConfig,
   ResultViewPaginationConfig,
 } from '../../libs/config/app-config'
-import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
+import { Select } from '../../components/catalyst/select'
 import { FilterGrid } from './filter-grid'
 import { ResultGrid } from './result-grid'
 import { createLogger } from '../../libs/utils/logger'

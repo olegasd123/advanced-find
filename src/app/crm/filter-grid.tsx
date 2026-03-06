@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Bars3Icon, LinkSlashIcon } from '@heroicons/react/16/solid'
-import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
-import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
+import { Button } from '../../components/catalyst/button'
+import { Select } from '../../components/catalyst/select'
 import {
   EntityConfig,
   FilterGroupOperator,

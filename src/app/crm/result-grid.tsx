@@ -1,15 +1,15 @@
 import * as React from 'react'
 import { ArrowLeftIcon } from '@heroicons/react/16/solid'
 import { MagnifyingGlassIcon, ViewColumnsIcon } from '@heroicons/react/24/outline'
-import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
-import { Checkbox } from '../../../vendor/catalyst-ui-kit/typescript/checkbox'
+import { Button } from '../../components/catalyst/button'
+import { Checkbox } from '../../components/catalyst/checkbox'
 import {
   Dropdown,
   DropdownButton,
   DropdownItem,
   DropdownMenu,
-} from '../../../vendor/catalyst-ui-kit/typescript/dropdown'
-import { Input, InputGroup } from '../../../vendor/catalyst-ui-kit/typescript/input'
+} from '../../components/catalyst/dropdown'
+import { Input, InputGroup } from '../../components/catalyst/input'
 import {
   Pagination,
   PaginationGap,
@@ -17,8 +17,8 @@ import {
   PaginationNext,
   PaginationPage,
   PaginationPrevious,
-} from '../../../vendor/catalyst-ui-kit/typescript/pagination'
-import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
+} from '../../components/catalyst/pagination'
+import { Select } from '../../components/catalyst/select'
 import {
   Table,
   TableBody,
@@ -26,7 +26,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../components/controls/table'
+} from '../../components/catalyst/table'
 import {
   ResultViewDefaultSortConfig,
   ResultViewPaginationConfig,

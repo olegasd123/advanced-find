@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { Button } from '../../../vendor/catalyst-ui-kit/typescript/button'
+import { Button } from '../../components/catalyst/button'
 import { Bars3Icon, TrashIcon } from '@heroicons/react/16/solid'
-import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/controls/combobox'
+import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/catalyst/combobox'
 import {
   Listbox,
   ListboxLabel,
   ListboxOption,
-} from '../../../vendor/catalyst-ui-kit/typescript/listbox'
+} from '../../components/catalyst/listbox'
 import { ComboboxOptionCategory } from '../../components/controls/combobox-option-category'
 import { FilterOption } from './filter-grid'
 import { FilterItemValue } from './filter-item-value'
