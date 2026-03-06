@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AppConfig } from '../libs/config/app-config'
+import { AppConfig } from '../libs/types/app-config.types'
 
 interface AppConfigState {
   appConfig: AppConfig | null

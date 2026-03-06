@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { EntityConfig } from '../../libs/config/app-config'
+import { EntityConfig } from '../../libs/types/app-config.types'
 import { AppliedFilterCondition } from '../../libs/types/filter.types'
 
 interface UseFilterStateResult {
@@ -11,7 +11,9 @@ interface UseFilterStateResult {
   closeResultView: () => void
 }
 
-export const useFilterState = (configEntities: EntityConfig[] | undefined): UseFilterStateResult => {
+export const useFilterState = (
+  configEntities: EntityConfig[] | undefined
+): UseFilterStateResult => {
   const [currentEntityConfig, setCurrentEntityConfig] = React.useState<EntityConfig | undefined>()
   const [isResultViewVisible, setIsResultViewVisible] = React.useState(false)
   const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilterCondition[]>([])

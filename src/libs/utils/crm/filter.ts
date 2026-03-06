@@ -1,4 +1,4 @@
-import { FilterOptionConfig, RelationPathStepConfig } from '../../config/app-config'
+import { FilterOptionConfig, RelationPathStepConfig } from '../../types/app-config.types'
 import { AttributeMetadata } from '../../types/entity.types'
 import { createLogger } from '../logger'
 import { getPathTargetEntityName, resolveConfigPath } from './relation-path'

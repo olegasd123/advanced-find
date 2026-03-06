@@ -48,8 +48,9 @@ export const Search = () => {
   const resultViewShowAppliedFilters = currentEntityConfig?.ResultView.ShowAppliedFilters === true
 
   const selectedEntityIndex = currentEntityConfig
-    ? (configEntities?.findIndex((entity) => entity.LogicalName === currentEntityConfig.LogicalName) ??
-      -1)
+    ? (configEntities?.findIndex(
+        (entity) => entity.LogicalName === currentEntityConfig.LogicalName
+      ) ?? -1)
     : -1
 
   const handleCurrentEntityConfigChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -95,8 +96,9 @@ export const Search = () => {
           </option>
           {configEntities.map((entityInfo, index) => (
             <option key={entityInfo.LogicalName} value={index}>
-              {entitiesMetadata.find((entityMetadata) => entityInfo.LogicalName === entityMetadata.LogicalName)
-                ?.DisplayCollectionName.UserLocalizedLabel.Label ?? entityInfo.LogicalName}
+              {entitiesMetadata.find(
+                (entityMetadata) => entityInfo.LogicalName === entityMetadata.LogicalName
+              )?.DisplayCollectionName.UserLocalizedLabel.Label ?? entityInfo.LogicalName}
             </option>
           ))}
         </Select>

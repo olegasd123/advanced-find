@@ -1,4 +1,4 @@
-import { FilterOptionConfig } from '../../libs/config/app-config'
+import { FilterOptionConfig } from '../../libs/types/app-config.types'
 import { FilterGroupOperator } from '../../libs/types/filter.types'
 import { normalizeGroupOperator } from '../../libs/utils/crm/crm-search'
 

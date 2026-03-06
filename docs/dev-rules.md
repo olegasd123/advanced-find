@@ -24,10 +24,11 @@ This document defines the shared coding standards for the advanced-find project.
 
 ## Domain Types & Config Schema
 
-- Keep `src/libs/config/app-config.ts` only for JSON config schema.
-- Do not put domain/business models in config files.
-- Put shared domain models in `src/libs/types/` using domain-specific type files.
+- Keep shared TypeScript models in `src/libs/types/`.
+- Put app config schema types in config-specific files in `src/libs/types/`.
+- Put domain/business models in domain-specific files in `src/libs/types/`.
 - Import domain types from `src/libs/types/*` in new code.
+- Import app config schema types from `src/libs/types/*` in new code.
 - See `docs/ai-model-rules.md` for the AI model checklist.
 
 ## Styling & Layout

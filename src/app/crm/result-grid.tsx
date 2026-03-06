@@ -30,7 +30,7 @@ import {
 import {
   ResultViewDefaultSortConfig,
   ResultViewPaginationConfig,
-} from '../../libs/config/app-config'
+} from '../../libs/types/app-config.types'
 import { AppliedFilterCondition } from '../../libs/types/filter.types'
 import { SearchTableColumn } from '../../libs/types/search.types'
 import {

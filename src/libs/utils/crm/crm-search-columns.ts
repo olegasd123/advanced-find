@@ -1,4 +1,8 @@
-import { EntityConfig, RelationPathStepConfig, TableColumnConfig } from '../../config/app-config'
+import {
+  EntityConfig,
+  RelationPathStepConfig,
+  TableColumnConfig,
+} from '../../types/app-config.types'
 import { SearchTableColumn } from '../../types/search.types'
 export type { SearchTableColumn, SearchTableColumnAttribute } from '../../types/search.types'
 import {

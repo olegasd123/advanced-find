@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ResultViewDefaultSortConfig } from '../libs/config/app-config'
+import { ResultViewDefaultSortConfig } from '../libs/types/app-config.types'
 import { compareCellValues, getDefaultSortRules, SortRule } from '../libs/utils/table-helpers'
 
 export const useTableSort = <T extends { columnKey: string }>(

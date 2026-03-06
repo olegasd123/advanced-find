@@ -37,7 +37,9 @@ describe('crm-search-fetch-xml', () => {
   })
 
   it('builds link-entity XML for non-root columns and path-based conditions', () => {
-    const path = [{ EntityName: 'contact', FromAttribute: 'primarycontactid', ToAttribute: 'contactid' }]
+    const path = [
+      { EntityName: 'contact', FromAttribute: 'primarycontactid', ToAttribute: 'contactid' },
+    ]
     const columns: SearchTableColumn[] = [
       {
         sourceColumn: {

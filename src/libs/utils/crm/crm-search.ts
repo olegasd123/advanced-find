@@ -1,4 +1,8 @@
-import { AppliedFilterCondition, ConditionValue, FilterGroupOperator } from '../../types/filter.types'
+import {
+  AppliedFilterCondition,
+  ConditionValue,
+  FilterGroupOperator,
+} from '../../types/filter.types'
 import { getTargetFilterOption } from './filter'
 
 export type {

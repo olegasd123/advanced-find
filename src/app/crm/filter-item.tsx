@@ -12,7 +12,7 @@ import {
   getCrmFilterConditionsOptions,
   getTargetFilterOption,
 } from '../../libs/utils/crm/filter'
-import { FilterCategoryConfig, FilterOptionConfig } from '../../libs/config/app-config'
+import { FilterCategoryConfig, FilterOptionConfig } from '../../libs/types/app-config.types'
 import { AppliedFilterCondition, ConditionValue } from '../../libs/types/filter.types'
 import clsx from 'clsx'
 

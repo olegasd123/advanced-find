@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { EntityConfig, TableColumnConfig } from '../../../config/app-config'
+import { EntityConfig, TableColumnConfig } from '../../../types/app-config.types'
 import {
   getSearchSelectColumns,
   getTargetTableColumn,
@@ -52,7 +52,9 @@ describe('crm-search-columns', () => {
       { PathId: ' main path ', AttributeNames: ['full name', 'phone-number'] },
       {
         PathId: 'main path',
-        Path: [{ EntityName: 'systemuser', FromAttribute: 'createdby', ToAttribute: 'systemuserid' }],
+        Path: [
+          { EntityName: 'systemuser', FromAttribute: 'createdby', ToAttribute: 'systemuserid' },
+        ],
         AttributeNames: ['fullname'],
       },
     ])

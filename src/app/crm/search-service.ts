@@ -100,7 +100,10 @@ export class SearchService {
       branches = nextBranches
     }
 
-    const fullBranches = branches.map((branchConditions) => [...baseConditions, ...branchConditions])
+    const fullBranches = branches.map((branchConditions) => [
+      ...baseConditions,
+      ...branchConditions,
+    ])
     return { requiresTwoPass: true, branches: fullBranches }
   }
 
@@ -190,11 +193,9 @@ export class SearchService {
     const resultIds = new Set<string>()
 
     for (const branchConditions of branchPlan.branches) {
-      const branchFetchXml = buildCrmFilterFetchXml(
-        entityLogicalName,
-        branchConditions,
-        [primaryIdAttribute]
-      )
+      const branchFetchXml = buildCrmFilterFetchXml(entityLogicalName, branchConditions, [
+        primaryIdAttribute,
+      ])
       logger.info(`Executing branch search with FetchXML`, { fetchXml: branchFetchXml })
       const branchResponse = await this.crmRepository.getEntities(entitySetName, [], {
         fetchXml: branchFetchXml,

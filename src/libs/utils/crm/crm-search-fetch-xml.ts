@@ -1,4 +1,4 @@
-import { FilterOptionConfig, RelationPathStepConfig } from '../../config/app-config'
+import { FilterOptionConfig, RelationPathStepConfig } from '../../types/app-config.types'
 import { AppliedFilterCondition, FilterGroupOperator } from '../../types/filter.types'
 import { SearchTableColumn } from '../../types/search.types'
 import { getTargetFilterOption } from './filter'

@@ -1,4 +1,4 @@
-import { RelationPathStepConfig, TableColumnConfig } from '../config/app-config'
+import { RelationPathStepConfig, TableColumnConfig } from './app-config.types'
 import { AppliedFilterCondition } from './filter.types'
 
 export interface SearchTableColumnAttribute {

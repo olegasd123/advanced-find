@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { EntityConfig } from '../../libs/config/app-config'
+import { EntityConfig } from '../../libs/types/app-config.types'
 import { CrmData, EntityMetadata } from '../../libs/types/entity.types'
 import { SearchTableColumn } from '../../libs/types/search.types'
 import { createLogger } from '../../libs/utils/logger'

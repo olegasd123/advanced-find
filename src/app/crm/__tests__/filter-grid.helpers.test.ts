@@ -60,7 +60,11 @@ describe('filter-grid.helpers', () => {
 
     const compacted = compactGroups(groupsById, visibleOptions)
 
-    expect(Object.keys(compacted).map(Number).sort((a, b) => a - b)).toEqual([1, 3])
+    expect(
+      Object.keys(compacted)
+        .map(Number)
+        .sort((a, b) => a - b)
+    ).toEqual([1, 3])
     expect(compacted[1].optionIds).toEqual([1, 3])
     expect(compacted[3].optionIds).toEqual([2, 4])
     expect(getGroupIdByOptionId(compacted, 2)).toBe(3)

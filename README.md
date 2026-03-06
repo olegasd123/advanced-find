@@ -43,6 +43,7 @@ The dev server starts at `http://localhost:5173` by default.
 | `npm run preview`             | Preview production build on port 8989 |
 | `npm run lint`                | Run ESLint                            |
 | `npm run format`              | Format with Prettier                  |
+| `npm test`                    | Run unit tests                        |
 
 ## Configuration
 
@@ -73,8 +74,7 @@ src/
 ├── app/crm/          # Main search UI (filter grid, result grid)
 ├── components/       # Reusable control wrappers
 ├── hooks/            # App config, pagination, sorting, column resize/visibility
-├── libs/config/      # JSON config schema types
-├── libs/types/       # Domain model types (filter/search/entity)
+├── libs/types/       # Shared model types (app config + domain)
 ├── libs/data/crm/    # Dynamics 365 API integration
 └── libs/utils/crm/   # Search logic, FetchXML, filters, relation paths
 assets/               # app-config.json

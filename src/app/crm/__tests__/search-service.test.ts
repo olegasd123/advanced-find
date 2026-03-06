@@ -135,8 +135,18 @@ describe('search-service execution', () => {
     const { crmRepository, getEntities } = createCrmRepositoryMock([
       { value: [{ accountid: '1' }, { accountid: '2' }] },
       { value: [{ accountid: '2' }, { accountid: '3' }] },
-      { value: [{ accountid: '1', name: 'A' }, { accountid: '2', name: 'B' }] },
-      { value: [{ accountid: '3', name: 'C' }, { accountid: '2', name: 'B2' }] },
+      {
+        value: [
+          { accountid: '1', name: 'A' },
+          { accountid: '2', name: 'B' },
+        ],
+      },
+      {
+        value: [
+          { accountid: '3', name: 'C' },
+          { accountid: '2', name: 'B2' },
+        ],
+      },
     ])
 
     const service = new SearchService(crmRepository, { resultIdsChunkSize: 2 })
