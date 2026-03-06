@@ -1,0 +1,83 @@
+import * as React from 'react'
+import { EntityConfig } from '../../libs/config/app-config'
+import { AppliedFilterCondition } from '../../libs/utils/crm/crm-search'
+
+interface UseFilterStateResult {
+  currentEntityConfig: EntityConfig | undefined
+  isResultViewVisible: boolean
+  appliedFilters: AppliedFilterCondition[]
+  selectEntityByIndex: (index: number) => void
+  openResultView: (conditions: AppliedFilterCondition[]) => void
+  closeResultView: () => void
+}
+
+export const useFilterState = (configEntities: EntityConfig[] | undefined): UseFilterStateResult => {
+  const [currentEntityConfig, setCurrentEntityConfig] = React.useState<EntityConfig | undefined>()
+  const [isResultViewVisible, setIsResultViewVisible] = React.useState(false)
+  const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilterCondition[]>([])
+
+  React.useEffect(() => {
+    if (!configEntities || configEntities.length === 0) {
+      setCurrentEntityConfig(undefined)
+      setIsResultViewVisible(false)
+      setAppliedFilters([])
+      return
+    }
+
+    if (configEntities.length === 1) {
+      setCurrentEntityConfig(configEntities[0])
+      setIsResultViewVisible(false)
+      setAppliedFilters([])
+      return
+    }
+
+    setCurrentEntityConfig((previousEntityConfig) => {
+      if (!previousEntityConfig) {
+        return previousEntityConfig
+      }
+
+      const entity = configEntities.find(
+        (item) => item.LogicalName === previousEntityConfig.LogicalName
+      )
+      return entity
+    })
+  }, [configEntities])
+
+  React.useEffect(() => {
+    if (currentEntityConfig) {
+      return
+    }
+
+    setIsResultViewVisible(false)
+    setAppliedFilters([])
+  }, [currentEntityConfig])
+
+  const selectEntityByIndex = React.useCallback(
+    (index: number): void => {
+      const nextEntityConfig =
+        Number.isInteger(index) && index >= 0 ? configEntities?.at(index) : undefined
+      setCurrentEntityConfig(nextEntityConfig)
+      setIsResultViewVisible(false)
+      setAppliedFilters([])
+    },
+    [configEntities]
+  )
+
+  const openResultView = React.useCallback((conditions: AppliedFilterCondition[]): void => {
+    setAppliedFilters(conditions)
+    setIsResultViewVisible(true)
+  }, [])
+
+  const closeResultView = React.useCallback((): void => {
+    setIsResultViewVisible(false)
+  }, [])
+
+  return {
+    currentEntityConfig,
+    isResultViewVisible,
+    appliedFilters,
+    selectEntityByIndex,
+    openResultView,
+    closeResultView,
+  }
+}
