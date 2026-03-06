@@ -26,11 +26,12 @@ export const Search = () => {
     closeResultView,
   } = useFilterState(configEntities)
 
-  const { entitiesMetadata, searchTableColumns, tableColumnDisplayNames } = useEntityMetadata({
-    crmRepository,
-    configEntities,
-    currentEntityConfig,
-  })
+  const { entitiesMetadata, searchTableColumns, tableColumnDisplayNames, metadataErrorMessage } =
+    useEntityMetadata({
+      crmRepository,
+      configEntities,
+      currentEntityConfig,
+    })
 
   const { results, isResultsLoading, resultsError, executeSearch, resetResults } = useSearchQuery({
     crmRepository,
@@ -103,6 +104,8 @@ export const Search = () => {
           ))}
         </Select>
       )}
+
+      {metadataErrorMessage && <div className="py-3 text-rose-700">{metadataErrorMessage}</div>}
 
       {currentEntityConfig && (
         <div className={isResultViewVisible ? 'hidden' : ''}>

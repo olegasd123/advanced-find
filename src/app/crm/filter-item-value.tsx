@@ -4,7 +4,7 @@ import { Listbox, ListboxLabel, ListboxOption } from '../../components/catalyst/
 import { Input } from '../../components/catalyst/input'
 import { FilterOptionConfig } from '../../libs/types/app-config.types'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
-import { createLogger } from '../../libs/utils/logger'
+import { createErrorReporter } from '../../libs/utils/error-reporter'
 import { ConditionValue } from '../../libs/types/filter.types'
 
 interface ConditionValueOption {
@@ -12,7 +12,7 @@ interface ConditionValueOption {
   displayName: string
 }
 
-const logger = createLogger('FilterItemValue')
+const errorReporter = createErrorReporter('FilterItemValue')
 
 const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
 
@@ -134,6 +134,9 @@ export const FilterItemValue = ({
   const [conditionValues, setConditionValues] = React.useState<ConditionValue[]>([])
   const [selectableOptions, setSelectableOptions] = React.useState<ConditionValueOption[]>([])
   const [isSelectableOptionsLoading, setIsSelectableOptionsLoading] = React.useState(false)
+  const [selectableOptionsErrorMessage, setSelectableOptionsErrorMessage] = React.useState<
+    string | undefined
+  >()
 
   const crmRepository = useCrmRepository()
   const selectableOptionsRequestId = React.useRef(0)
@@ -170,10 +173,12 @@ export const FilterItemValue = ({
       ) {
         setSelectableOptions([])
         setIsSelectableOptionsLoading(false)
+        setSelectableOptionsErrorMessage(undefined)
         return
       }
 
       setIsSelectableOptionsLoading(true)
+      setSelectableOptionsErrorMessage(undefined)
       try {
         let options: ConditionValueOption[] = []
 
@@ -267,7 +272,16 @@ export const FilterItemValue = ({
         if (requestId !== selectableOptionsRequestId.current) {
           return
         }
-        logger.error(`Failed to load selectable values: ${error}`)
+        const userMessage = errorReporter.reportAsyncError({
+          location: 'load selectable values',
+          error,
+          userMessage: 'Failed to load selectable values.',
+          context: {
+            entityName: targetFilterOption.EntityName,
+            attributeName: targetFilterOption.AttributeName,
+          },
+        })
+        setSelectableOptionsErrorMessage(userMessage)
         setSelectableOptions([])
       } finally {
         if (requestId === selectableOptionsRequestId.current) {
@@ -283,6 +297,7 @@ export const FilterItemValue = ({
       setConditionValues([])
       setSelectableOptions([])
       setIsSelectableOptionsLoading(false)
+      setSelectableOptionsErrorMessage(undefined)
       return
     }
 
@@ -435,6 +450,17 @@ export const FilterItemValue = ({
           disabled
           type="text"
           value="Loading values..."
+          onChange={handleConditionValueChanged}
+        />
+      )
+    }
+
+    if (selectableOptionsErrorMessage) {
+      return (
+        <Input
+          disabled
+          type="text"
+          value={selectableOptionsErrorMessage}
           onChange={handleConditionValueChanged}
         />
       )

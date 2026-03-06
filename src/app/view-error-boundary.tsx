@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { createLogger } from '../libs/utils/logger'
+import { createErrorReporter } from '../libs/utils/error-reporter'
 
-const logger = createLogger('crm-view-error-boundary')
+const errorReporter = createErrorReporter('crm-view-error-boundary')
 
 interface ViewErrorBoundaryProps {
   viewName: string
@@ -24,9 +24,14 @@ export class ViewErrorBoundary extends React.Component<
     return { hasError: true }
   }
 
-  componentDidCatch(error: unknown): void {
-    logger.error(`Failed to render ${this.props.viewName}`, {
-      error: error instanceof Error ? error.message : String(error),
+  componentDidCatch(error: unknown, errorInfo: React.ErrorInfo): void {
+    errorReporter.reportRenderError({
+      location: this.props.viewName,
+      error,
+      userMessage: this.props.message,
+      context: {
+        componentStack: errorInfo.componentStack,
+      },
     })
   }
 

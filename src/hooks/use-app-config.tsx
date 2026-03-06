@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { AppConfig } from '../libs/types/app-config.types'
+import { createErrorReporter } from '../libs/utils/error-reporter'
 
 interface AppConfigState {
   appConfig: AppConfig | null
@@ -11,6 +12,8 @@ const AppConfigContext = React.createContext<AppConfigState>({
   appConfig: null,
   isLoading: true,
 })
+
+const errorReporter = createErrorReporter('AppConfigProvider')
 
 export const useAppConfig = () => React.useContext(AppConfigContext)
 
@@ -48,8 +51,13 @@ export const AppConfigProvider = ({ children }: { children: React.ReactNode }) =
         }
 
         setAppConfig(null)
-        setErrorMessage('Failed to load app configuration.')
-        console.error('AppConfigProvider', error)
+        const userMessage = errorReporter.reportAsyncError({
+          location: 'load app configuration',
+          error,
+          userMessage: 'Failed to load app configuration.',
+          context: { path },
+        })
+        setErrorMessage(userMessage)
       } finally {
         if (!isCancelled) {
           setIsLoading(false)

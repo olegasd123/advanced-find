@@ -2,10 +2,10 @@ import * as React from 'react'
 import { EntityConfig } from '../../libs/types/app-config.types'
 import { CrmData, EntityMetadata } from '../../libs/types/entity.types'
 import { SearchTableColumn } from '../../libs/types/search.types'
-import { createLogger } from '../../libs/utils/logger'
+import { createErrorReporter } from '../../libs/utils/error-reporter'
 import { resolveSearchTableColumns } from '../../libs/utils/crm/crm-search'
 
-const logger = createLogger('useEntityMetadata')
+const errorReporter = createErrorReporter('useEntityMetadata')
 
 interface UseEntityMetadataParams {
   crmRepository: CrmData | null
@@ -17,6 +17,7 @@ interface UseEntityMetadataResult {
   entitiesMetadata: EntityMetadata[]
   searchTableColumns: SearchTableColumn[]
   tableColumnDisplayNames: Record<string, string>
+  metadataErrorMessage: string | undefined
 }
 
 export const useEntityMetadata = ({
@@ -28,6 +29,8 @@ export const useEntityMetadata = ({
   const [tableColumnDisplayNames, setTableColumnDisplayNames] = React.useState<
     Record<string, string>
   >({})
+  const [entitiesMetadataErrorMessage, setEntitiesMetadataErrorMessage] = React.useState<string>()
+  const [tableColumnNamesErrorMessage, setTableColumnNamesErrorMessage] = React.useState<string>()
   const requestIdRef = React.useRef(0)
 
   const searchTableColumns = React.useMemo(() => {
@@ -41,10 +44,12 @@ export const useEntityMetadata = ({
   React.useEffect(() => {
     if (!crmRepository || !configEntities) {
       setEntitiesMetadata([])
+      setEntitiesMetadataErrorMessage(undefined)
       return
     }
 
     let isCancelled = false
+    setEntitiesMetadataErrorMessage(undefined)
 
     const loadEntitiesMetadata = async (): Promise<void> => {
       const metadata = await crmRepository.getEntitiesMetadata(
@@ -56,7 +61,15 @@ export const useEntityMetadata = ({
     }
 
     loadEntitiesMetadata().catch((error) => {
-      logger.error(`Failed to load entities metadata: ${error}`)
+      if (isCancelled) {
+        return
+      }
+      const userMessage = errorReporter.reportAsyncError({
+        location: 'load entities metadata',
+        error,
+        userMessage: 'Failed to load entity metadata.',
+      })
+      setEntitiesMetadataErrorMessage(userMessage)
     })
 
     return () => {
@@ -67,6 +80,7 @@ export const useEntityMetadata = ({
   React.useEffect(() => {
     const requestId = ++requestIdRef.current
     setTableColumnDisplayNames({})
+    setTableColumnNamesErrorMessage(undefined)
 
     if (!crmRepository || !currentEntityConfig) {
       return
@@ -119,9 +133,20 @@ export const useEntityMetadata = ({
     }
 
     loadColumnDisplayNames().catch((error) => {
-      logger.error(`Failed to load table column display names: ${error}`)
+      if (requestId !== requestIdRef.current) {
+        return
+      }
+      const userMessage = errorReporter.reportAsyncError({
+        location: 'load table column display names',
+        error,
+        userMessage: 'Failed to load table column names.',
+        context: { entityLogicalName: currentEntityConfig.LogicalName },
+      })
+      setTableColumnNamesErrorMessage(userMessage)
     })
   }, [crmRepository, currentEntityConfig, searchTableColumns])
 
-  return { entitiesMetadata, searchTableColumns, tableColumnDisplayNames }
+  const metadataErrorMessage = entitiesMetadataErrorMessage ?? tableColumnNamesErrorMessage
+
+  return { entitiesMetadata, searchTableColumns, tableColumnDisplayNames, metadataErrorMessage }
 }

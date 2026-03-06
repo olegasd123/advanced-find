@@ -3,10 +3,10 @@ import { EntityConfig } from '../../libs/types/app-config.types'
 import { CrmData, EntityMetadata } from '../../libs/types/entity.types'
 import { AppliedFilterCondition } from '../../libs/types/filter.types'
 import { SearchTableColumn } from '../../libs/types/search.types'
-import { createLogger } from '../../libs/utils/logger'
+import { createErrorReporter } from '../../libs/utils/error-reporter'
 import { SearchService } from './search-service'
 
-const logger = createLogger('useSearchQuery')
+const errorReporter = createErrorReporter('useSearchQuery')
 
 interface UseSearchQueryParams {
   crmRepository: CrmData | null
@@ -53,9 +53,16 @@ export const useSearchQuery = ({
       const entitySetName =
         selectedEntityMetadata?.EntitySetName ?? selectedEntityMetadata?.LogicalCollectionName
       if (!entitySetName) {
-        logger.error('Entity collection name is missing for search request', {
-          logicalName: currentEntityConfig.LogicalName,
+        setResults([])
+        const userMessage = errorReporter.reportAsyncError({
+          location: 'execute search',
+          error: new Error('Entity collection name is missing for search request'),
+          userMessage: 'Search cannot run because entity metadata is incomplete.',
+          context: {
+            logicalName: currentEntityConfig.LogicalName,
+          },
         })
+        setResultsError(userMessage)
         return
       }
 
@@ -86,9 +93,18 @@ export const useSearchQuery = ({
         if (isRequestStale()) {
           return
         }
-        logger.error(`Failed to load search results: ${error}`)
+
+        const userMessage = errorReporter.reportAsyncError({
+          location: 'execute search',
+          error,
+          userMessage: 'Failed to load search results.',
+          context: {
+            logicalName: currentEntityConfig.LogicalName,
+            entitySetName,
+          },
+        })
         setResults([])
-        setResultsError('Failed to load search results.')
+        setResultsError(userMessage)
       } finally {
         if (!isRequestStale()) {
           setIsResultsLoading(false)
