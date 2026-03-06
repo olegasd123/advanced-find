@@ -410,7 +410,7 @@ export const FilterGrid = ({
             {isGroupStart && group && (
               <div
                 className={clsx(
-                  'mt-3 flex items-center justify-between gap-3 rounded-t-lg border border-zinc-300 border-b-0 px-3 pt-3 pb-1',
+                  'mt-3 flex items-center gap-3 rounded-t-lg border border-zinc-300 border-b-0 px-3 pt-3 pb-1',
                   'bg-white'
                 )}
               >
@@ -430,10 +430,15 @@ export const FilterGrid = ({
                     <option value="or">OR</option>
                   </Select>
                 </div>
-                <div className="flex gap-2">
-                  {group.title && <span className="text-sm text-zinc-400">{group.title}</span>}
+                <div className="min-w-0 flex-1">
+                  {group.title && (
+                    <span className="block truncate text-left text-sm text-zinc-400">
+                      {group.title}
+                    </span>
+                  )}
                 </div>
                 <Button
+                  className="shrink-0"
                   outline
                   onClick={() => handleUngroup(group.id)}
                   disabled={!group.isRemovable}

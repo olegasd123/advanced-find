@@ -346,7 +346,11 @@ export const ResultGrid = ({
 
             {!isLoading && !errorMessage && results.length === 0 && (
               <TableRow>
-                <TableColumn colSpan={columnSpan}>No results found.</TableColumn>
+                <TableColumn colSpan={columnSpan}>
+                  <div className="flex h-[12.5rem] items-center justify-center text-center">
+                    No results found.
+                  </div>
+                </TableColumn>
               </TableRow>
             )}
 
