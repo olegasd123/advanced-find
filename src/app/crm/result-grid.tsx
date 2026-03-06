@@ -17,7 +17,7 @@ import {
   PaginationNext,
   PaginationPage,
   PaginationPrevious,
-} from '../../../vendor/catalyst-ui-kit/typescript/pagination'
+} from '../../components/controls/pagination'
 import { Select } from '../../../vendor/catalyst-ui-kit/typescript/select'
 import {
   Table,
