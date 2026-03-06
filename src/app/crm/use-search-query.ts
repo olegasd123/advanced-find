@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { EntityConfig } from '../../libs/config/app-config'
-import { CrmData, EntityMetadata } from '../../libs/data/crm/crm-repository'
+import { CrmData, EntityMetadata } from '../../libs/types/entity.types'
+import { AppliedFilterCondition } from '../../libs/types/filter.types'
+import { SearchTableColumn } from '../../libs/types/search.types'
 import { createLogger } from '../../libs/utils/logger'
-import { AppliedFilterCondition, SearchTableColumn } from '../../libs/utils/crm/crm-search'
 import { SearchService } from './search-service'
 
 const logger = createLogger('useSearchQuery')

@@ -31,7 +31,8 @@ import {
   ResultViewDefaultSortConfig,
   ResultViewPaginationConfig,
 } from '../../libs/config/app-config'
-import { AppliedFilterCondition, SearchTableColumn } from '../../libs/utils/crm/crm-search'
+import { AppliedFilterCondition } from '../../libs/types/filter.types'
+import { SearchTableColumn } from '../../libs/types/search.types'
 import {
   getColumnCellValue,
   getColumnHeader,

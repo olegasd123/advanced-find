@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { SearchService } from '../search-service'
-import { AppliedFilterCondition } from '../../../libs/utils/crm/crm-search'
-import { CrmData } from '../../../libs/data/crm/crm-repository'
+import { CrmData } from '../../../libs/types/entity.types'
+import { AppliedFilterCondition } from '../../../libs/types/filter.types'
 
 const condition = (
   attributeName: string,
@@ -17,13 +17,10 @@ const condition = (
 })
 
 const createCrmRepositoryMock = (responses: unknown[]) => {
-  const getEntities = vi.fn(
-    async (
-      _entityPluralName: string,
-      _attributeLogicalNames: string[],
-      _options?: { fetchXml?: string }
-    ) => responses.shift()
-  )
+  const getEntities = vi.fn(async (...args: Parameters<CrmData['getEntities']>) => {
+    void args
+    return responses.shift()
+  })
 
   const crmRepository: CrmData = {
     getEntitiesMetadata: async () => [],

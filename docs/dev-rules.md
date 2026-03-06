@@ -15,12 +15,20 @@ This document defines the shared coding standards for the advanced-find project.
 - Write TypeScript everywhere; never fall back to `any` unless you document why and add a follow-up task to remove it.
 - Prefer TypeScript `interface` declarations for describing object shapes; use `type` when unions or mapped types are needed.
 - Use discriminated unions and branded types for domain concepts instead of raw primitives whenever feasible.
-- Co-locate component-specific types next to the component; share cross-cutting types under `src/types`.
+- Co-locate component-specific types next to the component; share cross-cutting domain types under `src/libs/types`.
 - Components must be function components with hooks; avoid legacy class components.
 - Declare all components, hooks, and utilities as arrow functions to keep signatures uniform and enable easy binding.
 - Keep hooks pure: the first line of a hook should be another hook call or synchronous logic, not side effects.
 - Derive UI state from props or repositories; avoid duplicating data that can be computed on the fly.
 - Memoize derived values (`useMemo`, `useCallback`) when the dependency list is stable and re-computation is expensive; otherwise, keep things simple.
+
+## Domain Types & Config Schema
+
+- Keep `src/libs/config/app-config.ts` only for JSON config schema.
+- Do not put domain/business models in config files.
+- Put shared domain models in `src/libs/types/` using domain-specific type files.
+- Import domain types from `src/libs/types/*` in new code.
+- See `docs/ai-model-rules.md` for the AI model checklist.
 
 ## Styling & Layout
 

@@ -8,12 +8,10 @@ interface FilterOptionDefaultConfig {
   Values?: Array<string | number>
 }
 
-export type FilterGroupOperator = 'and' | 'or'
-
 export interface DefaultFilterGroupConfig {
   FilterOptionIds?: string[]
   FilterOptionIndexes?: number[]
-  Operator?: FilterGroupOperator
+  Operator?: 'and' | 'or'
   IsOperatorEditable?: boolean
   IsRemovable?: boolean
   GroupTitle?: string

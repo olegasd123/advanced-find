@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { EntityConfig } from '../../libs/config/app-config'
-import { CrmData, EntityMetadata } from '../../libs/data/crm/crm-repository'
+import { CrmData, EntityMetadata } from '../../libs/types/entity.types'
+import { SearchTableColumn } from '../../libs/types/search.types'
 import { createLogger } from '../../libs/utils/logger'
-import { resolveSearchTableColumns, SearchTableColumn } from '../../libs/utils/crm/crm-search'
+import { resolveSearchTableColumns } from '../../libs/utils/crm/crm-search'
 
 const logger = createLogger('useEntityMetadata')
 

@@ -5,7 +5,7 @@ import { Input } from '../../components/catalyst/input'
 import { FilterOptionConfig } from '../../libs/config/app-config'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
 import { createLogger } from '../../libs/utils/logger'
-import { ConditionValue } from '../../libs/utils/crm/crm-search'
+import { ConditionValue } from '../../libs/types/filter.types'
 
 interface ConditionValueOption {
   value: string | number

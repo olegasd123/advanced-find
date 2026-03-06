@@ -57,6 +57,11 @@ All search behavior is defined in `assets/app-config.json`. The config specifies
 
 See [docs/app-config-manual.md](docs/app-config-manual.md) for the full configuration reference.
 
+Developer and AI coding rules:
+
+- [docs/dev-rules.md](docs/dev-rules.md)
+- [docs/ai-model-rules.md](docs/ai-model-rules.md)
+
 ## Deployment
 
 The project packages as a Dynamics 365 Web Resource. See [docs/deployment.md](docs/deployment.md) for step-by-step instructions.
@@ -68,10 +73,11 @@ src/
 ├── app/crm/          # Main search UI (filter grid, result grid)
 ├── components/       # Reusable control wrappers
 ├── hooks/            # App config, pagination, sorting, column resize/visibility
-├── libs/config/      # TypeScript config interfaces
+├── libs/config/      # JSON config schema types
+├── libs/types/       # Domain model types (filter/search/entity)
 ├── libs/data/crm/    # Dynamics 365 API integration
 └── libs/utils/crm/   # Search logic, FetchXML, filters, relation paths
 assets/               # app-config.json
-docs/                 # Configuration manual, deployment guide, dev rules
+docs/                 # Configuration manual, deployment guide, dev + AI rules
 scripts/              # Web resource packaging
 ```

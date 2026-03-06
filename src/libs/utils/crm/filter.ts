@@ -1,5 +1,5 @@
 import { FilterOptionConfig, RelationPathStepConfig } from '../../config/app-config'
-import { AttributeMetadata } from '../../data/crm/crm-repository'
+import { AttributeMetadata } from '../../types/entity.types'
 import { createLogger } from '../logger'
 import { getPathTargetEntityName, resolveConfigPath } from './relation-path'
 

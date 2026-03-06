@@ -1,8 +1,14 @@
-import { FilterGroupOperator, FilterOptionConfig } from '../../config/app-config'
+import { AppliedFilterCondition, ConditionValue, FilterGroupOperator } from '../../types/filter.types'
 import { getTargetFilterOption } from './filter'
 
+export type {
+  AppliedFilterCondition,
+  ConditionValue,
+  FilterGroupOperator,
+} from '../../types/filter.types'
+
 // Re-export column resolution types and functions
-export type { SearchTableColumnAttribute, SearchTableColumn } from './crm-search-columns'
+export type { SearchTableColumnAttribute, SearchTableColumn } from '../../types/search.types'
 export {
   getTableColumnChain,
   getTargetTableColumn,
@@ -15,20 +21,6 @@ export {
 
 // Re-export FetchXML builder functions
 export { buildCrmFetchXml, buildCrmFilterFetchXml } from './crm-search-fetch-xml'
-
-// --- Shared types ---
-
-export type ConditionValue = string | number
-
-export interface AppliedFilterCondition {
-  filterOption?: FilterOptionConfig
-  condition?: string | null
-  values: ConditionValue[]
-  displayValues?: string[]
-  isDisabled?: boolean
-  groupId?: number
-  groupOperator?: FilterGroupOperator
-}
 
 // --- Shared constants ---
 

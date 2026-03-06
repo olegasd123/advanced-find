@@ -1,6 +1,7 @@
-import { noValueConditions, AppliedFilterCondition } from '../../libs/utils/crm/crm-search'
+import { noValueConditions } from '../../libs/utils/crm/crm-search'
 import { getTargetFilterOption } from '../../libs/utils/crm/filter'
-import { SearchTableColumn } from '../../libs/utils/crm/crm-search'
+import { AppliedFilterCondition } from '../../libs/types/filter.types'
+import { SearchTableColumn } from '../../libs/types/search.types'
 import { minColumnWidth } from '../../libs/utils/table-helpers'
 
 // --- Filter display helpers ---

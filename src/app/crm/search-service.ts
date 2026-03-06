@@ -1,19 +1,11 @@
-import { CrmData } from '../../libs/data/crm/crm-repository'
+import { CrmData } from '../../libs/types/entity.types'
+import { AppliedFilterCondition } from '../../libs/types/filter.types'
+import { SearchBranchPlan, SearchTableColumn } from '../../libs/types/search.types'
 import { createLogger } from '../../libs/utils/logger'
-import {
-  AppliedFilterCondition,
-  buildCrmFetchXml,
-  buildCrmFilterFetchXml,
-  SearchTableColumn,
-} from '../../libs/utils/crm/crm-search'
+import { buildCrmFetchXml, buildCrmFilterFetchXml } from '../../libs/utils/crm/crm-search'
 
 const logger = createLogger('SearchService')
 const defaultResultIdsChunkSize = 120
-
-export interface SearchBranchPlan {
-  requiresTwoPass: boolean
-  branches: AppliedFilterCondition[][]
-}
 
 interface SearchServiceOptions {
   resultIdsChunkSize?: number

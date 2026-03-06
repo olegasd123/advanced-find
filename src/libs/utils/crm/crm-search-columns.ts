@@ -1,27 +1,12 @@
 import { EntityConfig, RelationPathStepConfig, TableColumnConfig } from '../../config/app-config'
+import { SearchTableColumn } from '../../types/search.types'
+export type { SearchTableColumn, SearchTableColumnAttribute } from '../../types/search.types'
 import {
   getNormalizedConfigId,
   getPathTargetEntityName,
   getRelationPathById,
   resolveConfigPath,
 } from './relation-path'
-
-export interface SearchTableColumnAttribute {
-  attributeName: string
-  valueKey: string
-}
-
-export interface SearchTableColumn {
-  sourceColumn: TableColumnConfig
-  id?: string
-  columnKey: string
-  chain: RelationPathStepConfig[]
-  attributes: SearchTableColumnAttribute[]
-  attributesFormat?: string
-  entityName: string
-  displayName?: string
-  isRootColumn: boolean
-}
 
 interface LegacyTableColumnConfig extends TableColumnConfig {
   Attributes?: string[]

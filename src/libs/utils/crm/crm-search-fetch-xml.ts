@@ -1,15 +1,15 @@
 import { FilterOptionConfig, RelationPathStepConfig } from '../../config/app-config'
+import { AppliedFilterCondition, FilterGroupOperator } from '../../types/filter.types'
+import { SearchTableColumn } from '../../types/search.types'
 import { getTargetFilterOption } from './filter'
-import { createRootSearchColumn, SearchTableColumn } from './crm-search-columns'
+import { createRootSearchColumn } from './crm-search-columns'
 import {
-  AppliedFilterCondition,
   escapeXml,
   hasMeaningfulValues,
   normalizeGroupOperator,
   parseValues,
   toFetchValue,
 } from './crm-search'
-import type { FilterGroupOperator } from '../../config/app-config'
 
 interface FetchAttributeNode {
   name: string

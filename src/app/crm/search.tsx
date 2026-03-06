@@ -8,7 +8,7 @@ import { Select } from '../../components/catalyst/select'
 import { FilterGrid } from './filter-grid'
 import { ResultGrid } from './result-grid'
 import { ViewErrorBoundary } from '../view-error-boundary'
-import { AppliedFilterCondition } from '../../libs/utils/crm/crm-search'
+import { AppliedFilterCondition } from '../../libs/types/filter.types'
 
 export const Search = () => {
   const appConfigState = useAppConfig()
