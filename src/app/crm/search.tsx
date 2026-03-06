@@ -7,6 +7,7 @@ import { useSearchQuery } from './use-search-query'
 import { Select } from '../../components/catalyst/select'
 import { FilterGrid } from './filter-grid'
 import { ResultGrid } from './result-grid'
+import { ViewErrorBoundary } from '../view-error-boundary'
 import { AppliedFilterCondition } from '../../libs/utils/crm/crm-search'
 
 export const Search = () => {
@@ -103,28 +104,40 @@ export const Search = () => {
 
       {currentEntityConfig && (
         <div className={isResultViewVisible ? 'hidden' : ''}>
-          <FilterGrid
-            key={currentEntityConfig.LogicalName}
-            entityConfig={currentEntityConfig}
-            onSearch={handleSearch}
-          />
+          <ViewErrorBoundary
+            viewName="filter view"
+            message="The filter view failed to render. Try again or reload the page."
+            resetKey={`filter-${currentEntityConfig.LogicalName}`}
+          >
+            <FilterGrid
+              key={currentEntityConfig.LogicalName}
+              entityConfig={currentEntityConfig}
+              onSearch={handleSearch}
+            />
+          </ViewErrorBoundary>
         </div>
       )}
 
       {currentEntityConfig && isResultViewVisible && (
-        <ResultGrid
-          results={results}
-          tableColumns={searchTableColumns}
-          tableColumnDisplayNames={tableColumnDisplayNames}
-          columnVisibilityStorageKey={currentEntityConfig.LogicalName}
-          pagination={resultViewPagination}
-          defaultSort={resultViewDefaultSort}
-          showAppliedFilters={resultViewShowAppliedFilters}
-          isLoading={isResultsLoading}
-          errorMessage={resultsError}
-          appliedFilters={appliedFilters}
-          onBack={closeResultView}
-        />
+        <ViewErrorBoundary
+          viewName="result view"
+          message="The result view failed to render. Try again or go back to filters."
+          resetKey={`result-${currentEntityConfig.LogicalName}-${results.length}`}
+        >
+          <ResultGrid
+            results={results}
+            tableColumns={searchTableColumns}
+            tableColumnDisplayNames={tableColumnDisplayNames}
+            columnVisibilityStorageKey={currentEntityConfig.LogicalName}
+            pagination={resultViewPagination}
+            defaultSort={resultViewDefaultSort}
+            showAppliedFilters={resultViewShowAppliedFilters}
+            isLoading={isResultsLoading}
+            errorMessage={resultsError}
+            appliedFilters={appliedFilters}
+            onBack={closeResultView}
+          />
+        </ViewErrorBoundary>
       )}
     </div>
   )
