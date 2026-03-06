@@ -2,11 +2,7 @@ import * as React from 'react'
 import { Button } from '../../components/catalyst/button'
 import { Bars3Icon, TrashIcon } from '@heroicons/react/16/solid'
 import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/catalyst/combobox'
-import {
-  Listbox,
-  ListboxLabel,
-  ListboxOption,
-} from '../../components/catalyst/listbox'
+import { Listbox, ListboxLabel, ListboxOption } from '../../components/catalyst/listbox'
 import { ComboboxOptionCategory } from '../../components/controls/combobox-option-category'
 import { FilterOption } from './filter-grid'
 import { FilterItemValue } from './filter-item-value'

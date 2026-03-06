@@ -57,7 +57,10 @@ export function DialogTitle({
   return (
     <Headless.DialogTitle
       {...props}
-      className={clsx(className, 'text-lg/6 font-semibold text-balance text-zinc-950 sm:text-base/6 dark:text-white')}
+      className={clsx(
+        className,
+        'text-lg/6 font-semibold text-balance text-zinc-950 sm:text-base/6 dark:text-white'
+      )}
     />
   )
 }
@@ -66,7 +69,9 @@ export function DialogDescription({
   className,
   ...props
 }: { className?: string } & Omit<Headless.DescriptionProps<typeof Text>, 'as' | 'className'>) {
-  return <Headless.Description as={Text} {...props} className={clsx(className, 'mt-2 text-pretty')} />
+  return (
+    <Headless.Description as={Text} {...props} className={clsx(className, 'mt-2 text-pretty')} />
+  )
 }
 
 export function DialogBody({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {

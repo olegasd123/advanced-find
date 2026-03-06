@@ -65,8 +65,6 @@ export const AppConfigProvider = ({ children }: { children: React.ReactNode }) =
   }, [])
 
   return (
-    <AppConfigContext value={{ appConfig, isLoading, errorMessage }}>
-      {children}
-    </AppConfigContext>
+    <AppConfigContext value={{ appConfig, isLoading, errorMessage }}>{children}</AppConfigContext>
   )
 }

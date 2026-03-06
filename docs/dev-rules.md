@@ -55,9 +55,3 @@ This document defines the shared coding standards for the advanced-find project.
 - Keep README-level docs in `docs/`; inline code comments should describe _why_ something exists, not _what_ it does.
 - Update existing docs when touching a feature—they are part of the deliverable.
 - Complex workflows (e.g., deployment scripts) need step-by-step instructions in `docs/` to remain reproducible.
-
-## Third-Party Controls Policy
-
-- The contents of `vendor` folder are provided by an external vendor; treat them as read-only. Do **not** modify, refactor, or lint-fix these files.
-- When custom behavior or styling is needed, create wrappers or new components under `src/components/controls` that compose the catalyst controls rather than editing them in place.
-- Document any new control variants in this folder and keep API differences minimal so upstream updates remain easy to integrate.

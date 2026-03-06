@@ -1,10 +1,6 @@
 import * as React from 'react'
 import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/catalyst/combobox'
-import {
-  Listbox,
-  ListboxLabel,
-  ListboxOption,
-} from '../../components/catalyst/listbox'
+import { Listbox, ListboxLabel, ListboxOption } from '../../components/catalyst/listbox'
 import { Input } from '../../components/catalyst/input'
 import { FilterOptionConfig } from '../../libs/config/app-config'
 import { useCrmRepository } from '../../hooks/use-crm-repository'

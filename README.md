@@ -33,16 +33,16 @@ The dev server starts at `http://localhost:5173` by default.
 
 ### Available Scripts
 
-| Script | Description |
-|---|---|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Type-check and build for web |
-| `npm run build:crm` | Minified build for Dynamics 365 |
-| `npm run build:crm:dev` | CRM build with sourcemaps |
-| `npm run package:webresource` | Build and package for CRM deployment |
-| `npm run preview` | Preview production build on port 8989 |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format with Prettier |
+| Script                        | Description                           |
+| ----------------------------- | ------------------------------------- |
+| `npm run dev`                 | Start Vite dev server                 |
+| `npm run build`               | Type-check and build for web          |
+| `npm run build:crm`           | Minified build for Dynamics 365       |
+| `npm run build:crm:dev`       | CRM build with sourcemaps             |
+| `npm run package:webresource` | Build and package for CRM deployment  |
+| `npm run preview`             | Preview production build on port 8989 |
+| `npm run lint`                | Run ESLint                            |
+| `npm run format`              | Format with Prettier                  |
 
 ## Configuration
 
@@ -74,5 +74,4 @@ src/
 assets/               # app-config.json
 docs/                 # Configuration manual, deployment guide, dev rules
 scripts/              # Web resource packaging
-vendor/               # Catalyst UI Kit (third-party, read-only)
 ```

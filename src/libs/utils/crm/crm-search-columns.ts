@@ -1,5 +1,10 @@
 import { EntityConfig, RelationPathStepConfig, TableColumnConfig } from '../../config/app-config'
-import { getNormalizedConfigId, getPathTargetEntityName, getRelationPathById, resolveConfigPath } from './relation-path'
+import {
+  getNormalizedConfigId,
+  getPathTargetEntityName,
+  getRelationPathById,
+  resolveConfigPath,
+} from './relation-path'
 
 export interface SearchTableColumnAttribute {
   attributeName: string
@@ -131,32 +136,30 @@ export const createRootSearchColumn = (attributeName: string, index: number): Se
 export const resolveSearchTableColumns = (entityConfig: EntityConfig): SearchTableColumn[] => {
   const relationPathById = getRelationPathById(entityConfig)
 
-  return entityConfig.ResultView.Columns
-    .map((column, index) => {
-      const chain = getTableColumnChain(column, relationPathById)
-      const attributeNames = getResolvedTableColumnAttributes(column)
-      const entityName = getPathTargetEntityName(entityConfig.LogicalName, chain)
-      const isRootColumn = chain.length === 0
-      const attributes = attributeNames.map((attributeName, attributeIndex) => ({
-        attributeName,
-        valueKey: isRootColumn
-          ? attributeName
-          : createColumnValueKey(index, attributeName, attributeIndex),
-      }))
+  return entityConfig.ResultView.Columns.map((column, index) => {
+    const chain = getTableColumnChain(column, relationPathById)
+    const attributeNames = getResolvedTableColumnAttributes(column)
+    const entityName = getPathTargetEntityName(entityConfig.LogicalName, chain)
+    const isRootColumn = chain.length === 0
+    const attributes = attributeNames.map((attributeName, attributeIndex) => ({
+      attributeName,
+      valueKey: isRootColumn
+        ? attributeName
+        : createColumnValueKey(index, attributeName, attributeIndex),
+    }))
 
-      return {
-        sourceColumn: column,
-        id: getNormalizedConfigId(column.Id),
-        columnKey: createColumnKey(index),
-        chain,
-        attributes,
-        attributesFormat: getTableColumnAttributesFormat(column),
-        entityName,
-        displayName: getTableColumnDisplayName(column),
-        isRootColumn,
-      }
-    })
-    .filter((column) => column.attributes.length > 0)
+    return {
+      sourceColumn: column,
+      id: getNormalizedConfigId(column.Id),
+      columnKey: createColumnKey(index),
+      chain,
+      attributes,
+      attributesFormat: getTableColumnAttributesFormat(column),
+      entityName,
+      displayName: getTableColumnDisplayName(column),
+      isRootColumn,
+    }
+  }).filter((column) => column.attributes.length > 0)
 }
 
 export const getSearchSelectColumns = (entityConfig: EntityConfig): string[] => {

@@ -43,7 +43,9 @@ export const normalizeRelationPathSteps = (
     .filter((step): step is RelationPathStepConfig => Boolean(step))
 }
 
-export const getRelationPathById = (entityConfig: EntityConfig): Map<string, RelationPathStepConfig[]> => {
+export const getRelationPathById = (
+  entityConfig: EntityConfig
+): Map<string, RelationPathStepConfig[]> => {
   const map = new Map<string, RelationPathStepConfig[]>()
 
   for (const relationPath of entityConfig.RelationPaths ?? []) {

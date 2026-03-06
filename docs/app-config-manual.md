@@ -25,9 +25,9 @@ The application is configured through a single JSON file located at `assets/app-
 
 ## File Location and Loading
 
-| Build Mode | Config File Path |
-|---|---|
-| Development (`npm run dev`) | `assets/app-config.json` |
+| Build Mode                        | Config File Path                                                                  |
+| --------------------------------- | --------------------------------------------------------------------------------- |
+| Development (`npm run dev`)       | `assets/app-config.json`                                                          |
 | CRM deployment (`crm`, `crm-dev`) | Copied to `dist/advanced-find/app-config.json` and fetched at `./app-config.json` |
 
 The config is loaded at runtime via `fetch()` and provided to the entire app through a React context (`AppConfigProvider`). All components access it via the `useAppConfig()` hook.
@@ -45,11 +45,11 @@ The config is loaded at runtime via `fetch()` and provided to the entire app thr
 }
 ```
 
-| Property | Type | Required | Description |
-|---|---|---|---|
-| `SearchSchema` | object | No | Root container for all search-related configuration. |
-| `SearchSchema.Entities` | array | Yes | List of CRM entity configurations. Each entry defines filters and result views for one entity. |
-| `SearchSchema.Localization` | object | Yes | Localization settings (e.g., filter condition labels). |
+| Property                    | Type   | Required | Description                                                                                    |
+| --------------------------- | ------ | -------- | ---------------------------------------------------------------------------------------------- |
+| `SearchSchema`              | object | No       | Root container for all search-related configuration.                                           |
+| `SearchSchema.Entities`     | array  | Yes      | List of CRM entity configurations. Each entry defines filters and result views for one entity. |
+| `SearchSchema.Localization` | object | Yes      | Localization settings (e.g., filter condition labels).                                         |
 
 ---
 
@@ -69,15 +69,15 @@ Each entry in the `Entities` array represents one searchable CRM entity.
 }
 ```
 
-| Property | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `LogicalName` | string | **Yes** | - | The CRM entity logical name (e.g., `"invoice"`, `"account"`). |
-| `FilterUniqueOptionsOnly` | boolean | No | `false` | When `true`, each filter option can only be added to the filter grid once. |
-| `FilterCategories` | array | No | `[]` | Categories for organizing filter options in the UI dropdown. |
-| `RelationPaths` | array | No | `[]` | Reusable relation path definitions for accessing related entities. |
-| `FilterOptions` | array | **Yes** | - | Available filter options users can add to the search. |
-| `DefaultFilterGroups` | array | No | `[]` | Pre-configured filter groups shown when the search loads. |
-| `ResultView` | object | **Yes** | - | Defines result table columns, pagination, and sorting. |
+| Property                  | Type    | Required | Default | Description                                                                |
+| ------------------------- | ------- | -------- | ------- | -------------------------------------------------------------------------- |
+| `LogicalName`             | string  | **Yes**  | -       | The CRM entity logical name (e.g., `"invoice"`, `"account"`).              |
+| `FilterUniqueOptionsOnly` | boolean | No       | `false` | When `true`, each filter option can only be added to the filter grid once. |
+| `FilterCategories`        | array   | No       | `[]`    | Categories for organizing filter options in the UI dropdown.               |
+| `RelationPaths`           | array   | No       | `[]`    | Reusable relation path definitions for accessing related entities.         |
+| `FilterOptions`           | array   | **Yes**  | -       | Available filter options users can add to the search.                      |
+| `DefaultFilterGroups`     | array   | No       | `[]`    | Pre-configured filter groups shown when the search loads.                  |
+| `ResultView`              | object  | **Yes**  | -       | Defines result table columns, pagination, and sorting.                     |
 
 ---
 
@@ -103,20 +103,20 @@ Relation paths define how to traverse from the primary entity to a related entit
 }
 ```
 
-| Property | Type | Required | Description |
-|---|---|---|---|
-| `Id` | string | **Yes** | Unique identifier for this relation path. Referenced by `PathId` in filter options and columns. IDs are case-insensitive (normalized to lowercase at runtime). |
-| `Steps` | array | **Yes** | Ordered list of join steps from the primary entity to the target entity. |
+| Property | Type   | Required | Description                                                                                                                                                    |
+| -------- | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Id`     | string | **Yes**  | Unique identifier for this relation path. Referenced by `PathId` in filter options and columns. IDs are case-insensitive (normalized to lowercase at runtime). |
+| `Steps`  | array  | **Yes**  | Ordered list of join steps from the primary entity to the target entity.                                                                                       |
 
 ### Relation Path Step
 
 Each step defines a single entity-to-entity join.
 
-| Property | Type | Required | Description |
-|---|---|---|---|
-| `EntityName` | string | **Yes** | The logical name of the related entity to join to. |
-| `FromAttribute` | string | **Yes** | The attribute on the source entity used for the join. |
-| `ToAttribute` | string | **Yes** | The attribute on the target entity used for the join. |
+| Property        | Type   | Required | Description                                           |
+| --------------- | ------ | -------- | ----------------------------------------------------- |
+| `EntityName`    | string | **Yes**  | The logical name of the related entity to join to.    |
+| `FromAttribute` | string | **Yes**  | The attribute on the source entity used for the join. |
+| `ToAttribute`   | string | **Yes**  | The attribute on the target entity used for the join. |
 
 **Multi-step paths:** For traversing through intermediate entities (e.g., invoice -> invoicedetail -> product), add multiple steps in order. Each step joins from the entity reached by the previous step.
 
@@ -135,10 +135,10 @@ Categories group filter options in the filter dropdown menu. Each filter option 
 }
 ```
 
-| Property | Type | Required | Description |
-|---|---|---|---|
-| `Id` | string | **Yes** | Unique identifier for the category. Referenced by `CategoryId` in filter options. Case-insensitive. |
-| `DisplayName` | string | **Yes** | Label shown in the UI. |
+| Property      | Type   | Required | Description                                                                                         |
+| ------------- | ------ | -------- | --------------------------------------------------------------------------------------------------- |
+| `Id`          | string | **Yes**  | Unique identifier for the category. Referenced by `CategoryId` in filter options. Case-insensitive. |
+| `DisplayName` | string | **Yes**  | Label shown in the UI.                                                                              |
 
 Filter options without a `CategoryId` appear ungrouped in the dropdown.
 
@@ -162,20 +162,21 @@ Filter options define the available filters that users can add to the search. Ea
 }
 ```
 
-| Property | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `Id` | string | No | - | Unique identifier for this filter option. Required if referenced by `DefaultFilterGroups`. Case-insensitive. |
-| `CategoryId` | string | No | - | References a `FilterCategories.Id` to group this option in the dropdown. |
-| `PathId` | string | No | - | References a `RelationPaths.Id` to filter on a related entity's attribute. Mutually exclusive with `Path`. |
-| `Path` | array | No | - | Inline relation path steps. Mutually exclusive with `PathId`. |
-| `AttributeName` | string | No | - | The CRM attribute logical name to filter on. |
-| `DisplayName` | string | No | Auto-generated from CRM metadata | Custom display label. If omitted, the attribute's display name is fetched from CRM metadata. |
-| `Groupable` | boolean | No | `true` | When `false`, the filter option cannot be dragged into a filter group. |
-| `Default` | object | No | - | Default behavior configuration (see below). |
-| `Lookup` | object | No | - | Lookup display configuration for entity-reference attributes (see below). |
-| `Selection` | object | No | - | Constrains how many values users can select (see below). |
+| Property        | Type    | Required | Default                          | Description                                                                                                  |
+| --------------- | ------- | -------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `Id`            | string  | No       | -                                | Unique identifier for this filter option. Required if referenced by `DefaultFilterGroups`. Case-insensitive. |
+| `CategoryId`    | string  | No       | -                                | References a `FilterCategories.Id` to group this option in the dropdown.                                     |
+| `PathId`        | string  | No       | -                                | References a `RelationPaths.Id` to filter on a related entity's attribute. Mutually exclusive with `Path`.   |
+| `Path`          | array   | No       | -                                | Inline relation path steps. Mutually exclusive with `PathId`.                                                |
+| `AttributeName` | string  | No       | -                                | The CRM attribute logical name to filter on.                                                                 |
+| `DisplayName`   | string  | No       | Auto-generated from CRM metadata | Custom display label. If omitted, the attribute's display name is fetched from CRM metadata.                 |
+| `Groupable`     | boolean | No       | `true`                           | When `false`, the filter option cannot be dragged into a filter group.                                       |
+| `Default`       | object  | No       | -                                | Default behavior configuration (see below).                                                                  |
+| `Lookup`        | object  | No       | -                                | Lookup display configuration for entity-reference attributes (see below).                                    |
+| `Selection`     | object  | No       | -                                | Constrains how many values users can select (see below).                                                     |
 
 **Runtime-populated properties** (do not set these in the config):
+
 - `AttributeType` - Automatically populated from CRM metadata.
 - `EntityName` - Automatically resolved from the relation path or primary entity.
 
@@ -194,14 +195,14 @@ The `Default` object controls how a filter option behaves when initially loaded.
 }
 ```
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `IsShown` | boolean | `false` | When `true`, this filter is automatically added to the filter grid on initial load. |
-| `Condition` | string | `"eq"` | Default condition operator. See the [Localization](#localization) section for available condition codes. |
-| `Values` | array | `[]` | Pre-filled filter values. Array of strings or numbers. |
-| `CannotBeRemoved` | boolean | `false` | When `true`, the user cannot delete this filter row from the grid. |
-| `IsAttributeDisabled` | boolean | `false` | When `true`, the attribute dropdown is disabled (user cannot change which attribute is filtered). |
-| `IsDisabled` | boolean | `false` | When `true`, the entire filter row is disabled (read-only). |
+| Property              | Type    | Default | Description                                                                                              |
+| --------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| `IsShown`             | boolean | `false` | When `true`, this filter is automatically added to the filter grid on initial load.                      |
+| `Condition`           | string  | `"eq"`  | Default condition operator. See the [Localization](#localization) section for available condition codes. |
+| `Values`              | array   | `[]`    | Pre-filled filter values. Array of strings or numbers.                                                   |
+| `CannotBeRemoved`     | boolean | `false` | When `true`, the user cannot delete this filter row from the grid.                                       |
+| `IsAttributeDisabled` | boolean | `false` | When `true`, the attribute dropdown is disabled (user cannot change which attribute is filtered).        |
+| `IsDisabled`          | boolean | `false` | When `true`, the entire filter row is disabled (read-only).                                              |
 
 ### Lookup Configuration
 
@@ -214,9 +215,9 @@ For entity-reference (lookup) attributes, the `Lookup` object controls how refer
 }
 ```
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `AttributeNames` | array | - | Attribute logical names from the related entity to display. |
+| Property          | Type   | Default             | Description                                                                                      |
+| ----------------- | ------ | ------------------- | ------------------------------------------------------------------------------------------------ |
+| `AttributeNames`  | array  | -                   | Attribute logical names from the related entity to display.                                      |
 | `AttributeFormat` | string | Concatenated values | Format template using `{0}`, `{1}`, etc. as placeholders for each attribute in `AttributeNames`. |
 
 **Example:** With `AttributeNames: ["firstname", "lastname"]` and `AttributeFormat: "{0} {1}"`, a lookup record with first name "John" and last name "Doe" displays as "John Doe".
@@ -233,11 +234,11 @@ Controls how many values a user can select for a filter.
 }
 ```
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `Multiple` | boolean | `false` | Enables multi-value selection. |
-| `MinItems` | number | `0` | Minimum number of values that must be selected (clamped to 0 at runtime). |
-| `MaxItems` | number | unlimited | Maximum number of values that can be selected. |
+| Property   | Type    | Default   | Description                                                               |
+| ---------- | ------- | --------- | ------------------------------------------------------------------------- |
+| `Multiple` | boolean | `false`   | Enables multi-value selection.                                            |
+| `MinItems` | number  | `0`       | Minimum number of values that must be selected (clamped to 0 at runtime). |
+| `MaxItems` | number  | unlimited | Maximum number of values that can be selected.                            |
 
 ---
 
@@ -255,14 +256,14 @@ Pre-configured filter groups that appear when the search loads. Groups bundle mu
 }
 ```
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `FilterOptionIds` | array | - | List of `FilterOptionConfig.Id` values to include in this group. Mutually exclusive with `FilterOptionIndexes`. |
-| `FilterOptionIndexes` | array | - | Alternative to `FilterOptionIds`: references filter options by their zero-based index in the `FilterOptions` array. |
-| `Operator` | string | `"and"` | Logical operator: `"and"` or `"or"`. |
-| `GroupTitle` | string | - | Display title for the group. |
-| `IsOperatorEditable` | boolean | `true` | When `false`, the user cannot change the group's logical operator. |
-| `IsRemovable` | boolean | `true` | When `false`, the user cannot remove the group from the filter grid. |
+| Property              | Type    | Default | Description                                                                                                         |
+| --------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
+| `FilterOptionIds`     | array   | -       | List of `FilterOptionConfig.Id` values to include in this group. Mutually exclusive with `FilterOptionIndexes`.     |
+| `FilterOptionIndexes` | array   | -       | Alternative to `FilterOptionIds`: references filter options by their zero-based index in the `FilterOptions` array. |
+| `Operator`            | string  | `"and"` | Logical operator: `"and"` or `"or"`.                                                                                |
+| `GroupTitle`          | string  | -       | Display title for the group.                                                                                        |
+| `IsOperatorEditable`  | boolean | `true`  | When `false`, the user cannot change the group's logical operator.                                                  |
+| `IsRemovable`         | boolean | `true`  | When `false`, the user cannot remove the group from the filter grid.                                                |
 
 **Note:** Filter options referenced by a default group should have `Default.IsShown: true` so they are visible when the group is created. You can use either `FilterOptionIds` or `FilterOptionIndexes` but not both.
 
@@ -281,12 +282,12 @@ Defines how search results are displayed in the results table.
 }
 ```
 
-| Property | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `Columns` | array | **Yes** | - | Table column definitions. |
-| `ShowAppliedFilters` | boolean | No | `false` | When `true`, shows the active filters summary above the results table. |
-| `Pagination` | object | No | - | Pagination configuration. |
-| `DefaultSort` | array | No | `[]` | Default sort order applied when results first load. |
+| Property             | Type    | Required | Default | Description                                                            |
+| -------------------- | ------- | -------- | ------- | ---------------------------------------------------------------------- |
+| `Columns`            | array   | **Yes**  | -       | Table column definitions.                                              |
+| `ShowAppliedFilters` | boolean | No       | `false` | When `true`, shows the active filters summary above the results table. |
+| `Pagination`         | object  | No       | -       | Pagination configuration.                                              |
+| `DefaultSort`        | array   | No       | `[]`    | Default sort order applied when results first load.                    |
 
 ### Columns
 
@@ -303,15 +304,15 @@ Each column defines what data is displayed in the results table.
 }
 ```
 
-| Property | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `Id` | string | No | - | Unique identifier. Required if referenced by `DefaultSort`. Case-insensitive. |
-| `PathId` | string | No | - | References a `RelationPaths.Id` to display data from a related entity. Mutually exclusive with `Path`. |
-| `Path` | array | No | - | Inline relation path steps. Mutually exclusive with `PathId`. |
-| `AttributeNames` | array | No | - | Attribute logical names to display in this column. |
-| `AttributeFormat` | string | No | Concatenated values | Format template using `{0}`, `{1}`, etc. as placeholders. |
-| `DisplayName` | string | No | Auto-generated from CRM metadata | Column header label. |
-| `Width` | number or string | No | Auto | Column width in pixels. Can be a number (`220`) or string (`"220"`). |
+| Property          | Type             | Required | Default                          | Description                                                                                            |
+| ----------------- | ---------------- | -------- | -------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `Id`              | string           | No       | -                                | Unique identifier. Required if referenced by `DefaultSort`. Case-insensitive.                          |
+| `PathId`          | string           | No       | -                                | References a `RelationPaths.Id` to display data from a related entity. Mutually exclusive with `Path`. |
+| `Path`            | array            | No       | -                                | Inline relation path steps. Mutually exclusive with `PathId`.                                          |
+| `AttributeNames`  | array            | No       | -                                | Attribute logical names to display in this column.                                                     |
+| `AttributeFormat` | string           | No       | Concatenated values              | Format template using `{0}`, `{1}`, etc. as placeholders.                                              |
+| `DisplayName`     | string           | No       | Auto-generated from CRM metadata | Column header label.                                                                                   |
+| `Width`           | number or string | No       | Auto                             | Column width in pixels. Can be a number (`220`) or string (`"220"`).                                   |
 
 **Multi-attribute columns:** When `AttributeNames` contains multiple attributes, they are combined using `AttributeFormat`. For example, `["name", "accountnumber"]` with format `"{0} ({1})"` produces "Contoso (ACC-001)".
 
@@ -327,11 +328,11 @@ Controls the pagination behavior of the results table.
 }
 ```
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `List` | array | - | Available page size options. Values are truncated to integers with a minimum of 1. |
-| `AllOptionLabel` | string | - | Label for the "show all records" option. If omitted, no "all" option is shown. |
-| `SummaryTemplate` | string | - | Template for the pagination summary. `{0}` = start index, `{1}` = end index, `{2}` = total count. |
+| Property          | Type   | Default | Description                                                                                       |
+| ----------------- | ------ | ------- | ------------------------------------------------------------------------------------------------- |
+| `List`            | array  | -       | Available page size options. Values are truncated to integers with a minimum of 1.                |
+| `AllOptionLabel`  | string | -       | Label for the "show all records" option. If omitted, no "all" option is shown.                    |
+| `SummaryTemplate` | string | -       | Template for the pagination summary. `{0}` = start index, `{1}` = end index, `{2}` = total count. |
 
 ### Default Sort
 
@@ -344,10 +345,10 @@ Defines the initial sort order of the results table. Multiple entries are applie
 }
 ```
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `ColumnId` | string | - | References a `Columns.Id` (case-insensitive). This is required. |
-| `IsAscending` | boolean | `true` | Sort direction. `true` for ascending, `false` for descending. |
+| Property      | Type    | Default | Description                                                     |
+| ------------- | ------- | ------- | --------------------------------------------------------------- |
+| `ColumnId`    | string  | -       | References a `Columns.Id` (case-insensitive). This is required. |
+| `IsAscending` | boolean | `true`  | Sort direction. `true` for ascending, `false` for descending.   |
 
 ---
 
@@ -380,8 +381,8 @@ The `Localization` section allows customizing display labels for filter conditio
 }
 ```
 
-| Property | Type | Description |
-|---|---|---|
+| Property                | Type   | Description                                                                                                  |
+| ----------------------- | ------ | ------------------------------------------------------------------------------------------------------------ |
 | `FilterConditionLabels` | object | Maps condition codes to display labels. Keys are condition operator codes, values are human-readable labels. |
 
 These labels appear in the condition dropdown when editing a filter row.

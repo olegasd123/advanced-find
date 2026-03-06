@@ -2,11 +2,7 @@ import * as React from 'react'
 import { Bars3Icon, LinkSlashIcon } from '@heroicons/react/16/solid'
 import { Button } from '../../components/catalyst/button'
 import { Select } from '../../components/catalyst/select'
-import {
-  EntityConfig,
-  FilterGroupOperator,
-  FilterOptionConfig,
-} from '../../libs/config/app-config'
+import { EntityConfig, FilterGroupOperator, FilterOptionConfig } from '../../libs/config/app-config'
 import { FilterItem } from './filter-item'
 import { FilterCommandRow } from './filter-command-row'
 import { useCrmRepository } from '../../hooks/use-crm-repository'
@@ -92,9 +88,7 @@ export const FilterGrid = ({
     (options?: FilterOption[]) => {
       const defaultVisibleFilterOptions =
         options
-          ?.filter(
-            (filterOption) => filterOption?.FilterOptionConfig?.Default?.IsShown
-          )
+          ?.filter((filterOption) => filterOption?.FilterOptionConfig?.Default?.IsShown)
           .map((filterOption) => ({
             id: ++optionIdRef.current,
             option: filterOption,
