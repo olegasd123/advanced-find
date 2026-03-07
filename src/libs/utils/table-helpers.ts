@@ -26,7 +26,7 @@ export type VisiblePageItem = number | 'gap'
 
 // --- Constants ---
 
-export const pageSizeAllValue = '__all__'
+export const allOptionValue = '__all__'
 export const tableValueCollator = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: 'base',
@@ -46,7 +46,7 @@ export const getPaginationOptions = (
     const normalizedSize = typeof size === 'number' ? Math.max(1, Math.trunc(size)) : undefined
     if (normalizedSize === undefined) {
       return {
-        value: pageSizeAllValue,
+        value: allOptionValue,
         label: 'All',
       }
     }
@@ -60,7 +60,7 @@ export const getPaginationOptions = (
 
   if (pagination.AllOptionLabel) {
     options.push({
-      value: pageSizeAllValue,
+      value: allOptionValue,
       label: pagination.AllOptionLabel,
     })
   }
