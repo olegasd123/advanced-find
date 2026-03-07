@@ -4,7 +4,7 @@ import { Bars3Icon, TrashIcon } from '@heroicons/react/16/solid'
 import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/catalyst/combobox'
 import { Listbox, ListboxLabel, ListboxOption } from '../../components/catalyst/listbox'
 import { ComboboxOptionCategory } from '../../components/controls/combobox-option-category'
-import { FilterOption } from './filter-grid'
+import { FilterOption } from './filter-grid.helpers'
 import { FilterItemValue } from './filter-item-value'
 import { useAppConfig } from '../../hooks/use-app-config'
 import {
