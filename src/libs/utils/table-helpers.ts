@@ -1,4 +1,7 @@
-import { ResultViewDefaultSortConfig, ResultViewPaginationConfig } from '../types/app-config.types'
+import {
+  ResultViewDefaultSortConfig,
+  ResultViewPaginationConfig,
+} from '@/libs/types/app-config.types'
 
 // --- Types ---
 

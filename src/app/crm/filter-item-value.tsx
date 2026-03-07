@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/catalyst/combobox'
-import { Listbox, ListboxLabel, ListboxOption } from '../../components/catalyst/listbox'
-import { Input } from '../../components/catalyst/input'
-import { FilterOptionConfig } from '../../libs/types/app-config.types'
-import { useCrmRepository } from '../../hooks/use-crm-repository'
-import { createErrorReporter } from '../../libs/utils/error-reporter'
-import { ConditionValue } from '../../libs/types/filter.types'
+import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox'
+import { Listbox, ListboxLabel, ListboxOption } from '@/components/catalyst/listbox'
+import { Input } from '@/components/catalyst/input'
+import { FilterOptionConfig } from '@/libs/types/app-config.types'
+import { useCrmRepository } from '@/hooks/use-crm-repository'
+import { createErrorReporter } from '@/libs/utils/error-reporter'
+import { ConditionValue } from '@/libs/types/filter.types'
 
 interface ConditionValueOption {
   value: string | number

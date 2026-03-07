@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { readIntegerEnv } from '../env'
+import { readIntegerEnv } from '@/libs/utils/env'
 
 describe('readIntegerEnv', () => {
   it('returns fallback when value is missing', () => {

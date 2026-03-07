@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { EntityConfig } from '../../libs/types/app-config.types'
-import { fillOptionsWithMetadataInfo } from '../../libs/utils/crm/filter'
-import { getNormalizedConfigId, getRelationPathById } from '../../libs/utils/crm/relation-path'
-import { useCrmRepository } from '../../hooks/use-crm-repository'
+import { EntityConfig } from '@/libs/types/app-config.types'
+import { fillOptionsWithMetadataInfo } from '@/libs/utils/crm/filter'
+import { getNormalizedConfigId, getRelationPathById } from '@/libs/utils/crm/relation-path'
+import { useCrmRepository } from '@/hooks/use-crm-repository'
 import { FilterOption, VisibleFilterOption } from './filter-grid.helpers'
 
 interface UseFilterOptionsResult {

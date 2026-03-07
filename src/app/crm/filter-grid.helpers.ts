@@ -1,7 +1,7 @@
-import { FilterOptionConfig } from '../../libs/types/app-config.types'
-import { FilterGroupOperator } from '../../libs/types/filter.types'
-import { normalizeGroupOperator } from '../../libs/utils/crm/crm-search'
-import { filterDragThresholdPx } from '../../libs/utils/env'
+import { FilterOptionConfig } from '@/libs/types/app-config.types'
+import { FilterGroupOperator } from '@/libs/types/filter.types'
+import { normalizeGroupOperator } from '@/libs/utils/crm/crm-search'
+import { filterDragThresholdPx } from '@/libs/utils/env'
 
 // --- Types ---
 

@@ -1,6 +1,6 @@
-import { FilterOptionConfig, RelationPathStepConfig } from '../../types/app-config.types'
-import { AttributeMetadata } from '../../types/entity.types'
-import { createLogger } from '../logger'
+import { FilterOptionConfig, RelationPathStepConfig } from '@/libs/types/app-config.types'
+import { AttributeMetadata } from '@/libs/types/entity.types'
+import { createLogger } from '@/libs/utils/logger'
 import { getPathTargetEntityName, resolveConfigPath } from './relation-path'
 
 const logger = createLogger('filter-utils')

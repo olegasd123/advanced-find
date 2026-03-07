@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { useCrmRepository } from '../../hooks/use-crm-repository'
-import { useAppConfig } from '../../hooks/use-app-config'
+import { useCrmRepository } from '@/hooks/use-crm-repository'
+import { useAppConfig } from '@/hooks/use-app-config'
 import { useEntityMetadata } from './use-entity-metadata'
 import { useFilterState } from './use-filter-state'
 import { useSearchQuery } from './use-search-query'
-import { Select } from '../../components/catalyst/select'
+import { Select } from '@/components/catalyst/select'
 import { FilterGrid } from './filter-grid'
 import { ResultGrid } from './result-grid'
-import { ViewErrorBoundary } from '../view-error-boundary'
-import { AppliedFilterCondition } from '../../libs/types/filter.types'
+import { ViewErrorBoundary } from '@/app/view-error-boundary'
+import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 export const Search = () => {
   const appConfigState = useAppConfig()

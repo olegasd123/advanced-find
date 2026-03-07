@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { AppConfig } from '../libs/types/app-config.types'
-import { createErrorReporter } from '../libs/utils/error-reporter'
+import { AppConfig } from '@/libs/types/app-config.types'
+import { createErrorReporter } from '@/libs/utils/error-reporter'
 
 interface AppConfigState {
   appConfig: AppConfig | null

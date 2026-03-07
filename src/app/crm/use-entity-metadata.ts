@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { EntityConfig } from '../../libs/types/app-config.types'
-import { CrmData, EntityMetadata } from '../../libs/types/entity.types'
-import { SearchTableColumn } from '../../libs/types/search.types'
-import { createErrorReporter } from '../../libs/utils/error-reporter'
-import { resolveSearchTableColumns } from '../../libs/utils/crm/crm-search'
+import { EntityConfig } from '@/libs/types/app-config.types'
+import { CrmData, EntityMetadata } from '@/libs/types/entity.types'
+import { SearchTableColumn } from '@/libs/types/search.types'
+import { createErrorReporter } from '@/libs/utils/error-reporter'
+import { resolveSearchTableColumns } from '@/libs/utils/crm/crm-search'
 
 const errorReporter = createErrorReporter('useEntityMetadata')
 

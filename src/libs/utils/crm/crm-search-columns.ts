@@ -2,9 +2,9 @@ import {
   EntityConfig,
   RelationPathStepConfig,
   TableColumnConfig,
-} from '../../types/app-config.types'
-import { SearchTableColumn } from '../../types/search.types'
-export type { SearchTableColumn, SearchTableColumnAttribute } from '../../types/search.types'
+} from '@/libs/types/app-config.types'
+import { SearchTableColumn } from '@/libs/types/search.types'
+export type { SearchTableColumn, SearchTableColumnAttribute } from '@/libs/types/search.types'
 import {
   getNormalizedConfigId,
   getPathTargetEntityName,

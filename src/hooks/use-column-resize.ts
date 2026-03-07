@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ColumnResizeState, minColumnWidth } from '../libs/utils/table-helpers'
+import { ColumnResizeState, minColumnWidth } from '@/libs/utils/table-helpers'
 
 export const useColumnResize = <T extends { columnKey: string }>(
   columns: T[],

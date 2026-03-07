@@ -5,8 +5,8 @@ import {
   PaginationNext,
   PaginationPage,
   PaginationPrevious,
-} from '../../components/catalyst/pagination'
-import { VisiblePageItem } from '../../libs/utils/table-helpers'
+} from '@/components/catalyst/pagination'
+import { VisiblePageItem } from '@/libs/utils/table-helpers'
 
 interface ResultPaginationProps {
   isPaginationEnabled: boolean

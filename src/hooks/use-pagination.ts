@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { ResultViewPaginationConfig } from '../libs/types/app-config.types'
+import { ResultViewPaginationConfig } from '@/libs/types/app-config.types'
 import {
   formatPaginationSummary,
   getPaginationOptions,
   getVisiblePageItems,
   PaginationOption,
   VisiblePageItem,
-} from '../libs/utils/table-helpers'
+} from '@/libs/utils/table-helpers'
 
 export const usePagination = (
   sortedRows: Record<string, unknown>[],

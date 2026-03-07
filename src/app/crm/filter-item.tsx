@@ -1,19 +1,19 @@
 import * as React from 'react'
-import { Button } from '../../components/catalyst/button'
+import { Button } from '@/components/catalyst/button'
 import { Bars3Icon, TrashIcon } from '@heroicons/react/16/solid'
-import { Combobox, ComboboxLabel, ComboboxOption } from '../../components/catalyst/combobox'
-import { Listbox, ListboxLabel, ListboxOption } from '../../components/catalyst/listbox'
-import { ComboboxOptionCategory } from '../../components/controls/combobox-option-category'
+import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox'
+import { Listbox, ListboxLabel, ListboxOption } from '@/components/catalyst/listbox'
+import { ComboboxOptionCategory } from '@/components/controls/combobox-option-category'
 import { FilterOption } from './filter-grid.helpers'
 import { FilterItemValue } from './filter-item-value'
-import { useAppConfig } from '../../hooks/use-app-config'
+import { useAppConfig } from '@/hooks/use-app-config'
 import {
   CrmFilterConditionOption,
   getCrmFilterConditionsOptions,
   getTargetFilterOption,
-} from '../../libs/utils/crm/filter'
-import { FilterCategoryConfig, FilterOptionConfig } from '../../libs/types/app-config.types'
-import { AppliedFilterCondition, ConditionValue } from '../../libs/types/filter.types'
+} from '@/libs/utils/crm/filter'
+import { FilterCategoryConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
+import { AppliedFilterCondition, ConditionValue } from '@/libs/types/filter.types'
 import clsx from 'clsx'
 
 const EMPTY_FILTER_OPTION: FilterOption = {}

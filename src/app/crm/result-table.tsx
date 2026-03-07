@@ -6,9 +6,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../components/catalyst/table'
-import { SearchTableColumn } from '../../libs/types/search.types'
-import { ColumnResizeState, SortRule } from '../../libs/utils/table-helpers'
+} from '@/components/catalyst/table'
+import { SearchTableColumn } from '@/libs/types/search.types'
+import { ColumnResizeState, SortRule } from '@/libs/utils/table-helpers'
 import { ExpandableCellText } from './expandable-cell-text'
 import { getColumnCellValue, getColumnHeader } from './result-grid.helpers'
 
@@ -153,8 +153,8 @@ export const ResultTable = ({
           {!isLoading && !errorMessage && results.length === 0 && (
             <TableRow>
               <TableColumn colSpan={columnSpan}>
-                <div className="flex h-[12.5rem] items-center justify-center text-center">
-                  No results found.
+                <div className="flex h-[12.5rem] items-center justify-center text-center text-zinc-400">
+                  No results found
                 </div>
               </TableColumn>
             </TableRow>

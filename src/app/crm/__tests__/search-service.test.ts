@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
-import { SearchService } from '../search-service'
-import { CrmData } from '../../../libs/types/entity.types'
-import { AppliedFilterCondition } from '../../../libs/types/filter.types'
+import { SearchService } from '@/app/crm/search-service'
+import { CrmData } from '@/libs/types/entity.types'
+import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 const condition = (
   attributeName: string,

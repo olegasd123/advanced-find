@@ -1,6 +1,6 @@
-import { FilterOptionConfig, RelationPathStepConfig } from '../../types/app-config.types'
-import { AppliedFilterCondition, FilterGroupOperator } from '../../types/filter.types'
-import { SearchTableColumn } from '../../types/search.types'
+import { FilterOptionConfig, RelationPathStepConfig } from '@/libs/types/app-config.types'
+import { AppliedFilterCondition, FilterGroupOperator } from '@/libs/types/filter.types'
+import { SearchTableColumn } from '@/libs/types/search.types'
 import { getTargetFilterOption } from './filter'
 import { createRootSearchColumn } from './crm-search-columns'
 import {

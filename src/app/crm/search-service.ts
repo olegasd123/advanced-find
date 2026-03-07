@@ -1,9 +1,9 @@
-import { CrmData } from '../../libs/types/entity.types'
-import { AppliedFilterCondition } from '../../libs/types/filter.types'
-import { SearchBranchPlan, SearchTableColumn } from '../../libs/types/search.types'
-import { createLogger } from '../../libs/utils/logger'
-import { buildCrmFetchXml, buildCrmFilterFetchXml } from '../../libs/utils/crm/crm-search'
-import { searchResultIdsChunkSize } from '../../libs/utils/env'
+import { CrmData } from '@/libs/types/entity.types'
+import { AppliedFilterCondition } from '@/libs/types/filter.types'
+import { SearchBranchPlan, SearchTableColumn } from '@/libs/types/search.types'
+import { createLogger } from '@/libs/utils/logger'
+import { buildCrmFetchXml, buildCrmFilterFetchXml } from '@/libs/utils/crm/crm-search'
+import { searchResultIdsChunkSize } from '@/libs/utils/env'
 
 const logger = createLogger('SearchService')
 const defaultResultIdsChunkSize = searchResultIdsChunkSize

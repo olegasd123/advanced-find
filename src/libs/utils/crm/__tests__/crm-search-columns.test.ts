@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { EntityConfig, TableColumnConfig } from '../../../types/app-config.types'
+import { EntityConfig, TableColumnConfig } from '@/libs/types/app-config.types'
 import {
   getSearchSelectColumns,
   getTargetTableColumn,
   resolveSearchTableColumns,
-} from '../crm-search-columns'
+} from '@/libs/utils/crm/crm-search-columns'
 
 const createEntityConfig = (columns: TableColumnConfig[]): EntityConfig => ({
   LogicalName: 'account',

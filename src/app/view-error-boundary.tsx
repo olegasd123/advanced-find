@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createErrorReporter } from '../libs/utils/error-reporter'
+import { createErrorReporter } from '@/libs/utils/error-reporter'
 
 const errorReporter = createErrorReporter('crm-view-error-boundary')
 

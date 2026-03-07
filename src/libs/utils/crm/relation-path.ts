@@ -1,4 +1,4 @@
-import { EntityConfig, RelationPathStepConfig } from '../../types/app-config.types'
+import { EntityConfig, RelationPathStepConfig } from '@/libs/types/app-config.types'
 
 const normalizeConfigId = (value: string | undefined): string | undefined => {
   const normalized = value?.trim()

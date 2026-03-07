@@ -1,4 +1,4 @@
-import { createLogger } from '../../utils/logger'
+import { createLogger } from '@/libs/utils/logger'
 import {
   AttributeMetadata,
   CrmData,
@@ -6,7 +6,7 @@ import {
   GetEntitiesOptions,
   LookupAttributeMetadata,
   PicklistAttributeMetadata,
-} from '../../types/entity.types'
+} from '@/libs/types/entity.types'
 
 export type {
   AttributeMetadata,
@@ -15,7 +15,7 @@ export type {
   GetEntitiesOptions,
   LookupAttributeMetadata,
   PicklistAttributeMetadata,
-} from '../../types/entity.types'
+} from '@/libs/types/entity.types'
 
 const logger = createLogger('crm-repository')
 

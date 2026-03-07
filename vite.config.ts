@@ -30,6 +30,11 @@ export default defineConfig(({ mode }) => {
       },
     ],
     base: isCrmBuild ? './' : '/',
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
+    },
     build: isCrmBuild
       ? {
           outDir: 'dist/advanced-find',

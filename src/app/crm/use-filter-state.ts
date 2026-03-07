@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { EntityConfig } from '../../libs/types/app-config.types'
-import { AppliedFilterCondition } from '../../libs/types/filter.types'
+import { EntityConfig } from '@/libs/types/app-config.types'
+import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 interface UseFilterStateResult {
   currentEntityConfig: EntityConfig | undefined

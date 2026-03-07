@@ -42,7 +42,7 @@ This document defines the shared coding standards for the advanced-find project.
 - Follow kebab-case for directories and filenames (`folder-name/file-name.ext`) so paths remain consistent across platforms.
 - One component per file; auxiliary helpers live next to their consumer with a `.helpers.ts` suffix.
 - Keep public exports at the bottom of the file; export types separately using `export type`.
-- Use absolute imports rooted at `src` to avoid brittle `../../` paths.
+- Use alias imports with `@/` for cross-folder modules (for example, `@/libs/types/filter.types`) to avoid brittle `../../` paths.
 
 ## Testing & Quality Gates
 

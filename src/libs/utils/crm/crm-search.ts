@@ -2,17 +2,17 @@ import {
   AppliedFilterCondition,
   ConditionValue,
   FilterGroupOperator,
-} from '../../types/filter.types'
+} from '@/libs/types/filter.types'
 import { getTargetFilterOption } from './filter'
 
 export type {
   AppliedFilterCondition,
   ConditionValue,
   FilterGroupOperator,
-} from '../../types/filter.types'
+} from '@/libs/types/filter.types'
 
 // Re-export column resolution types and functions
-export type { SearchTableColumnAttribute, SearchTableColumn } from '../../types/search.types'
+export type { SearchTableColumnAttribute, SearchTableColumn } from '@/libs/types/search.types'
 export {
   getTableColumnChain,
   getTargetTableColumn,

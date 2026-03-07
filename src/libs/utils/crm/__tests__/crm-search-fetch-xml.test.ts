@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { buildCrmFetchXml, buildCrmFilterFetchXml } from '../crm-search-fetch-xml'
-import { createRootSearchColumn } from '../crm-search-columns'
-import { AppliedFilterCondition } from '../../../types/filter.types'
-import { SearchTableColumn } from '../../../types/search.types'
+import { buildCrmFetchXml, buildCrmFilterFetchXml } from '@/libs/utils/crm/crm-search-fetch-xml'
+import { createRootSearchColumn } from '@/libs/utils/crm/crm-search-columns'
+import { AppliedFilterCondition } from '@/libs/types/filter.types'
+import { SearchTableColumn } from '@/libs/types/search.types'
 
 describe('crm-search-fetch-xml', () => {
   it('builds root filter XML with grouped OR and escaped values', () => {

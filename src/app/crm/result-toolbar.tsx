@@ -1,24 +1,24 @@
 import * as React from 'react'
 import { ArrowLeftIcon } from '@heroicons/react/16/solid'
 import { MagnifyingGlassIcon, ViewColumnsIcon } from '@heroicons/react/24/outline'
-import { Button } from '../../components/catalyst/button'
-import { Checkbox } from '../../components/catalyst/checkbox'
+import { Button } from '@/components/catalyst/button'
+import { Checkbox } from '@/components/catalyst/checkbox'
 import {
   Dropdown,
   DropdownButton,
   DropdownItem,
   DropdownMenu,
-} from '../../components/catalyst/dropdown'
-import { Input, InputGroup } from '../../components/catalyst/input'
-import { Select } from '../../components/catalyst/select'
-import { SearchTableColumn } from '../../libs/types/search.types'
-import { PaginationOption } from '../../libs/utils/table-helpers'
+} from '@/components/catalyst/dropdown'
+import { Input, InputGroup } from '@/components/catalyst/input'
+import { Select } from '@/components/catalyst/select'
+import { SearchTableColumn } from '@/libs/types/search.types'
+import { PaginationOption } from '@/libs/utils/table-helpers'
 import {
   getAppliedFilterDescriptions,
   getAppliedFiltersText,
   getColumnHeader,
 } from './result-grid.helpers'
-import { AppliedFilterCondition } from '../../libs/types/filter.types'
+import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 interface ResultToolbarProps {
   onBack?: () => void

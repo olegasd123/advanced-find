@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createErrorReporter } from '../error-reporter'
-import { Logger } from '../logger'
+import { createErrorReporter } from '@/libs/utils/error-reporter'
+import { Logger } from '@/libs/utils/logger'
 
 const createLoggerMock = (): Logger => {
   return {

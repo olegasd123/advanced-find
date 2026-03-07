@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { EntityConfig, FilterOptionConfig } from '../../libs/types/app-config.types'
-import { AppliedFilterCondition, FilterGroupOperator } from '../../libs/types/filter.types'
-import { getNormalizedConfigId } from '../../libs/utils/crm/relation-path'
+import { EntityConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
+import { AppliedFilterCondition, FilterGroupOperator } from '@/libs/types/filter.types'
+import { getNormalizedConfigId } from '@/libs/utils/crm/relation-path'
 import {
   compactGroups,
   FilterGroupState,
