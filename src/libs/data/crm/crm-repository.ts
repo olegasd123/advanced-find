@@ -7,6 +7,7 @@ import {
   LookupAttributeMetadata,
   PicklistAttributeMetadata,
 } from '@/libs/types/entity.types'
+import { crmApiVersion } from '@/libs/utils/env'
 
 export type {
   AttributeMetadata,
@@ -44,7 +45,7 @@ export default class CrmRepository implements CrmData {
     entityLogicalName: string,
     attributesLogicalNames: string[]
   ): Promise<AttributeMetadata[]> {
-    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes?$select=LogicalName,AttributeType,DisplayName`
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes?$select=LogicalName,AttributeType,DisplayName`
     const allAttributes = await fetch(url).then(
       async (result) => {
         const data = await result.json()
@@ -60,7 +61,7 @@ export default class CrmRepository implements CrmData {
 
   // EntityDefinitions(LogicalName='account')?$select=LogicalName,LogicalCollectionName,EntitySetName,PrimaryIdAttribute,DisplayName,DisplayCollectionName
   async getEntitiesMetadata(logicalNames: string[] | undefined): Promise<EntityMetadata[]> {
-    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions?$select=LogicalName,LogicalCollectionName,EntitySetName,PrimaryIdAttribute,DisplayName,DisplayCollectionName`
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/EntityDefinitions?$select=LogicalName,LogicalCollectionName,EntitySetName,PrimaryIdAttribute,DisplayName,DisplayCollectionName`
     const entities = await fetch(url).then(
       async (result) => {
         const data = await result.json()
@@ -80,7 +81,7 @@ export default class CrmRepository implements CrmData {
     entityLogicalName: string,
     attributeLogicalName: string
   ): Promise<LookupAttributeMetadata> {
-    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes(LogicalName='${attributeLogicalName}')/Microsoft.Dynamics.CRM.LookupAttributeMetadata?$select=LogicalName,Targets`
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes(LogicalName='${attributeLogicalName}')/Microsoft.Dynamics.CRM.LookupAttributeMetadata?$select=LogicalName,Targets`
     return fetch(url).then(
       async (result) => {
         const data = await result.json()
@@ -98,7 +99,7 @@ export default class CrmRepository implements CrmData {
     entityLogicalName: string,
     attributeLogicalName: string
   ): Promise<PicklistAttributeMetadata> {
-    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes(LogicalName='${attributeLogicalName}')/Microsoft.Dynamics.CRM.PicklistAttributeMetadata?$select=LogicalName&$expand=OptionSet($select=Options)`
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes(LogicalName='${attributeLogicalName}')/Microsoft.Dynamics.CRM.PicklistAttributeMetadata?$select=LogicalName&$expand=OptionSet($select=Options)`
     return fetch(url).then(
       async (result) => {
         const data = await result.json()
@@ -129,7 +130,7 @@ export default class CrmRepository implements CrmData {
       }
     }
     const queryPart = query.length > 0 ? `?${query.join('&')}` : ''
-    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${import.meta.env.VITE_CRM_API_VERSION}/${entityPluralName}${queryPart}`
+    const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/${entityPluralName}${queryPart}`
     return fetch(url).then(
       async (result) => {
         const data = await result.json()

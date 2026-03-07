@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { readIntegerEnv } from '@/libs/utils/env'
+import { readIntegerEnv, readStringEnv } from '@/libs/utils/env'
 
 describe('readIntegerEnv', () => {
   it('returns fallback when value is missing', () => {
@@ -16,5 +16,19 @@ describe('readIntegerEnv', () => {
 
   it('returns parsed integer when value is valid', () => {
     expect(readIntegerEnv('250', { fallback: 120, minValue: 1 })).toBe(250)
+  })
+})
+
+describe('readStringEnv', () => {
+  it('returns fallback when value is missing', () => {
+    expect(readStringEnv(undefined, { fallback: 'v9.2' })).toBe('v9.2')
+  })
+
+  it('returns fallback when value is empty', () => {
+    expect(readStringEnv('   ', { fallback: 'v9.2' })).toBe('v9.2')
+  })
+
+  it('returns trimmed value when value is valid', () => {
+    expect(readStringEnv(' v9.1 ', { fallback: 'v9.2' })).toBe('v9.1')
   })
 })

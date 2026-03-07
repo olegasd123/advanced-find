@@ -3,6 +3,10 @@ export interface ReadIntegerEnvOptions {
   minValue: number
 }
 
+export interface ReadStringEnvOptions {
+  fallback: string
+}
+
 export const readIntegerEnv = (
   rawValue: string | undefined,
   options: ReadIntegerEnvOptions
@@ -18,6 +22,18 @@ export const readIntegerEnv = (
 
   return parsedValue
 }
+
+export const readStringEnv = (
+  rawValue: string | undefined,
+  options: ReadStringEnvOptions
+): string => {
+  const normalizedValue = rawValue?.trim()
+  return normalizedValue ? normalizedValue : options.fallback
+}
+
+export const crmApiVersion = readStringEnv(import.meta.env.VITE_CRM_API_VERSION, {
+  fallback: 'v9.2',
+})
 
 export const searchResultIdsChunkSize = readIntegerEnv(
   import.meta.env.VITE_SEARCH_RESULT_IDS_CHUNK_SIZE,
