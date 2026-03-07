@@ -1,4 +1,5 @@
 import { createLogger } from '@/libs/utils/logger'
+import { findAttributes } from '@/libs/data/crm/crm-repository.helpers'
 import {
   AttributeMetadata,
   CrmData,
@@ -20,58 +21,45 @@ export type {
 
 const logger = createLogger('crm-repository')
 
-export const findAttributes = (
-  entityLogicalName: string,
-  source: AttributeMetadata[],
-  attributesLogicalNames: string[]
-): AttributeMetadata[] => {
-  const attributes: AttributeMetadata[] = []
-  for (const attributeLogicalName of attributesLogicalNames) {
-    const attribute = source.find((i) => i.LogicalName === attributeLogicalName)
-    if (attribute) {
-      attributes.push(attribute)
-    } else {
-      logger.error(
-        `Couldn't find the attribute by name '${attributeLogicalName}' at the entity '${entityLogicalName}'`
-      )
+export default class CrmRepository implements CrmData {
+  private async fetchJson<T>(url: string, context: string): Promise<T> {
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        const text = await response.text().catch(() => '')
+        const details = text ? ` - ${text}` : ''
+        throw new Error(`${context}: HTTP ${response.status}${details}`)
+      }
+
+      return (await response.json()) as T
+    } catch (error) {
+      logger.error(`${context}: ${error}`)
+      throw error
     }
   }
-  return attributes
-}
 
-export default class CrmRepository implements CrmData {
   // EntityDefinitions(LogicalName='account')/Attributes?$select=LogicalName,AttributeType,DisplayName
   async getAttributesMetadata(
     entityLogicalName: string,
     attributesLogicalNames: string[]
   ): Promise<AttributeMetadata[]> {
     const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes?$select=LogicalName,AttributeType,DisplayName`
-    const allAttributes = await fetch(url).then(
-      async (result) => {
-        const data = await result.json()
-        return <AttributeMetadata[]>data.value
-      },
-      (error) => {
-        logger.error(`CrmRepository.getAttributesMetadata: ${error}`)
-        throw error
-      }
+    const data = await this.fetchJson<{ value: AttributeMetadata[] }>(
+      url,
+      'CrmRepository.getAttributesMetadata'
     )
+    const allAttributes = data.value
     return findAttributes(entityLogicalName, allAttributes, attributesLogicalNames)
   }
 
   // EntityDefinitions(LogicalName='account')?$select=LogicalName,LogicalCollectionName,EntitySetName,PrimaryIdAttribute,DisplayName,DisplayCollectionName
   async getEntitiesMetadata(logicalNames: string[] | undefined): Promise<EntityMetadata[]> {
     const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/EntityDefinitions?$select=LogicalName,LogicalCollectionName,EntitySetName,PrimaryIdAttribute,DisplayName,DisplayCollectionName`
-    const entities = await fetch(url).then(
-      async (result) => {
-        const data = await result.json()
-        return <EntityMetadata[]>data.value
-      },
-      (error) => {
-        logger.error(`CrmRepository.getEntitiesMetadata: ${error}`)
-        throw error
-      }
+    const data = await this.fetchJson<{ value: EntityMetadata[] }>(
+      url,
+      'CrmRepository.getEntitiesMetadata'
     )
+    const entities = data.value
 
     return entities.filter((i) => logicalNames?.includes(i.LogicalName))
   }
@@ -82,16 +70,7 @@ export default class CrmRepository implements CrmData {
     attributeLogicalName: string
   ): Promise<LookupAttributeMetadata> {
     const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes(LogicalName='${attributeLogicalName}')/Microsoft.Dynamics.CRM.LookupAttributeMetadata?$select=LogicalName,Targets`
-    return fetch(url).then(
-      async (result) => {
-        const data = await result.json()
-        return <LookupAttributeMetadata>data
-      },
-      (error) => {
-        logger.error(`CrmRepository.getLookupAttributeMetadata: ${error}`)
-        throw error
-      }
-    )
+    return this.fetchJson<LookupAttributeMetadata>(url, 'CrmRepository.getLookupAttributeMetadata')
   }
 
   // EntityDefinitions(LogicalName='account')/Attributes(LogicalName='accountcategorycode')/Microsoft.Dynamics.CRM.PicklistAttributeMetadata?$select=LogicalName&$expand=OptionSet($select=Options)
@@ -100,19 +79,13 @@ export default class CrmRepository implements CrmData {
     attributeLogicalName: string
   ): Promise<PicklistAttributeMetadata> {
     const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/EntityDefinitions(LogicalName='${entityLogicalName}')/Attributes(LogicalName='${attributeLogicalName}')/Microsoft.Dynamics.CRM.PicklistAttributeMetadata?$select=LogicalName&$expand=OptionSet($select=Options)`
-    return fetch(url).then(
-      async (result) => {
-        const data = await result.json()
-        return <PicklistAttributeMetadata>data
-      },
-      (error) => {
-        logger.error(`CrmRepository.getPicklistAttributeMetadata: ${error}`)
-        throw error
-      }
+    return this.fetchJson<PicklistAttributeMetadata>(
+      url,
+      'CrmRepository.getPicklistAttributeMetadata'
     )
   }
 
-  getEntities(
+  async getEntities(
     entityPluralName: string,
     attributeLogicalNames: string[],
     options?: GetEntitiesOptions
@@ -131,15 +104,6 @@ export default class CrmRepository implements CrmData {
     }
     const queryPart = query.length > 0 ? `?${query.join('&')}` : ''
     const url = `${Xrm.Utility.getGlobalContext().getClientUrl()}/api/data/${crmApiVersion}/${entityPluralName}${queryPart}`
-    return fetch(url).then(
-      async (result) => {
-        const data = await result.json()
-        return data as unknown
-      },
-      (error) => {
-        logger.error(`CrmRepository.getEntities: ${error}`)
-        throw error
-      }
-    )
+    return this.fetchJson<unknown>(url, 'CrmRepository.getEntities')
   }
 }

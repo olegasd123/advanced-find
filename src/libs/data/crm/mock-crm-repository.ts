@@ -6,7 +6,7 @@ import {
   LookupAttributeMetadata,
   PicklistAttributeMetadata,
 } from '@/libs/types/entity.types'
-import { findAttributes } from './crm-repository'
+import { findAttributes } from '@/libs/data/crm/crm-repository.helpers'
 
 export default class MockCrmRepository implements CrmData {
   async getAttributesMetadata(
