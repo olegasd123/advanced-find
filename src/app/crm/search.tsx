@@ -12,11 +12,17 @@ import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 const MetadataSkeleton = () => (
   <div className="pt-4" role="status" aria-label="Loading entity metadata">
-    <div className="mb-3 h-10 w-full rounded bg-zinc-200 animate-pulse" />
-    {Array.from({ length: 4 }).map((_, index) => (
-      <div key={index} className="mb-3 h-10 w-full rounded bg-zinc-200 animate-pulse" />
-    ))}
-    <div className="pt-2 text-sm text-zinc-500">Loading entity metadata...</div>
+    <div className="rounded border border-zinc-200 bg-white p-4">
+      <div className="mb-4 h-4 w-56 rounded bg-zinc-200 animate-pulse" />
+      {Array.from({ length: 5 }).map((_, index) => (
+        <div key={index} className="mb-3 grid grid-cols-12 gap-3 last:mb-0">
+          <div className="col-span-4 h-4 rounded bg-zinc-200 animate-pulse" />
+          <div className="col-span-2 h-4 rounded bg-zinc-200 animate-pulse" />
+          <div className="col-span-6 h-4 rounded bg-zinc-200 animate-pulse" />
+        </div>
+      ))}
+    </div>
+    <div className="pt-2 text-sm text-zinc-400">Loading entity metadata...</div>
   </div>
 )
 
