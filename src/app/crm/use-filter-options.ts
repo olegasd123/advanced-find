@@ -1,9 +1,21 @@
 import * as React from 'react'
-import { EntityConfig } from '@/libs/types/app-config.types'
-import { fillOptionsWithMetadataInfo } from '@/libs/utils/crm/filter'
-import { getNormalizedConfigId, getRelationPathById } from '@/libs/utils/crm/relation-path'
+import { AttributeMetadata } from '@/libs/types/entity.types'
+import {
+  EntityConfig,
+  FilterOptionConfig,
+  RelationPathStepConfig,
+} from '@/libs/types/app-config.types'
+import { createLogger } from '@/libs/utils/logger'
+import {
+  getNormalizedConfigId,
+  getPathTargetEntityName,
+  getRelationPathById,
+  resolveConfigPath,
+} from '@/libs/utils/crm/relation-path'
 import { useCrmRepository } from '@/hooks/use-crm-repository'
 import { FilterOption, VisibleFilterOption } from './filter-grid.helpers'
+
+const logger = createLogger('filter-utils')
 
 interface UseFilterOptionsResult {
   filterOptions: FilterOption[] | undefined
@@ -28,6 +40,75 @@ const buildDefaultVisibleFilterOptions = (
         option: filterOption,
       })) ?? []
   )
+}
+
+const fillOptionsWithMetadataInfo = async (
+  currentEntity?: string,
+  filterOptions?: FilterOptionConfig[],
+  relationPathById?: Map<string, RelationPathStepConfig[]>,
+  getAttributeMetadata?: (
+    entityLogicalName: string,
+    attributesLogicalNames: string[]
+  ) => Promise<AttributeMetadata[]> | undefined
+) => {
+  const resolvedPathById = relationPathById ?? new Map<string, RelationPathStepConfig[]>()
+  const attributesNames = filterOptions
+    ?.map((filterOption) => {
+      if (filterOption && filterOption.AttributeName) {
+        const relationPath = resolveConfigPath(
+          resolvedPathById,
+          filterOption.PathId,
+          filterOption.Path
+        )
+        if (relationPath.length > 0) {
+          filterOption.Path = relationPath
+        }
+
+        if (!filterOption.EntityName && currentEntity) {
+          filterOption.EntityName = getPathTargetEntityName(currentEntity, relationPath)
+        }
+      }
+      return filterOption
+    })
+    .filter((i) => typeof i !== 'undefined')
+
+  if ((attributesNames?.length ?? 0) > 0) {
+    const groupedAttributesNames = attributesNames?.reduce((p, c) => {
+      if (c?.EntityName && c?.AttributeName) {
+        p[c.EntityName!] = p[c.EntityName!] || []
+
+        if (!p[c.EntityName!].includes(c.AttributeName!)) {
+          p[c.EntityName!].push(c.AttributeName)
+        }
+      }
+      return p
+    }, Object.create(null))
+
+    for (const entityName of Object.keys(groupedAttributesNames)) {
+      const attributesMetadata = await getAttributeMetadata?.(
+        entityName,
+        groupedAttributesNames[entityName]
+      )
+      for (const attributeName of groupedAttributesNames[entityName]) {
+        for (const filterOption of filterOptions!) {
+          if (
+            filterOption?.EntityName === entityName &&
+            filterOption?.AttributeName === attributeName
+          ) {
+            const attributeMetadata = attributesMetadata?.find(
+              (i) => i.LogicalName === attributeName
+            )
+            filterOption.AttributeType = attributeMetadata?.AttributeType
+            if (!filterOption.DisplayName) {
+              filterOption.DisplayName = attributeMetadata?.DisplayName.UserLocalizedLabel?.Label
+            }
+          }
+        }
+      }
+    }
+
+    logger.info(`filterOptions`, { filterOptions })
+  }
 }
 
 export const useFilterOptions = ({

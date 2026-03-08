@@ -7,12 +7,56 @@ import { ComboboxOptionCategory } from '@/components/controls/combobox-option-ca
 import { FilterOption } from './filter-grid.helpers'
 import { FilterItemValue } from './filter-item-value'
 import { useAppConfig } from '@/hooks/use-app-config'
-import { CrmFilterConditionOption, getCrmFilterConditionsOptions } from '@/libs/utils/crm/filter'
 import { FilterCategoryConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition, ConditionValue } from '@/libs/types/filter.types'
 import clsx from 'clsx'
 
 const EMPTY_FILTER_OPTION: FilterOption = {}
+
+interface CrmFilterConditionOption {
+  value: string
+  displayName: string
+  isMultiSelection?: boolean
+}
+
+const getCrmFilterConditionsOptions = (
+  type: string | undefined,
+  localizationInfo?: Record<string, string>,
+  isMultiSelection?: boolean
+): CrmFilterConditionOption[] => {
+  const normalizedType = type?.toLowerCase()
+
+  const filters: string[] = []
+
+  filters.push(...['eq', 'ne', 'null', 'not-null'])
+
+  if (
+    normalizedType === 'string' ||
+    normalizedType === 'memo' ||
+    normalizedType === 'uniqueidentifier'
+  ) {
+    filters.push(
+      ...['in', 'begins-with', 'not-begin-with', 'ends-with', 'not-end-with', 'like', 'not-like']
+    )
+  } else if ((normalizedType === 'picklist' || normalizedType === 'lookup') && isMultiSelection) {
+    filters.push(...['in'])
+  } else if (
+    normalizedType === 'number' ||
+    normalizedType === 'integer' ||
+    normalizedType === 'bigint' ||
+    normalizedType === 'decimal' ||
+    normalizedType === 'double' ||
+    normalizedType === 'money'
+  ) {
+    filters.push(...['in', 'ge', 'gt', 'le', 'lt'])
+  } else if (normalizedType === 'datetime') {
+    filters.push(...['ge', 'gt', 'le', 'lt', 'today', 'tomorrow', 'yesterday'])
+  }
+
+  return filters.map((i) => {
+    return { value: i, displayName: localizationInfo?.[i] ?? i }
+  })
+}
 
 interface FilterOptionCategoryEntry {
   kind: 'category'
