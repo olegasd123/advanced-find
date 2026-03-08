@@ -7,11 +7,7 @@ import { ComboboxOptionCategory } from '@/components/controls/combobox-option-ca
 import { FilterOption } from './filter-grid.helpers'
 import { FilterItemValue } from './filter-item-value'
 import { useAppConfig } from '@/hooks/use-app-config'
-import {
-  CrmFilterConditionOption,
-  getCrmFilterConditionsOptions,
-  getTargetFilterOption,
-} from '@/libs/utils/crm/filter'
+import { CrmFilterConditionOption, getCrmFilterConditionsOptions } from '@/libs/utils/crm/filter'
 import { FilterCategoryConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition, ConditionValue } from '@/libs/types/filter.types'
 import clsx from 'clsx'
@@ -68,9 +64,8 @@ export const FilterItem = ({
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
   onConditionChanged?: (optionId: number, condition: AppliedFilterCondition) => void
 }) => {
-  const initialSelectedFilterOption = getTargetFilterOption(
+  const initialSelectedFilterOption =
     currentCondition?.filterOption ?? currentOption?.FilterOptionConfig
-  )
   const [selectedAttribute, setSelectedAttribute] = React.useState<FilterOption>(
     currentOption ?? EMPTY_FILTER_OPTION
   )
@@ -92,7 +87,7 @@ export const FilterItem = ({
   const hasInsetGroupDivider = groupPosition === 'first' || groupPosition === 'middle'
 
   const localization = useAppConfig().appConfig?.SearchSchema?.Localization
-  const selectedFilterOption = getTargetFilterOption(selectedAttribute?.FilterOptionConfig)
+  const selectedFilterOption = selectedAttribute?.FilterOptionConfig
   const normalizeCategoryId = React.useCallback((value: string | undefined): string | undefined => {
     const normalized = value?.trim()
     return normalized ? normalized.toLowerCase() : undefined
@@ -186,34 +181,34 @@ export const FilterItem = ({
           : EMPTY_FILTER_OPTION)
     )
 
-    const targetFilterOption = getTargetFilterOption(selectedFilterOptionFromState)
     // Apply default values from config to the condition only for initialization,
     // after that the condition values will be controlled by user actions and config default values will be ignored
     setCannotBeRemoved(
       Boolean(
-        targetFilterOption?.Default?.IsDisabled || targetFilterOption?.Default?.CannotBeRemoved
+        selectedFilterOptionFromState?.Default?.IsDisabled ||
+        selectedFilterOptionFromState?.Default?.CannotBeRemoved
       )
     )
-    setIsAttributeDisabled(Boolean(targetFilterOption?.Default?.IsAttributeDisabled))
+    setIsAttributeDisabled(Boolean(selectedFilterOptionFromState?.Default?.IsAttributeDisabled))
     setIsDisabled(
-      Boolean(persistedCondition?.isDisabled ?? targetFilterOption?.Default?.IsDisabled)
+      Boolean(persistedCondition?.isDisabled ?? selectedFilterOptionFromState?.Default?.IsDisabled)
     )
 
     const nextFilterConditions = getCrmFilterConditionsOptions(
-      targetFilterOption?.AttributeType,
+      selectedFilterOptionFromState?.AttributeType,
       localization?.FilterConditionLabels,
-      targetFilterOption?.Selection?.Multiple
+      selectedFilterOptionFromState?.Selection?.Multiple
     )
     setFilterConditions(nextFilterConditions)
 
     const defaultCondition =
       persistedCondition?.condition ??
-      targetFilterOption?.Default?.Condition ??
+      selectedFilterOptionFromState?.Default?.Condition ??
       nextFilterConditions?.at(0)?.value ??
       'eq'
     setSelectedFilterCondition(defaultCondition)
     setSelectedConditionValues([
-      ...(persistedCondition?.values ?? targetFilterOption?.Default?.Values ?? []),
+      ...(persistedCondition?.values ?? selectedFilterOptionFromState?.Default?.Values ?? []),
     ])
     setSelectedConditionDisplayValues(
       persistedCondition?.displayValues ? [...persistedCondition.displayValues] : undefined
@@ -225,20 +220,19 @@ export const FilterItem = ({
       return
     }
 
-    const targetFilterOptionValue = getTargetFilterOption(value.option?.FilterOptionConfig)
+    const filterOption = value.option?.FilterOptionConfig
     setSelectedAttribute(value.option ?? EMPTY_FILTER_OPTION)
 
     const options = getCrmFilterConditionsOptions(
-      targetFilterOptionValue?.AttributeType,
+      filterOption?.AttributeType,
       localization?.FilterConditionLabels,
-      targetFilterOptionValue?.Selection?.Multiple
+      filterOption?.Selection?.Multiple
     )
     setFilterConditions(options)
 
-    const defaultCondition =
-      targetFilterOptionValue?.Default?.Condition ?? options?.at(0)?.value ?? 'eq'
+    const defaultCondition = filterOption?.Default?.Condition ?? options?.at(0)?.value ?? 'eq'
     setSelectedFilterCondition(defaultCondition)
-    setSelectedConditionValues(targetFilterOptionValue?.Default?.Values ?? [])
+    setSelectedConditionValues(filterOption?.Default?.Values ?? [])
     setSelectedConditionDisplayValues(undefined)
   }
 
@@ -353,9 +347,7 @@ export const FilterItem = ({
           options={visibleOptions}
           by={compareFilterOption}
           displayValue={(option: FilterOptionEntry) =>
-            option.kind === 'option'
-              ? getTargetFilterOption(option.option?.FilterOptionConfig)?.DisplayName
-              : undefined
+            option.kind === 'option' ? option.option?.FilterOptionConfig?.DisplayName : undefined
           }
           value={selectedAttributeEntry}
           disabled={isDisabled || isAttributeDisabled}
@@ -368,9 +360,7 @@ export const FilterItem = ({
               </ComboboxOptionCategory>
             ) : (
               <ComboboxOption value={option}>
-                <ComboboxLabel>
-                  {getTargetFilterOption(option.option?.FilterOptionConfig)?.DisplayName}
-                </ComboboxLabel>
+                <ComboboxLabel>{option.option?.FilterOptionConfig?.DisplayName}</ComboboxLabel>
               </ComboboxOption>
             )
           }}

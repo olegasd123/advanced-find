@@ -1,5 +1,4 @@
 import { noValueConditions } from '@/libs/utils/crm/crm-search'
-import { getTargetFilterOption } from '@/libs/utils/crm/filter'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import { SearchTableColumn } from '@/libs/types/search.types'
 import { minColumnWidth } from '@/libs/utils/table-helpers'
@@ -147,13 +146,12 @@ export const getAppliedFilterDescriptions = (
   return appliedFilters
     .filter(
       (condition) =>
-        Boolean(
-          getTargetFilterOption(condition.filterOption)?.AttributeName && condition.condition
-        ) && hasConditionValue(condition)
+        Boolean(condition.filterOption?.AttributeName && condition.condition) &&
+        hasConditionValue(condition)
     )
     .map((condition) => {
-      const targetFilterOption = getTargetFilterOption(condition.filterOption)
-      const attributeName = targetFilterOption?.DisplayName ?? targetFilterOption?.AttributeName
+      const attributeName =
+        condition.filterOption?.DisplayName ?? condition.filterOption?.AttributeName
       const rawConditionName = condition.condition ?? ''
       const conditionName = formatConditionOperator(rawConditionName)
       const conditionValue = noValueConditions.has(rawConditionName)

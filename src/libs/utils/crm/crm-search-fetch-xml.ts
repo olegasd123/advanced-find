@@ -1,7 +1,6 @@
 import { FilterOptionConfig, RelationPathStepConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition, FilterGroupOperator } from '@/libs/types/filter.types'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import { getTargetFilterOption } from './filter'
 import { createRootSearchColumn } from './crm-search-columns'
 import {
   escapeXml,
@@ -89,10 +88,10 @@ const renderFilterContextXml = (filterContext: FilterConditionContext): string =
 
 const createFetchConditionXml = (
   conditionValue: AppliedFilterCondition,
-  targetFilterOption: FilterOptionConfig
+  filterOption: FilterOptionConfig
 ): string | undefined => {
   const condition = conditionValue.condition ?? undefined
-  const attributeName = targetFilterOption.AttributeName
+  const attributeName = filterOption.AttributeName
   if (!condition || !attributeName || conditionValue.isDisabled) {
     return undefined
   }
@@ -125,14 +124,13 @@ const createFetchConditionXml = (
   if (condition === 'in') {
     const valuesXml = values
       .map(
-        (value) =>
-          `<value>${escapeXml(toFetchValue(targetFilterOption.AttributeType, value))}</value>`
+        (value) => `<value>${escapeXml(toFetchValue(filterOption.AttributeType, value))}</value>`
       )
       .join('')
     return `<condition attribute="${escapedAttributeName}" operator="in">${valuesXml}</condition>`
   }
 
-  const targetValue = toFetchValue(targetFilterOption.AttributeType, firstValue)
+  const targetValue = toFetchValue(filterOption.AttributeType, firstValue)
 
   if (
     condition === 'eq' ||
@@ -269,19 +267,18 @@ export const buildCrmFetchXml = (
   }
 
   for (const condition of conditions) {
-    const sourceFilterOption = condition.filterOption
-    const targetFilterOption = getTargetFilterOption(sourceFilterOption)
-    if (!sourceFilterOption || !targetFilterOption) {
+    const filterOption = condition.filterOption
+    if (!filterOption) {
       continue
     }
 
-    const conditionXml = createFetchConditionXml(condition, targetFilterOption)
+    const conditionXml = createFetchConditionXml(condition, filterOption)
     if (!conditionXml) {
       continue
     }
 
-    const optionPath = sourceFilterOption?.Path ?? []
-    const hasDeclaredPath = Boolean(sourceFilterOption?.PathId || sourceFilterOption?.Path)
+    const optionPath = filterOption.Path ?? []
+    const hasDeclaredPath = Boolean(filterOption.PathId || filterOption.Path)
 
     if (!hasDeclaredPath) {
       addConditionToContext(rootFilterContext, condition, conditionXml)

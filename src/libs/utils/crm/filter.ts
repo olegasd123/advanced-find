@@ -11,12 +11,6 @@ export interface CrmFilterConditionOption {
   isMultiSelection?: boolean
 }
 
-export const getTargetFilterOption = (
-  option?: FilterOptionConfig
-): FilterOptionConfig | undefined => {
-  return option
-}
-
 export const fillOptionsWithMetadataInfo = async (
   currentEntity?: string,
   filterOptions?: FilterOptionConfig[],
@@ -28,19 +22,22 @@ export const fillOptionsWithMetadataInfo = async (
 ) => {
   const resolvedPathById = relationPathById ?? new Map<string, RelationPathStepConfig[]>()
   const attributesNames = filterOptions
-    ?.map((i) => {
-      const option = getTargetFilterOption(i)
-      if (option && option.AttributeName) {
-        const relationPath = resolveConfigPath(resolvedPathById, option.PathId, option.Path)
+    ?.map((filterOption) => {
+      if (filterOption && filterOption.AttributeName) {
+        const relationPath = resolveConfigPath(
+          resolvedPathById,
+          filterOption.PathId,
+          filterOption.Path
+        )
         if (relationPath.length > 0) {
-          option.Path = relationPath
+          filterOption.Path = relationPath
         }
 
-        if (!option.EntityName && currentEntity) {
-          option.EntityName = getPathTargetEntityName(currentEntity, relationPath)
+        if (!filterOption.EntityName && currentEntity) {
+          filterOption.EntityName = getPathTargetEntityName(currentEntity, relationPath)
         }
       }
-      return option
+      return filterOption
     })
     .filter((i) => typeof i !== 'undefined')
 
@@ -63,17 +60,16 @@ export const fillOptionsWithMetadataInfo = async (
       )
       for (const attributeName of groupedAttributesNames[entityName]) {
         for (const filterOption of filterOptions!) {
-          const attributeInfo = getTargetFilterOption(filterOption)
           if (
-            attributeInfo?.EntityName === entityName &&
-            attributeInfo?.AttributeName === attributeName
+            filterOption?.EntityName === entityName &&
+            filterOption?.AttributeName === attributeName
           ) {
             const attributeMetadata = attributesMetadata?.find(
               (i) => i.LogicalName === attributeName
             )
-            attributeInfo.AttributeType = attributeMetadata?.AttributeType
-            if (!attributeInfo.DisplayName) {
-              attributeInfo.DisplayName = attributeMetadata?.DisplayName.UserLocalizedLabel?.Label
+            filterOption.AttributeType = attributeMetadata?.AttributeType
+            if (!filterOption.DisplayName) {
+              filterOption.DisplayName = attributeMetadata?.DisplayName.UserLocalizedLabel?.Label
             }
           }
         }

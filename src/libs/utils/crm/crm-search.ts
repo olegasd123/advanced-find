@@ -3,7 +3,6 @@ import {
   ConditionValue,
   FilterGroupOperator,
 } from '@/libs/types/filter.types'
-import { getTargetFilterOption } from './filter'
 
 export type {
   AppliedFilterCondition,
@@ -217,7 +216,7 @@ const buildGroupedExpressions = (
 }
 
 const createFilterExpression = (conditionValue: AppliedFilterCondition): string | undefined => {
-  const filterOption = getTargetFilterOption(conditionValue.filterOption)
+  const filterOption = conditionValue.filterOption
   const condition = conditionValue.condition ?? undefined
   const attributeName = filterOption?.AttributeName
 
