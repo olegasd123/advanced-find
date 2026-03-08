@@ -21,6 +21,16 @@ interface ExecuteSearchParams {
   shouldStop?: () => boolean
 }
 
+/**
+ * Search strategy note:
+ * - Simple filters run in one request.
+ * - OR groups run in two passes because CRM FetchXML cannot express our grouped logic
+ *   together with full result columns in one safe query for this UI.
+ * - Pass 1: run one request per OR branch and collect only primary IDs.
+ * - Pass 2: request full rows by these IDs (in chunks), then dedupe by primary ID.
+ *
+ * This keeps OR behavior correct and avoids huge single queries.
+ */
 export class SearchService {
   private readonly resultIdsChunkSize: number
 
