@@ -9,6 +9,11 @@ export default defineConfig(({ mode }) => {
   const isCrmDevBuild = mode === 'crm-dev'
 
   return {
+    test: {
+      environment: 'jsdom',
+      setupFiles: ['./src/test-setup.ts'],
+      css: false,
+    },
     plugins: [
       react(),
       tailwindcss(),
