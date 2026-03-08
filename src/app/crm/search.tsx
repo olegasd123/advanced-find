@@ -10,6 +10,16 @@ import { ResultGrid } from '@/app/crm/result-grid'
 import { ViewErrorBoundary } from '@/app/view-error-boundary'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
+const MetadataSkeleton = () => (
+  <div className="pt-4" role="status" aria-label="Loading entity metadata">
+    <div className="mb-3 h-10 w-full rounded bg-zinc-200 animate-pulse" />
+    {Array.from({ length: 4 }).map((_, index) => (
+      <div key={index} className="mb-3 h-10 w-full rounded bg-zinc-200 animate-pulse" />
+    ))}
+    <div className="pt-2 text-sm text-zinc-500">Loading entity metadata...</div>
+  </div>
+)
+
 export const Search = () => {
   const appConfigState = useAppConfig()
   const appConfig = appConfigState.appConfig
@@ -26,12 +36,17 @@ export const Search = () => {
     closeResultView,
   } = useFilterState(configEntities)
 
-  const { entitiesMetadata, searchTableColumns, tableColumnDisplayNames, metadataErrorMessage } =
-    useEntityMetadata({
-      crmRepository,
-      configEntities,
-      currentEntityConfig,
-    })
+  const {
+    entitiesMetadata,
+    searchTableColumns,
+    tableColumnDisplayNames,
+    metadataErrorMessage,
+    isMetadataLoading,
+  } = useEntityMetadata({
+    crmRepository,
+    configEntities,
+    currentEntityConfig,
+  })
 
   const { results, isResultsLoading, resultsError, executeSearch, resetResults } = useSearchQuery({
     crmRepository,
@@ -109,17 +124,21 @@ export const Search = () => {
 
       {currentEntityConfig && (
         <div className={isResultViewVisible ? 'hidden' : ''}>
-          <ViewErrorBoundary
-            viewName="filter view"
-            message="The filter view failed to render. Try again or reload the page."
-            resetKey={`filter-${currentEntityConfig.LogicalName}`}
-          >
-            <FilterGrid
-              key={currentEntityConfig.LogicalName}
-              entityConfig={currentEntityConfig}
-              onSearch={handleSearch}
-            />
-          </ViewErrorBoundary>
+          {isMetadataLoading ? (
+            <MetadataSkeleton />
+          ) : (
+            <ViewErrorBoundary
+              viewName="filter view"
+              message="The filter view failed to render. Try again or reload the page."
+              resetKey={`filter-${currentEntityConfig.LogicalName}`}
+            >
+              <FilterGrid
+                key={currentEntityConfig.LogicalName}
+                entityConfig={currentEntityConfig}
+                onSearch={handleSearch}
+              />
+            </ViewErrorBoundary>
+          )}
         </div>
       )}
 
