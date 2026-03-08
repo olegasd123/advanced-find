@@ -17,7 +17,7 @@ import {
   getAppliedFilterDescriptions,
   getAppliedFiltersText,
   getColumnHeader,
-} from './result-grid.helpers'
+} from '@/app/crm/result-grid.helpers'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 interface ResultToolbarProps {

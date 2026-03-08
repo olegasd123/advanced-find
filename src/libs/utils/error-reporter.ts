@@ -1,4 +1,4 @@
-import { createLogger, Logger } from './logger'
+import { createLogger, Logger } from '@/libs/utils/logger'
 
 type ErrorChannel = 'render' | 'async'
 

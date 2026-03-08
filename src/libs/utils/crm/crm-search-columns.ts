@@ -10,7 +10,7 @@ import {
   getPathTargetEntityName,
   getRelationPathById,
   resolveConfigPath,
-} from './relation-path'
+} from '@/libs/utils/crm/relation-path'
 
 interface LegacyTableColumnConfig extends TableColumnConfig {
   Attributes?: string[]

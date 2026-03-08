@@ -1,5 +1,5 @@
-import { RelationPathStepConfig, TableColumnConfig } from './app-config.types'
-import { AppliedFilterCondition } from './filter.types'
+import { RelationPathStepConfig, TableColumnConfig } from '@/libs/types/app-config.types'
+import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 export interface SearchTableColumnAttribute {
   attributeName: string

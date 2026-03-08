@@ -9,8 +9,8 @@ import {
 } from '@/components/catalyst/table'
 import { SearchTableColumn } from '@/libs/types/search.types'
 import { ColumnResizeState, SortRule } from '@/libs/utils/table-helpers'
-import { ExpandableCellText } from './expandable-cell-text'
-import { getColumnCellValue, getColumnHeader } from './result-grid.helpers'
+import { ExpandableCellText } from '@/app/crm/expandable-cell-text'
+import { getColumnCellValue, getColumnHeader } from '@/app/crm/result-grid.helpers'
 
 interface DisplayedResultRow {
   row: Record<string, unknown>

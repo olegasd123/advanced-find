@@ -5,14 +5,14 @@ import {
 } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import { getColumnCellValue, getDefaultColumnWidth } from './result-grid.helpers'
+import { getColumnCellValue, getDefaultColumnWidth } from '@/app/crm/result-grid.helpers'
 import { useColumnResize } from '@/hooks/use-column-resize'
 import { useColumnVisibility } from '@/hooks/use-column-visibility'
 import { usePagination } from '@/hooks/use-pagination'
 import { useTableSort } from '@/hooks/use-table-sort'
-import { ResultToolbar } from './result-toolbar'
-import { ResultTable } from './result-table'
-import { ResultPagination } from './result-pagination'
+import { ResultToolbar } from '@/app/crm/result-toolbar'
+import { ResultTable } from '@/app/crm/result-table'
+import { ResultPagination } from '@/app/crm/result-pagination'
 
 interface ResultGridProps {
   results: Record<string, unknown>[]

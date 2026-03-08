@@ -20,10 +20,10 @@ export {
   createRootSearchColumn,
   resolveSearchTableColumns,
   getSearchSelectColumns,
-} from './crm-search-columns'
+} from '@/libs/utils/crm/crm-search-columns'
 
 // Re-export FetchXML builder functions
-export { buildCrmFetchXml, buildCrmFilterFetchXml } from './crm-search-fetch-xml'
+export { buildCrmFetchXml, buildCrmFilterFetchXml } from '@/libs/utils/crm/crm-search-fetch-xml'
 
 // --- Shared constants ---
 

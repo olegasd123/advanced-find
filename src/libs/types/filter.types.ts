@@ -1,4 +1,4 @@
-import { FilterOptionConfig } from './app-config.types'
+import { FilterOptionConfig } from '@/libs/types/app-config.types'
 
 export type FilterGroupOperator = 'and' | 'or'
 
