@@ -7,8 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/catalyst/table'
+import { ColumnResizeState } from '@/hooks/use-column-resize'
+import { SortRule } from '@/hooks/use-table-sort'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import { ColumnResizeState, SortRule } from '@/libs/utils/table-helpers'
 import { ExpandableCellText } from '@/app/crm/expandable-cell-text'
 import { getColumnCellValue, getColumnHeader } from '@/app/crm/result-grid.helpers'
 

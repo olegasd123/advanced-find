@@ -1,6 +1,82 @@
 import * as React from 'react'
 import { ResultViewDefaultSortConfig } from '@/libs/types/app-config.types'
-import { compareCellValues, getDefaultSortRules, SortRule } from '@/libs/utils/table-helpers'
+
+export interface SortRule {
+  columnKey: string
+  isAscending: boolean
+}
+
+const tableValueCollator = new Intl.Collator(undefined, {
+  numeric: true,
+  sensitivity: 'base',
+})
+
+const isEmptyCellValue = (value: string): boolean => {
+  const normalizedValue = value.trim()
+  return normalizedValue.length === 0 || normalizedValue === '-'
+}
+
+const compareCellValues = (leftValue: string, rightValue: string): number => {
+  const isLeftEmpty = isEmptyCellValue(leftValue)
+  const isRightEmpty = isEmptyCellValue(rightValue)
+
+  if (isLeftEmpty && isRightEmpty) {
+    return 0
+  }
+
+  if (isLeftEmpty) {
+    return 1
+  }
+
+  if (isRightEmpty) {
+    return -1
+  }
+
+  return tableValueCollator.compare(leftValue, rightValue)
+}
+
+const getDefaultSortRules = <T extends { columnKey: string }>(
+  columns: T[],
+  defaultSort?: ResultViewDefaultSortConfig[]
+): SortRule[] => {
+  if (!defaultSort || defaultSort.length === 0 || columns.length === 0) {
+    return []
+  }
+
+  const uniqueRules: SortRule[] = []
+  const columnsById = new Map<string, T>()
+  for (const column of columns) {
+    const rawId = (column as { id?: string }).id
+    const normalizedId = rawId?.trim().toLowerCase()
+    if (normalizedId && !columnsById.has(normalizedId)) {
+      columnsById.set(normalizedId, column)
+    }
+  }
+
+  for (const rule of defaultSort) {
+    if (!rule) {
+      continue
+    }
+
+    const normalizedColumnId = rule.ColumnId?.trim().toLowerCase()
+    const column = normalizedColumnId ? columnsById.get(normalizedColumnId) : undefined
+
+    if (!column) {
+      continue
+    }
+
+    if (uniqueRules.some((item) => item.columnKey === column.columnKey)) {
+      continue
+    }
+
+    uniqueRules.push({
+      columnKey: column.columnKey,
+      isAscending: rule.IsAscending !== false,
+    })
+  }
+
+  return uniqueRules
+}
 
 export const useTableSort = <T extends { columnKey: string }>(
   filteredRows: Record<string, unknown>[],

@@ -1,12 +1,97 @@
 import * as React from 'react'
 import { ResultViewPaginationConfig } from '@/libs/types/app-config.types'
-import {
-  formatPaginationSummary,
-  getPaginationOptions,
-  getVisiblePageItems,
-  PaginationOption,
-  VisiblePageItem,
-} from '@/libs/utils/table-helpers'
+
+export interface PaginationOption {
+  value: string
+  label: string
+  pageSize?: number
+}
+
+export type VisiblePageItem = number | 'gap'
+
+const allOptionValue = '__all__'
+
+const getPaginationOptions = (pagination?: ResultViewPaginationConfig): PaginationOption[] => {
+  if (!pagination || !pagination.List || pagination.List.length === 0) {
+    return []
+  }
+
+  const options: PaginationOption[] = pagination.List.map((size) => {
+    const normalizedSize = typeof size === 'number' ? Math.max(1, Math.trunc(size)) : undefined
+    if (normalizedSize === undefined) {
+      return {
+        value: allOptionValue,
+        label: 'All',
+      }
+    }
+
+    return {
+      value: String(normalizedSize),
+      label: String(normalizedSize),
+      pageSize: normalizedSize,
+    }
+  })
+
+  if (pagination.AllOptionLabel) {
+    options.push({
+      value: allOptionValue,
+      label: pagination.AllOptionLabel,
+    })
+  }
+
+  return options
+}
+
+const getVisiblePageItems = (currentPage: number, totalPages: number): VisiblePageItem[] => {
+  if (totalPages <= 1) {
+    return [1]
+  }
+
+  const items: VisiblePageItem[] = []
+  const boundarySize = 1
+  const siblingCount = 1
+
+  for (let page = 1; page <= Math.min(boundarySize, totalPages); page++) {
+    items.push(page)
+  }
+
+  const rangeStart = Math.max(boundarySize + 1, currentPage - siblingCount)
+  const rangeEnd = Math.min(totalPages - boundarySize, currentPage + siblingCount)
+
+  if (rangeStart > boundarySize + 1) {
+    items.push('gap')
+  }
+
+  for (let page = rangeStart; page <= rangeEnd; page++) {
+    if (!items.includes(page)) {
+      items.push(page)
+    }
+  }
+
+  if (rangeEnd < totalPages - boundarySize) {
+    items.push('gap')
+  }
+
+  for (let page = Math.max(totalPages - boundarySize + 1, 1); page <= totalPages; page++) {
+    if (!items.includes(page)) {
+      items.push(page)
+    }
+  }
+
+  return items
+}
+
+const formatPaginationSummary = (
+  template: string,
+  startIndex: number,
+  endIndex: number,
+  totalCount: number
+): string => {
+  return template
+    .replace('{0}', String(startIndex))
+    .replace('{1}', String(endIndex))
+    .replace('{2}', String(totalCount))
+}
 
 export const usePagination = (
   sortedRows: Record<string, unknown>[],
@@ -111,7 +196,7 @@ export const usePagination = (
     paginationSummaryText,
     isPaginationEnabled,
     isSummaryVisible,
-    paginationOptions: paginationOptions as PaginationOption[],
+    paginationOptions,
     selectedPageSizeValue,
     handlePageSizeChanged,
     handlePageButtonClick,

@@ -11,8 +11,8 @@ import {
 } from '@/components/catalyst/dropdown'
 import { Input, InputGroup } from '@/components/catalyst/input'
 import { Select } from '@/components/catalyst/select'
+import { PaginationOption } from '@/hooks/use-pagination'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import { PaginationOption } from '@/libs/utils/table-helpers'
 import {
   getAppliedFilterDescriptions,
   getAppliedFiltersText,
