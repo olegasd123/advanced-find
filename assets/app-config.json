@@ -90,6 +90,22 @@
             }
           },
           {
+            "CategoryId": "general",
+            "AttributeName": "modifiedby",
+            "Default": {
+              "IsShown": true
+            },
+            "Selection": {
+              "Multiple": true,
+              "MinItems": 1,
+              "MaxItems": 10
+            },
+            "Lookup": {
+              "AttributeNames": ["firstname", "lastname"],
+              "AttributeFormat": "{0} {1}"
+            }
+          },
+          {
             "CategoryId": "misc",
             "PathId": "invoice-to-detail",
             "AttributeName": "priceperunit",
