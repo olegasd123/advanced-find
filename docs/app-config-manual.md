@@ -14,6 +14,7 @@ The application is configured through a single JSON file located at `assets/app-
   - [Default Filter Behavior](#default-filter-behavior)
   - [Lookup Configuration](#lookup-configuration)
   - [Selection Configuration](#selection-configuration)
+    - [On-Demand Search for Lookups](#on-demand-search-for-lookups)
 - [Default Filter Groups](#default-filter-groups)
 - [Result View](#result-view)
   - [Columns](#columns)
@@ -45,6 +46,7 @@ It reports clear errors for:
 - Unknown attribute logical names in filters, columns, and relation joins.
 - Invalid relation settings (`PathId`, relation steps, duplicate relation IDs).
 - Invalid config references (unknown `CategoryId`, `FilterOptionId`, `ColumnId`, duplicate IDs, out-of-range indexes).
+- Invalid `Selection.SearchDelay` (must be a positive number) or `Selection.MinCharacters` (must be >= 1).
 
 If validation fails:
 
@@ -243,21 +245,62 @@ For entity-reference (lookup) attributes, the `Lookup` object controls how refer
 
 ### Selection Configuration
 
-Controls how many values a user can select for a filter.
+Controls how many values a user can select for a filter and, for lookup attributes, whether values are loaded on demand via search.
 
 ```json
 {
   "Multiple": true,
   "MinItems": 1,
-  "MaxItems": 5
+  "MaxItems": 10,
+  "SearchDelay": 900,
+  "MinCharacters": 3
 }
 ```
 
-| Property   | Type    | Default   | Description                                                               |
-| ---------- | ------- | --------- | ------------------------------------------------------------------------- |
-| `Multiple` | boolean | `false`   | Enables multi-value selection.                                            |
-| `MinItems` | number  | `0`       | Minimum number of values that must be selected (clamped to 0 at runtime). |
-| `MaxItems` | number  | unlimited | Maximum number of values that can be selected.                            |
+| Property        | Type    | Default   | Description                                                                                                  |
+| --------------- | ------- | --------- | ------------------------------------------------------------------------------------------------------------ |
+| `Multiple`      | boolean | `false`   | Enables multi-value selection.                                                                               |
+| `MinItems`      | number  | `0`       | Minimum number of values that must be selected (clamped to 0 at runtime).                                    |
+| `MaxItems`      | number  | unlimited | Maximum number of values that can be selected.                                                               |
+| `SearchDelay`   | number  | -         | Debounce delay in milliseconds before triggering a search. Enables on-demand search mode for lookup filters. |
+| `MinCharacters` | number  | `1`       | Minimum number of characters the user must type before a search is triggered. Only used with `SearchDelay`.  |
+
+#### On-Demand Search for Lookups
+
+By default, lookup filters load all records from the target entity when the filter is added. For large datasets (thousands of users, accounts, etc.) this can cause performance issues.
+
+When `SearchDelay` is set on a lookup filter's `Selection`, the filter switches to **on-demand search mode**:
+
+1. The dropdown starts empty, showing a hint like "Type at least 3 characters to search".
+2. The user types into the search input.
+3. After typing at least `MinCharacters` characters, the component waits `SearchDelay` milliseconds (debounce).
+4. A server-side search is performed using OData `$filter` with `contains()` on each attribute listed in `Lookup.AttributeNames`.
+5. Matching records are displayed in the dropdown.
+
+Previously selected values are preserved across searches, so selecting "John Smith" and then searching for "Jane" will not lose the existing selection.
+
+**Example:** A lookup for the `modifiedby` attribute that searches by first and last name:
+
+```json
+{
+  "AttributeName": "modifiedby",
+  "Lookup": {
+    "AttributeNames": ["firstname", "lastname"],
+    "AttributeFormat": "{0} {1}"
+  },
+  "Selection": {
+    "Multiple": true,
+    "MinItems": 1,
+    "MaxItems": 10,
+    "SearchDelay": 900,
+    "MinCharacters": 3
+  }
+}
+```
+
+This generates OData filters like: `contains(firstname,'john') or contains(lastname,'john')`.
+
+**Note:** Without `SearchDelay`, lookup filters continue to pre-load all records as before.
 
 ---
 

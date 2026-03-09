@@ -75,11 +75,28 @@ export default class MockCrmRepository implements CrmData {
     options?: GetEntitiesOptions
   ): Promise<unknown> {
     void attributeLogicalNames
-    void options
     return fetch(`mock-data/${entityPluralName}.json`).then(
       async (result) => {
         const data = await result.json()
-        return data.value
+        let items = data.value as Record<string, unknown>[]
+
+        if (options?.filter) {
+          const containsMatches = [
+            ...options.filter.matchAll(/contains\((\w+),'([^']*)'\)/g),
+          ]
+          if (containsMatches.length > 0) {
+            items = items.filter((item) =>
+              containsMatches.some(([, attr, query]) => {
+                const val = item[attr]
+                return (
+                  typeof val === 'string' && val.toLowerCase().includes(query.toLowerCase())
+                )
+              })
+            )
+          }
+        }
+
+        return items
       },
       (error) => {
         throw error

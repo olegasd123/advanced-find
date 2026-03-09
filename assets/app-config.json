@@ -98,7 +98,9 @@
             "Selection": {
               "Multiple": true,
               "MinItems": 1,
-              "MaxItems": 10
+              "MaxItems": 10,
+              "SearchDelay": 900,
+              "MinCharacters": 3
             },
             "Lookup": {
               "AttributeNames": ["firstname", "lastname"],

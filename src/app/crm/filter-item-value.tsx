@@ -1,10 +1,12 @@
 import * as React from 'react'
 import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox'
+import { SearchCombobox } from '@/components/controls/search-combobox'
 import { Listbox, ListboxLabel, ListboxOption } from '@/components/catalyst/listbox'
 import { Input } from '@/components/catalyst/input'
 import { FilterOptionConfig } from '@/libs/types/app-config.types'
 import { useCrmRepository } from '@/hooks/use-crm-repository'
 import { createErrorReporter } from '@/libs/utils/error-reporter'
+import { buildLookupSearchFilter } from '@/libs/utils/crm/odata-lookup-search'
 import { ConditionValue } from '@/libs/types/filter.types'
 
 interface ConditionValueOption {
@@ -152,6 +154,16 @@ export const FilterItemValue = ({
   const isLookupAttribute = selectedAttributeType === 'Lookup'
   const isSelectableAttribute = isPicklistAttribute || isLookupAttribute
   const isMultiSelection = isSelectableAttribute && Boolean(selection?.Multiple)
+  const isOnDemandSearch =
+    isLookupAttribute && selection?.SearchDelay !== undefined && selection.SearchDelay > 0
+
+  const lookupMetadataRef = React.useRef<{
+    entityCollectionName: string
+    idAttributeName: string
+    lookupAttributeNames: string[]
+    allAttributeNames: string[]
+  } | null>(null)
+  const selectedOptionsCacheRef = React.useRef<Map<string, ConditionValueOption>>(new Map())
 
   React.useEffect(() => {
     valuesRef.current = values
@@ -193,6 +205,20 @@ export const FilterItemValue = ({
               const displayName = option.Label.UserLocalizedLabel?.Label ?? value.toString()
               return { value, displayName }
             }) ?? []
+        }
+
+        if (
+          targetFilterOption.AttributeType === 'Lookup' &&
+          targetFilterOption.Selection?.SearchDelay !== undefined &&
+          targetFilterOption.Selection.SearchDelay > 0
+        ) {
+          if (requestId !== selectableOptionsRequestId.current) {
+            return
+          }
+          setSelectableOptions([])
+          setIsSelectableOptionsLoading(false)
+          setSelectableOptionsErrorMessage(undefined)
+          return
         }
 
         if (targetFilterOption.AttributeType === 'Lookup') {
@@ -306,6 +332,102 @@ export const FilterItemValue = ({
     void loadSelectableOptions(filterOption, filterOption.Default?.Condition, defaultValues)
   }, [filterOption, loadSelectableOptions])
 
+  const handleLookupSearch = React.useCallback(
+    async (query: string): Promise<void> => {
+      if (!filterOption || filterOption.AttributeType !== 'Lookup') {
+        return
+      }
+
+      const requestId = ++selectableOptionsRequestId.current
+      setIsSelectableOptionsLoading(true)
+      setSelectableOptionsErrorMessage(undefined)
+
+      try {
+        let meta = lookupMetadataRef.current
+        if (!meta) {
+          const lookupMd = await crmRepository?.getLookupAttributeMetadata(
+            filterOption.EntityName!,
+            filterOption.AttributeName!
+          )
+          const targetEntity = lookupMd?.Targets?.at(0)
+          if (!targetEntity) {
+            throw new Error('No lookup target entity')
+          }
+
+          const entitiesMd = await crmRepository?.getEntitiesMetadata([targetEntity])
+          const entityMd = entitiesMd?.at(0)
+          const collectionName = entityMd?.EntitySetName ?? entityMd?.LogicalCollectionName
+          if (!collectionName) {
+            throw new Error('No entity collection name')
+          }
+
+          const idAttr = `${targetEntity}id`
+          const lookupAttrs = filterOption.Lookup?.AttributeNames ?? []
+
+          meta = {
+            entityCollectionName: collectionName,
+            idAttributeName: idAttr,
+            lookupAttributeNames: lookupAttrs,
+            allAttributeNames: [...new Set([idAttr, ...lookupAttrs])],
+          }
+          lookupMetadataRef.current = meta
+        }
+
+        const odataFilter = buildLookupSearchFilter(meta.lookupAttributeNames, query)
+        const response = await crmRepository?.getEntities(
+          meta.entityCollectionName,
+          meta.allAttributeNames,
+          odataFilter ? { filter: odataFilter } : undefined
+        )
+
+        if (requestId !== selectableOptionsRequestId.current) {
+          return
+        }
+
+        const entities = normalizeEntityItems(response)
+        const options = entities
+          .map((item): ConditionValueOption | null => {
+            const rawId = item[meta!.idAttributeName]
+            if (rawId === undefined || rawId === null) {
+              return null
+            }
+            const value = String(rawId)
+            const displayName = formatLookupDisplayValue(
+              item,
+              meta!.lookupAttributeNames,
+              filterOption.Lookup?.AttributeFormat,
+              value
+            )
+            return { value, displayName }
+          })
+          .filter((option): option is ConditionValueOption => option !== null)
+
+        setSelectableOptions(options)
+      } catch (error) {
+        if (requestId !== selectableOptionsRequestId.current) {
+          return
+        }
+        const userMessage = errorReporter.reportAsyncError({
+          location: 'lookup on-demand search',
+          error,
+          userMessage: 'Failed to search values.',
+          context: {
+            entityName: filterOption.EntityName,
+            attributeName: filterOption.AttributeName,
+            query,
+          },
+        })
+        setSelectableOptionsErrorMessage(userMessage)
+        setSelectableOptions([])
+      } finally {
+        if (requestId === selectableOptionsRequestId.current) {
+          setIsSelectableOptionsLoading(false)
+        }
+      }
+    },
+    [crmRepository, filterOption]
+  )
+
   React.useEffect(() => {
     if (isNoValueCondition(normalizedSelectedFilterCondition)) {
       setConditionValues((previousValues) => (previousValues.length === 0 ? previousValues : []))
@@ -391,10 +513,37 @@ export const FilterItemValue = ({
   }
 
   const selectedConditionValue = conditionValues.at(0) ?? ''
-  const selectedSelectionValues = selectableOptions.filter((option) =>
+
+  const onDemandSearchOptions = React.useMemo((): ConditionValueOption[] => {
+    if (!isOnDemandSearch) {
+      return selectableOptions
+    }
+
+    const merged = new Map<string, ConditionValueOption>()
+    for (const [key, option] of selectedOptionsCacheRef.current) {
+      merged.set(key, option)
+    }
+    for (const option of selectableOptions) {
+      merged.set(String(option.value), option)
+    }
+    return Array.from(merged.values())
+  }, [selectableOptions, isOnDemandSearch])
+
+  const effectiveOptions = isOnDemandSearch ? onDemandSearchOptions : selectableOptions
+
+  const selectedSelectionValues = effectiveOptions.filter((option) =>
     conditionValues.includes(option.value)
   )
   const selectedSingleLookupValue = selectedSelectionValues.at(0) ?? null
+
+  React.useEffect(() => {
+    if (!isOnDemandSearch) {
+      return
+    }
+    for (const option of selectedSelectionValues) {
+      selectedOptionsCacheRef.current.set(String(option.value), option)
+    }
+  }, [selectedSelectionValues, isOnDemandSearch])
   const conditionDisplayValues = React.useMemo((): string[] | undefined => {
     if (conditionValues.length === 0) {
       return undefined
@@ -422,7 +571,7 @@ export const FilterItemValue = ({
     }
 
     const displayNameByValue = new Map(
-      selectableOptions.map((option) => [String(option.value), option.displayName])
+      effectiveOptions.map((option) => [String(option.value), option.displayName])
     )
 
     return conditionValues.map((value) => displayNameByValue.get(String(value)) ?? String(value))
@@ -431,7 +580,7 @@ export const FilterItemValue = ({
     isPicklistAttribute,
     isSelectableAttribute,
     normalizedSelectedFilterCondition,
-    selectableOptions,
+    effectiveOptions,
     selectedAttributeType,
   ])
 
@@ -444,6 +593,58 @@ export const FilterItemValue = ({
   }
 
   if (isSelectableAttribute) {
+    if (isOnDemandSearch) {
+      if (isMultiSelection) {
+        return (
+          <div>
+            <SearchCombobox
+              multiple
+              options={onDemandSearchOptions}
+              isLoading={isSelectableOptionsLoading}
+              searchDelay={selection!.SearchDelay!}
+              minCharacters={selection?.MinCharacters}
+              placeholder="Search values"
+              displayValue={(option) => option.displayName}
+              displayInputValue={(values) =>
+                values.map((option) => option.displayName).join(', ')
+              }
+              value={selectedSelectionValues}
+              disabled={isDisabled}
+              onSearch={handleLookupSearch}
+              onChange={handleMultiSelectionValueChanged}
+            >
+              {(option) => (
+                <ComboboxOption value={option}>
+                  <ComboboxLabel>{option.displayName}</ComboboxLabel>
+                </ComboboxOption>
+              )}
+            </SearchCombobox>
+          </div>
+        )
+      }
+
+      return (
+        <SearchCombobox
+          options={onDemandSearchOptions}
+          isLoading={isSelectableOptionsLoading}
+          searchDelay={selection!.SearchDelay!}
+          minCharacters={selection?.MinCharacters}
+          placeholder="Search value"
+          displayValue={(option) => option?.displayName}
+          value={selectedSingleLookupValue}
+          disabled={isDisabled}
+          onSearch={handleLookupSearch}
+          onChange={handleSingleLookupValueChanged}
+        >
+          {(option) => (
+            <ComboboxOption value={option}>
+              <ComboboxLabel>{option.displayName}</ComboboxLabel>
+            </ComboboxOption>
+          )}
+        </SearchCombobox>
+      )
+    }
+
     if (isSelectableOptionsLoading) {
       return (
         <Input
