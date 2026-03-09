@@ -25,6 +25,14 @@ interface UseEntityMetadataResult {
   isMetadataLoading: boolean
 }
 
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return String(error)
+}
+
 export const useEntityMetadata = ({
   crmRepository,
   configEntities,
@@ -92,34 +100,44 @@ export const useEntityMetadata = ({
             return
           }
 
-          if (!metadataByLogicalName.has(entityLogicalName)) {
-            continue
-          }
-
-          const attributesMetadata = await crmRepository.getAttributesMetadata(
-            entityLogicalName,
-            attributeLogicalNames
-          )
-          const existingAttributeNames = new Set(attributesMetadata.map((item) => item.LogicalName))
-          const missingAttributeNames = attributeLogicalNames.filter(
-            (attributeLogicalName) => !existingAttributeNames.has(attributeLogicalName)
-          )
-          if (missingAttributeNames.length > 0) {
-            configIssues.push(
-              `Entity "${entityLogicalName}" has unknown attribute(s): ${missingAttributeNames.join(', ')}.`
+          try {
+            const attributesMetadata = await crmRepository.getAttributesMetadata(
+              entityLogicalName,
+              attributeLogicalNames
             )
+            const existingAttributeNames = new Set(
+              attributesMetadata.map((item) => item.LogicalName)
+            )
+            const missingAttributeNames = attributeLogicalNames.filter(
+              (attributeLogicalName) => !existingAttributeNames.has(attributeLogicalName)
+            )
+            if (missingAttributeNames.length > 0) {
+              configIssues.push(
+                `Entity "${entityLogicalName}" has unknown attribute(s): ${missingAttributeNames.join(', ')}.`
+              )
+            }
+          } catch (error) {
+            const errorMessage = getErrorMessage(error)
+            if (errorMessage.includes('does not exist')) {
+              configIssues.push(`Entity "${entityLogicalName}" was not found in CRM metadata.`)
+            } else {
+              configIssues.push(
+                `Failed to load attributes metadata for entity "${entityLogicalName}".`
+              )
+            }
           }
         }
 
-        const userValidationMessage = buildAppConfigValidationUserMessage(configIssues)
+        const uniqueConfigIssues = Array.from(new Set(configIssues))
+        const userValidationMessage = buildAppConfigValidationUserMessage(uniqueConfigIssues)
         if (!isCancelled) {
           if (userValidationMessage) {
             setEntitiesMetadataErrorMessage(
               errorReporter.reportAsyncError({
                 location: 'validate app configuration',
-                error: new Error(configIssues.join(' ')),
+                error: new Error(uniqueConfigIssues.join(' ')),
                 userMessage: userValidationMessage,
-                context: { issues: configIssues },
+                context: { issues: uniqueConfigIssues },
               })
             )
           } else {

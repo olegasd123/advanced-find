@@ -8,7 +8,6 @@
             "Id": "invoice-created-by",
             "Steps": [
               {
-                "TODO: make more info on `systemuser1`": "",
                 "EntityName": "systemuser",
                 "FromAttribute": "createdby",
                 "ToAttribute": "systemuserid"
@@ -107,7 +106,7 @@
           {
             "CategoryId": "misc",
             "PathId": "invoice-to-product",
-            "AttributeName": "name11",
+            "AttributeName": "name",
             "DisplayName": "Product name"
           }
         ],
