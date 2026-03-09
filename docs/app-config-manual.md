@@ -5,6 +5,7 @@ The application is configured through a single JSON file located at `assets/app-
 ## Table of Contents
 
 - [File Location and Loading](#file-location-and-loading)
+- [Validation and Errors](#validation-and-errors)
 - [Top-Level Structure](#top-level-structure)
 - [Entity Configuration](#entity-configuration)
 - [Relation Paths](#relation-paths)
@@ -31,6 +32,24 @@ The application is configured through a single JSON file located at `assets/app-
 | CRM deployment (`crm`, `crm-dev`) | Copied to `dist/advanced-find/app-config.json` and fetched at `./app-config.json` |
 
 The config is loaded at runtime via `fetch()` and provided to the entire app through a React context (`AppConfigProvider`). All components access it via the `useAppConfig()` hook.
+
+---
+
+## Validation and Errors
+
+When the app loads metadata, it validates config references and CRM names.
+
+It reports clear errors for:
+
+- Unknown entity logical names (for example `invoice1` when the entity does not exist).
+- Unknown attribute logical names in filters, columns, and relation joins.
+- Invalid relation settings (`PathId`, relation steps, duplicate relation IDs).
+- Invalid config references (unknown `CategoryId`, `FilterOptionId`, `ColumnId`, duplicate IDs, out-of-range indexes).
+
+If validation fails:
+
+- The page shows a user-friendly config error message.
+- The browser console logs full technical details with the list of issues.
 
 ---
 

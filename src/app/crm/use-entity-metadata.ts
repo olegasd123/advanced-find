@@ -4,6 +4,10 @@ import { CrmData, EntityMetadata } from '@/libs/types/entity.types'
 import { SearchTableColumn } from '@/libs/types/search.types'
 import { createErrorReporter } from '@/libs/utils/error-reporter'
 import { resolveSearchTableColumns } from '@/libs/utils/crm/crm-search'
+import {
+  buildAppConfigMetadataValidationPlan,
+  buildAppConfigValidationUserMessage,
+} from '@/libs/utils/app-config-validator'
 
 const errorReporter = createErrorReporter('useEntityMetadata')
 
@@ -35,6 +39,10 @@ export const useEntityMetadata = ({
   const [isEntitiesMetadataLoading, setIsEntitiesMetadataLoading] = React.useState(false)
   const [isTableColumnNamesLoading, setIsTableColumnNamesLoading] = React.useState(false)
   const requestIdRef = React.useRef(0)
+  const appConfigValidationPlan = React.useMemo(
+    () => buildAppConfigMetadataValidationPlan(configEntities),
+    [configEntities]
+  )
 
   const searchTableColumns = React.useMemo(() => {
     if (!currentEntityConfig) {
@@ -59,9 +67,65 @@ export const useEntityMetadata = ({
     const loadEntitiesMetadata = async (): Promise<void> => {
       try {
         const metadata = await crmRepository.getEntitiesMetadata(
-          configEntities.map((entity) => entity.LogicalName)
+          appConfigValidationPlan.configuredEntityLogicalNames
         )
+        if (isCancelled) {
+          return
+        }
+
+        const configIssues = [...appConfigValidationPlan.issues]
+        const metadataByLogicalName = new Set(metadata.map((item) => item.LogicalName))
+        const missingEntityLogicalNames =
+          appConfigValidationPlan.configuredEntityLogicalNames.filter(
+            (entityLogicalName) => !metadataByLogicalName.has(entityLogicalName)
+          )
+
+        for (const entityLogicalName of missingEntityLogicalNames) {
+          configIssues.push(`Entity "${entityLogicalName}" was not found in CRM metadata.`)
+        }
+
+        for (const [
+          entityLogicalName,
+          attributeLogicalNames,
+        ] of appConfigValidationPlan.requiredAttributesByEntity.entries()) {
+          if (isCancelled) {
+            return
+          }
+
+          if (!metadataByLogicalName.has(entityLogicalName)) {
+            continue
+          }
+
+          const attributesMetadata = await crmRepository.getAttributesMetadata(
+            entityLogicalName,
+            attributeLogicalNames
+          )
+          const existingAttributeNames = new Set(attributesMetadata.map((item) => item.LogicalName))
+          const missingAttributeNames = attributeLogicalNames.filter(
+            (attributeLogicalName) => !existingAttributeNames.has(attributeLogicalName)
+          )
+          if (missingAttributeNames.length > 0) {
+            configIssues.push(
+              `Entity "${entityLogicalName}" has unknown attribute(s): ${missingAttributeNames.join(', ')}.`
+            )
+          }
+        }
+
+        const userValidationMessage = buildAppConfigValidationUserMessage(configIssues)
         if (!isCancelled) {
+          if (userValidationMessage) {
+            setEntitiesMetadataErrorMessage(
+              errorReporter.reportAsyncError({
+                location: 'validate app configuration',
+                error: new Error(configIssues.join(' ')),
+                userMessage: userValidationMessage,
+                context: { issues: configIssues },
+              })
+            )
+          } else {
+            setEntitiesMetadataErrorMessage(undefined)
+          }
+
           setEntitiesMetadata(metadata)
         }
       } finally {
@@ -87,7 +151,7 @@ export const useEntityMetadata = ({
     return () => {
       isCancelled = true
     }
-  }, [configEntities, crmRepository])
+  }, [appConfigValidationPlan, configEntities, crmRepository])
 
   React.useEffect(() => {
     const requestId = ++requestIdRef.current
