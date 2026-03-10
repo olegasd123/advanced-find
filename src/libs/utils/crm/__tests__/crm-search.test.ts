@@ -7,6 +7,7 @@ import {
   hasMeaningfulValues,
   isNoValueCondition,
   noValueConditions,
+  normalizeConditionForValues,
   normalizeGroupOperator,
   numberAttributeTypes,
   parseValues,
@@ -82,6 +83,13 @@ describe('crm-search helpers', () => {
     expect(hasMeaningfulValues(['', '   '])).toBe(false)
     expect(hasMeaningfulValues([0])).toBe(true)
     expect(hasMeaningfulValues(['x'])).toBe(true)
+  })
+
+  it('normalizes eq/ne to in/not-in for multiple values', () => {
+    expect(normalizeConditionForValues('eq', ['A', 'B'])).toBe('in')
+    expect(normalizeConditionForValues('ne', ['A', 'B'])).toBe('not-in')
+    expect(normalizeConditionForValues('eq', ['A'])).toBe('eq')
+    expect(normalizeConditionForValues('ne', ['A'])).toBe('ne')
   })
 })
 
@@ -161,5 +169,22 @@ describe('buildCrmEntitiesFilter', () => {
       },
     ])
     expect(empty).toBeUndefined()
+  })
+
+  it('auto-converts eq/ne with multiple values into in/not-in expressions', () => {
+    const filter = buildCrmEntitiesFilter('account', [
+      {
+        filterOption: { EntityName: 'account', AttributeName: 'name', AttributeType: 'string' },
+        condition: 'eq',
+        values: ['A', 'B'],
+      },
+      {
+        filterOption: { EntityName: 'account', AttributeName: 'name', AttributeType: 'string' },
+        condition: 'ne',
+        values: ['C', 'D'],
+      },
+    ])
+
+    expect(filter).toBe("(name in ('A','B')) and (not (name in ('C','D')))")
   })
 })

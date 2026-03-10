@@ -202,7 +202,7 @@
               "Values": [1]
             },
             "Selection": {
-              "Multiple": false
+              "Multiple": true
             }
           },
           {

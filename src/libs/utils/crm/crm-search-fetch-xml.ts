@@ -5,6 +5,7 @@ import { createRootSearchColumn } from '@/libs/utils/crm/crm-search-columns'
 import {
   escapeXml,
   hasMeaningfulValues,
+  normalizeConditionForValues,
   normalizeGroupOperator,
   parseValues,
   toFetchValue,
@@ -121,40 +122,42 @@ const createFetchConditionXml = (
     return undefined
   }
 
-  if (condition === 'in' || condition === 'not-in') {
+  const normalizedCondition = normalizeConditionForValues(condition, values)
+
+  if (normalizedCondition === 'in' || normalizedCondition === 'not-in') {
     const valuesXml = values
       .map(
         (value) => `<value>${escapeXml(toFetchValue(filterOption.AttributeType, value))}</value>`
       )
       .join('')
-    return `<condition attribute="${escapedAttributeName}" operator="${condition}">${valuesXml}</condition>`
+    return `<condition attribute="${escapedAttributeName}" operator="${normalizedCondition}">${valuesXml}</condition>`
   }
 
   const targetValue = toFetchValue(filterOption.AttributeType, firstValue)
 
   if (
-    condition === 'eq' ||
-    condition === 'ne' ||
-    condition === 'ge' ||
-    condition === 'gt' ||
-    condition === 'le' ||
-    condition === 'lt' ||
-    condition === 'begins-with' ||
-    condition === 'ends-with'
+    normalizedCondition === 'eq' ||
+    normalizedCondition === 'ne' ||
+    normalizedCondition === 'ge' ||
+    normalizedCondition === 'gt' ||
+    normalizedCondition === 'le' ||
+    normalizedCondition === 'lt' ||
+    normalizedCondition === 'begins-with' ||
+    normalizedCondition === 'ends-with'
   ) {
-    return `<condition attribute="${escapedAttributeName}" operator="${condition}" value="${escapeXml(targetValue)}" />`
+    return `<condition attribute="${escapedAttributeName}" operator="${normalizedCondition}" value="${escapeXml(targetValue)}" />`
   }
 
-  if (condition === 'not-begin-with') {
+  if (normalizedCondition === 'not-begin-with') {
     return `<condition attribute="${escapedAttributeName}" operator="not-like" value="${escapeXml(`${targetValue}%`)}" />`
   }
-  if (condition === 'not-end-with') {
+  if (normalizedCondition === 'not-end-with') {
     return `<condition attribute="${escapedAttributeName}" operator="not-like" value="${escapeXml(`%${targetValue}`)}" />`
   }
-  if (condition === 'like') {
+  if (normalizedCondition === 'like') {
     return `<condition attribute="${escapedAttributeName}" operator="like" value="${escapeXml(`%${targetValue}%`)}" />`
   }
-  if (condition === 'not-like') {
+  if (normalizedCondition === 'not-like') {
     return `<condition attribute="${escapedAttributeName}" operator="not-like" value="${escapeXml(`%${targetValue}%`)}" />`
   }
 

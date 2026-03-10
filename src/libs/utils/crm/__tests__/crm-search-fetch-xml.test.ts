@@ -108,4 +108,26 @@ describe('crm-search-fetch-xml', () => {
       '<condition attribute="name" operator="not-in"><value>A</value><value>B</value></condition>'
     )
   })
+
+  it('auto-converts eq/ne with multiple values to in/not-in operators', () => {
+    const xml = buildCrmFilterFetchXml('account', [
+      {
+        filterOption: { EntityName: 'account', AttributeName: 'name', AttributeType: 'string' },
+        condition: 'eq',
+        values: ['A', 'B'],
+      },
+      {
+        filterOption: { EntityName: 'account', AttributeName: 'name', AttributeType: 'string' },
+        condition: 'ne',
+        values: ['C', 'D'],
+      },
+    ])
+
+    expect(xml).toContain(
+      '<condition attribute="name" operator="in"><value>A</value><value>B</value></condition>'
+    )
+    expect(xml).toContain(
+      '<condition attribute="name" operator="not-in"><value>C</value><value>D</value></condition>'
+    )
+  })
 })

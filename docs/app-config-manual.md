@@ -225,6 +225,8 @@ The `Default` object controls how a filter option behaves when initially loaded.
 | `IsAttributeDisabled` | boolean | `false` | When `true`, the attribute dropdown is disabled (user cannot change which attribute is filtered).        |
 | `IsDisabled`          | boolean | `false` | When `true`, the entire filter row is disabled (read-only).                                              |
 
+**Runtime fallback for multi-value selections:** If the active condition is `eq` and the user selected more than one value, the search runs as `in`. If the active condition is `ne` and the user selected more than one value, the search runs as `not-in`.
+
 ### Lookup Configuration
 
 For entity-reference (lookup) attributes, the `Lookup` object controls how referenced records are displayed.
@@ -264,6 +266,11 @@ Controls how many values a user can select for a filter and, for lookup attribut
 | `MaxItems`      | number  | unlimited | Maximum number of values that can be selected.                                                               |
 | `SearchDelay`   | number  | -         | Debounce delay in milliseconds before triggering a search. Enables on-demand search mode for lookup filters. |
 | `MinCharacters` | number  | `1`       | Minimum number of characters the user must type before a search is triggered. Only used with `SearchDelay`.  |
+
+When `Multiple` is enabled and a user selects more than one value, search execution applies a safety fallback:
+
+- `eq` is treated as `in`
+- `ne` is treated as `not-in`
 
 #### On-Demand Search for Lookups
 

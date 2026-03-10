@@ -77,6 +77,19 @@ export const parseValues = (condition: string, values: ConditionValue[]): Condit
     .filter((item) => item.length > 0)
 }
 
+export const normalizeConditionForValues = (
+  condition: string,
+  values: ConditionValue[]
+): string => {
+  if (condition === 'eq' && values.length > 1) {
+    return 'in'
+  }
+  if (condition === 'ne' && values.length > 1) {
+    return 'not-in'
+  }
+  return condition
+}
+
 export const toFetchValue = (attributeType: string | undefined, value: ConditionValue): string => {
   const normalizedAttributeType = attributeType?.toLowerCase()
 
@@ -250,39 +263,41 @@ const createFilterExpression = (conditionValue: AppliedFilterCondition): string 
     return undefined
   }
 
-  if (condition === 'in') {
+  const normalizedCondition = normalizeConditionForValues(condition, values)
+
+  if (normalizedCondition === 'in') {
     return `${attributeName} in (${literals.join(',')})`
   }
-  if (condition === 'not-in') {
+  if (normalizedCondition === 'not-in') {
     return `not (${attributeName} in (${literals.join(',')}))`
   }
-  if (condition === 'begins-with') {
+  if (normalizedCondition === 'begins-with') {
     return `startswith(${attributeName},${firstLiteral})`
   }
-  if (condition === 'not-begin-with') {
+  if (normalizedCondition === 'not-begin-with') {
     return `not startswith(${attributeName},${firstLiteral})`
   }
-  if (condition === 'ends-with') {
+  if (normalizedCondition === 'ends-with') {
     return `endswith(${attributeName},${firstLiteral})`
   }
-  if (condition === 'not-end-with') {
+  if (normalizedCondition === 'not-end-with') {
     return `not endswith(${attributeName},${firstLiteral})`
   }
-  if (condition === 'like') {
+  if (normalizedCondition === 'like') {
     return `contains(${attributeName},${firstLiteral})`
   }
-  if (condition === 'not-like') {
+  if (normalizedCondition === 'not-like') {
     return `not contains(${attributeName},${firstLiteral})`
   }
   if (
-    condition === 'eq' ||
-    condition === 'ne' ||
-    condition === 'ge' ||
-    condition === 'gt' ||
-    condition === 'le' ||
-    condition === 'lt'
+    normalizedCondition === 'eq' ||
+    normalizedCondition === 'ne' ||
+    normalizedCondition === 'ge' ||
+    normalizedCondition === 'gt' ||
+    normalizedCondition === 'le' ||
+    normalizedCondition === 'lt'
   ) {
-    return `${attributeName} ${condition} ${firstLiteral}`
+    return `${attributeName} ${normalizedCondition} ${firstLiteral}`
   }
 
   return undefined
