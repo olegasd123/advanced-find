@@ -132,10 +132,28 @@ export function SearchCombobox<T>(props: SingleSearchComboboxProps<T>): React.Re
 export function SearchCombobox<T>(props: MultiSearchComboboxProps<T>): React.ReactElement
 export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
   const [query, setQuery] = React.useState('')
-  const effectiveMinChars = props.minCharacters ?? 1
-  const debouncedQuery = useDebounce(query, props.searchDelay)
-  const onSearchRef = React.useRef(props.onSearch)
-  onSearchRef.current = props.onSearch
+  const {
+    options,
+    isLoading,
+    searchDelay,
+    minCharacters,
+    displayValue,
+    displayInputValue,
+    onSearch,
+    anchor = 'bottom',
+    className,
+    placeholder,
+    autoFocus,
+    onClose,
+    multiple,
+    'aria-label': ariaLabel,
+    children,
+    ...headlessProps
+  } = props
+  const effectiveMinChars = minCharacters ?? 1
+  const debouncedQuery = useDebounce(query, searchDelay)
+  const onSearchRef = React.useRef(onSearch)
+  onSearchRef.current = onSearch
 
   React.useEffect(() => {
     if (debouncedQuery.trim().length >= effectiveMinChars) {
@@ -155,32 +173,14 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
   }, [])
 
   const showHint = query.trim().length < effectiveMinChars
-  const showLoading = !showHint && props.isLoading
-  const showNoResults = !showHint && !props.isLoading && props.options.length === 0
+  const showLoading = !showHint && Boolean(isLoading)
+  const showNoResults = !showHint && !isLoading && options.length === 0
   const hintMessage = `Type at least ${effectiveMinChars} character${effectiveMinChars > 1 ? 's' : ''} to search`
   const statusMessage = getStatusMessage(showHint, hintMessage, Boolean(showLoading), showNoResults)
 
   if (props.multiple) {
-    const {
-      options,
-      isLoading,
-      searchDelay,
-      minCharacters,
-      displayValue,
-      displayInputValue,
-      onSearch,
-      anchor = 'bottom',
-      className,
-      placeholder,
-      autoFocus,
-      onClose,
-      multiple,
-      'aria-label': ariaLabel,
-      children,
-      value: selectedValues,
-      onChange: onSelectionChange,
-      ...headlessProps
-    } = props
+    const selectedValues = props.value
+    const onSelectionChange = props.onChange
 
     const handleRemoveTag = (event: React.MouseEvent, itemToRemove: T) => {
       event.preventDefault()
@@ -197,7 +197,7 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
         {...headlessProps}
         value={selectedValues}
         onChange={onSelectionChange}
-        multiple={multiple}
+        multiple={props.multiple}
         immediate
         onClose={() => {
           setQuery('')
@@ -209,7 +209,7 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
             autoFocus={autoFocus}
             data-slot="control"
             aria-label={ariaLabel}
-            displayValue={() => ''}
+            displayValue={(values: T[] | undefined) => displayInputValue?.(values ?? []) ?? ''}
             onChange={(event) => setQuery(event.target.value)}
             onClick={handleInputClick}
             placeholder={placeholder}
@@ -246,24 +246,6 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
       </Headless.Combobox>
     )
   }
-
-  const {
-    options,
-    isLoading,
-    searchDelay,
-    minCharacters,
-    displayValue,
-    onSearch,
-    anchor = 'bottom',
-    className,
-    placeholder,
-    autoFocus,
-    onClose,
-    multiple,
-    'aria-label': ariaLabel,
-    children,
-    ...headlessProps
-  } = props
 
   return (
     <Headless.Combobox
