@@ -237,10 +237,7 @@ const collectFilterOptionIssues = (
     }
     if (filterSelection?.MinCharacters !== undefined) {
       if (typeof filterSelection.MinCharacters !== 'number' || filterSelection.MinCharacters < 1) {
-        addIssue(
-          context.issues,
-          `${location} has invalid Selection.MinCharacters (must be >= 1).`
-        )
+        addIssue(context.issues, `${location} has invalid Selection.MinCharacters (must be >= 1).`)
       }
     }
   }

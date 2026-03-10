@@ -25,18 +25,12 @@ type BaseSearchComboboxProps<T> = {
 }
 
 type SingleSearchComboboxProps<T> = BaseSearchComboboxProps<T> &
-  Omit<
-    Headless.ComboboxProps<T, false>,
-    'as' | 'children' | 'multiple' | 'virtual' | 'onClose'
-  > & {
+  Omit<Headless.ComboboxProps<T, false>, 'as' | 'children' | 'multiple' | 'virtual' | 'onClose'> & {
     multiple?: false
   }
 
 type MultiSearchComboboxProps<T> = BaseSearchComboboxProps<T> &
-  Omit<
-    Headless.ComboboxProps<T, true>,
-    'as' | 'children' | 'multiple' | 'virtual' | 'onClose'
-  > & {
+  Omit<Headless.ComboboxProps<T, true>, 'as' | 'children' | 'multiple' | 'virtual' | 'onClose'> & {
     multiple: true
   }
 
@@ -76,6 +70,28 @@ const optionsClassName = clsx(
 const statusMessageClassName = clsx(
   'px-3.5 py-2.5 sm:px-3 sm:py-1.5',
   'text-base/6 text-zinc-500 sm:text-sm/6'
+)
+
+const tagContainerClassName = clsx('flex flex-wrap gap-1 mt-1.5')
+
+const tagClassName = clsx(
+  'inline-flex items-center gap-1 rounded-md px-2 py-0.5',
+  'text-xs/5 font-medium',
+  'bg-zinc-950/5 text-zinc-700',
+  'dark:bg-white/10 dark:text-zinc-300'
+)
+
+const tagRemoveButtonClassName = clsx(
+  'inline-flex items-center justify-center rounded-full size-3.5',
+  'text-zinc-400 hover:text-zinc-600',
+  'dark:text-zinc-400 dark:hover:text-zinc-200',
+  'cursor-pointer focus:outline-hidden'
+)
+
+const RemoveIcon = () => (
+  <svg className="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+    <path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" />
+  </svg>
 )
 
 const ChevronIcon = () => (
@@ -161,12 +177,26 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
       multiple,
       'aria-label': ariaLabel,
       children,
+      value: selectedValues,
+      onChange: onSelectionChange,
       ...headlessProps
     } = props
+
+    const handleRemoveTag = (event: React.MouseEvent, itemToRemove: T) => {
+      event.preventDefault()
+      event.stopPropagation()
+      if (onSelectionChange && selectedValues) {
+        onSelectionChange(
+          selectedValues.filter((item) => item !== itemToRemove) as typeof selectedValues
+        )
+      }
+    }
 
     return (
       <Headless.Combobox
         {...headlessProps}
+        value={selectedValues}
+        onChange={onSelectionChange}
         multiple={multiple}
         immediate
         onClose={() => {
@@ -179,15 +209,7 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
             autoFocus={autoFocus}
             data-slot="control"
             aria-label={ariaLabel}
-            displayValue={(values: T[]) => {
-              if (displayInputValue) {
-                return displayInputValue(values)
-              }
-              return values
-                .map((option) => displayValue(option) ?? '')
-                .filter((option) => option.length > 0)
-                .join(', ')
-            }}
+            displayValue={() => ''}
             onChange={(event) => setQuery(event.target.value)}
             onClick={handleInputClick}
             placeholder={placeholder}
@@ -197,6 +219,23 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
             <ChevronIcon />
           </Headless.ComboboxButton>
         </span>
+        {selectedValues && selectedValues.length > 0 && (
+          <div className={tagContainerClassName}>
+            {selectedValues.map((item, index) => (
+              <span key={index} className={tagClassName}>
+                <span className="truncate max-w-48">{displayValue(item) ?? ''}</span>
+                <button
+                  type="button"
+                  className={tagRemoveButtonClassName}
+                  onClick={(event) => handleRemoveTag(event, item)}
+                  aria-label={`Remove ${displayValue(item) ?? ''}`}
+                >
+                  <RemoveIcon />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
         <Headless.ComboboxOptions transition anchor={anchor} className={optionsClassName}>
           {statusMessage && <div className={statusMessageClassName}>{statusMessage}</div>}
           {!statusMessage &&

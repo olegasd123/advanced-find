@@ -605,9 +605,6 @@ export const FilterItemValue = ({
               minCharacters={selection?.MinCharacters}
               placeholder="Search values"
               displayValue={(option) => option.displayName}
-              displayInputValue={(values) =>
-                values.map((option) => option.displayName).join(', ')
-              }
               value={selectedSelectionValues}
               disabled={isDisabled}
               onSearch={handleLookupSearch}

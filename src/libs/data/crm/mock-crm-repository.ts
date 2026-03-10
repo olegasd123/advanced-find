@@ -81,16 +81,12 @@ export default class MockCrmRepository implements CrmData {
         let items = data.value as Record<string, unknown>[]
 
         if (options?.filter) {
-          const containsMatches = [
-            ...options.filter.matchAll(/contains\((\w+),'([^']*)'\)/g),
-          ]
+          const containsMatches = [...options.filter.matchAll(/contains\((\w+),'([^']*)'\)/g)]
           if (containsMatches.length > 0) {
             items = items.filter((item) =>
               containsMatches.some(([, attr, query]) => {
                 const val = item[attr]
-                return (
-                  typeof val === 'string' && val.toLowerCase().includes(query.toLowerCase())
-                )
+                return typeof val === 'string' && val.toLowerCase().includes(query.toLowerCase())
               })
             )
           }

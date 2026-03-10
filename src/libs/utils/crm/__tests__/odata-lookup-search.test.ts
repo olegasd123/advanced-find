@@ -15,9 +15,7 @@ describe('buildLookupSearchFilter', () => {
   })
 
   it('builds single-attribute filter', () => {
-    expect(buildLookupSearchFilter(['lastname'], 'Smith')).toBe(
-      "contains(lastname,'Smith')"
-    )
+    expect(buildLookupSearchFilter(['lastname'], 'Smith')).toBe("contains(lastname,'Smith')")
   })
 
   it('builds multi-attribute OR filter', () => {
@@ -27,14 +25,10 @@ describe('buildLookupSearchFilter', () => {
   })
 
   it('escapes single quotes in query', () => {
-    expect(buildLookupSearchFilter(['name'], "O'Brien")).toBe(
-      "contains(name,'O''Brien')"
-    )
+    expect(buildLookupSearchFilter(['name'], "O'Brien")).toBe("contains(name,'O''Brien')")
   })
 
   it('trims whitespace from query', () => {
-    expect(buildLookupSearchFilter(['firstname'], '  John  ')).toBe(
-      "contains(firstname,'John')"
-    )
+    expect(buildLookupSearchFilter(['firstname'], '  John  ')).toBe("contains(firstname,'John')")
   })
 })
