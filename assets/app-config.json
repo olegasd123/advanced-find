@@ -100,7 +100,7 @@
               "MinItems": 1,
               "MaxItems": 10,
               "SearchDelay": 900,
-              "MinCharacters": 3
+              "MinCharacters": 2
             },
             "Lookup": {
               "AttributeNames": ["firstname", "lastname"],

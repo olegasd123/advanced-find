@@ -132,6 +132,8 @@ export function SearchCombobox<T>(props: SingleSearchComboboxProps<T>): React.Re
 export function SearchCombobox<T>(props: MultiSearchComboboxProps<T>): React.ReactElement
 export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
   const [query, setQuery] = React.useState('')
+  const inputId = React.useId()
+  const inputName = `search-combobox-${inputId}`
   const {
     options,
     isLoading,
@@ -209,6 +211,11 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
             autoFocus={autoFocus}
             data-slot="control"
             aria-label={ariaLabel}
+            name={inputName}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="none"
+            spellCheck={false}
             displayValue={(values: T[] | undefined) => displayInputValue?.(values ?? []) ?? ''}
             onChange={(event) => setQuery(event.target.value)}
             onClick={handleInputClick}
@@ -262,6 +269,11 @@ export function SearchCombobox<T>(props: SearchComboboxProps<T>) {
           autoFocus={autoFocus}
           data-slot="control"
           aria-label={ariaLabel}
+          name={inputName}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="none"
+          spellCheck={false}
           displayValue={(option: T | null) => (option ? (displayValue(option) ?? '') : '')}
           onChange={(event) => setQuery(event.target.value)}
           onClick={handleInputClick}
