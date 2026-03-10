@@ -54,10 +54,12 @@ interface LocalizationConfig {
   FilterConditionLabels?: Record<string, string>
 }
 
-interface SelectionConfig {
+export interface SelectionConfig {
   MaxItems?: number
   MinItems?: number
   Multiple?: boolean
+  SearchDelay?: number
+  MinCharacters?: number
 }
 
 interface LookupConfig {

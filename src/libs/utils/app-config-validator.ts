@@ -225,6 +225,21 @@ const collectFilterOptionIssues = (
         attributeName
       )
     }
+
+    const filterSelection = filterOption.Selection
+    if (filterSelection?.SearchDelay !== undefined) {
+      if (typeof filterSelection.SearchDelay !== 'number' || filterSelection.SearchDelay <= 0) {
+        addIssue(
+          context.issues,
+          `${location} has invalid Selection.SearchDelay (must be a positive number).`
+        )
+      }
+    }
+    if (filterSelection?.MinCharacters !== undefined) {
+      if (typeof filterSelection.MinCharacters !== 'number' || filterSelection.MinCharacters < 1) {
+        addIssue(context.issues, `${location} has invalid Selection.MinCharacters (must be >= 1).`)
+      }
+    }
   }
 
   return filterOptionIds

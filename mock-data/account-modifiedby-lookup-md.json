@@ -1,0 +1,136 @@
+{
+  "@odata.context": "https://rd-d365-sandbox.crm4.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions('account')/Attributes/Microsoft.Dynamics.CRM.LookupAttributeMetadata/$entity",
+  "MetadataId": "2e19a39f-63d9-4fb1-9353-b725eb311de0",
+  "HasChanged": null,
+  "AttributeOf": null,
+  "AttributeType": "Lookup",
+  "ColumnNumber": 54,
+  "DeprecatedVersion": null,
+  "IntroducedVersion": "5.0.0.0",
+  "EntityLogicalName": "account",
+  "IsCustomAttribute": false,
+  "IsPrimaryId": false,
+  "IsValidODataAttribute": true,
+  "IsPrimaryName": false,
+  "IsValidForCreate": false,
+  "IsValidForRead": true,
+  "IsValidForUpdate": false,
+  "CanBeSecuredForRead": false,
+  "CanBeSecuredForCreate": false,
+  "CanBeSecuredForUpdate": false,
+  "IsSecured": false,
+  "IsRetrievable": false,
+  "IsFilterable": false,
+  "IsSearchable": false,
+  "IsManaged": true,
+  "LinkedAttributeId": null,
+  "LogicalName": "modifiedby",
+  "IsValidForForm": true,
+  "IsRequiredForForm": false,
+  "IsValidForGrid": true,
+  "SchemaName": "ModifiedBy",
+  "ExternalName": null,
+  "IsLogical": false,
+  "IsDataSourceSecret": false,
+  "InheritsFrom": null,
+  "CreatedOn": "1900-01-01T00:00:00Z",
+  "ModifiedOn": "1900-01-01T00:00:00Z",
+  "SourceType": null,
+  "AutoNumberFormat": "",
+  "Targets": ["systemuser"],
+  "Format": "None",
+  "AttributeTypeName": {
+    "Value": "LookupType"
+  },
+  "Description": {
+    "LocalizedLabels": [
+      {
+        "Label": "Shows who last updated the record.",
+        "LanguageCode": 1033,
+        "IsManaged": true,
+        "MetadataId": "4f53c2fa-2241-db11-898a-0007e9e17ebd",
+        "HasChanged": null
+      },
+      {
+        "Label": "Affiche la personne à l'origine de la dernière mise à jour de l'enregistrement.",
+        "LanguageCode": 1036,
+        "IsManaged": true,
+        "MetadataId": "8c814976-0c3b-4ec3-855c-6490f49b0e0d",
+        "HasChanged": null
+      }
+    ],
+    "UserLocalizedLabel": {
+      "Label": "Shows who last updated the record.",
+      "LanguageCode": 1033,
+      "IsManaged": true,
+      "MetadataId": "4f53c2fa-2241-db11-898a-0007e9e17ebd",
+      "HasChanged": null
+    }
+  },
+  "DisplayName": {
+    "LocalizedLabels": [
+      {
+        "Label": "Modified By",
+        "LanguageCode": 1033,
+        "IsManaged": true,
+        "MetadataId": "4e53c2fa-2241-db11-898a-0007e9e17ebd",
+        "HasChanged": null
+      },
+      {
+        "Label": "Modifié par",
+        "LanguageCode": 1036,
+        "IsManaged": true,
+        "MetadataId": "83f5315f-80e3-4884-9bab-1bcf31d675ac",
+        "HasChanged": null
+      }
+    ],
+    "UserLocalizedLabel": {
+      "Label": "Modified By",
+      "LanguageCode": 1033,
+      "IsManaged": true,
+      "MetadataId": "4e53c2fa-2241-db11-898a-0007e9e17ebd",
+      "HasChanged": null
+    }
+  },
+  "IsAuditEnabled": {
+    "Value": false,
+    "CanBeChanged": false,
+    "ManagedPropertyLogicalName": "canmodifyauditsettings"
+  },
+  "IsGlobalFilterEnabled": {
+    "Value": false,
+    "CanBeChanged": true,
+    "ManagedPropertyLogicalName": "canmodifyglobalfiltersettings"
+  },
+  "IsSortableEnabled": {
+    "Value": false,
+    "CanBeChanged": true,
+    "ManagedPropertyLogicalName": "canmodifyissortablesettings"
+  },
+  "IsCustomizable": {
+    "Value": true,
+    "CanBeChanged": false,
+    "ManagedPropertyLogicalName": "iscustomizable"
+  },
+  "IsRenameable": {
+    "Value": true,
+    "CanBeChanged": false,
+    "ManagedPropertyLogicalName": "isrenameable"
+  },
+  "IsValidForAdvancedFind": {
+    "Value": true,
+    "CanBeChanged": true,
+    "ManagedPropertyLogicalName": "canmodifysearchsettings"
+  },
+  "RequiredLevel": {
+    "Value": "None",
+    "CanBeChanged": true,
+    "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+  },
+  "CanModifyAdditionalSettings": {
+    "Value": true,
+    "CanBeChanged": false,
+    "ManagedPropertyLogicalName": "canmodifyadditionalsettings"
+  },
+  "Settings": []
+}
