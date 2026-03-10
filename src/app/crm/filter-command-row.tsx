@@ -38,14 +38,17 @@ export const FilterCommandRow = ({
       >
         <div className="w-8 grow-0"></div>
         <div className="w-8 grow-0">
-          <Button outline onClick={handleResetClick} aria-label="Reset filters">
-            <ArrowPathIcon />
-          </Button>
+          {location === 'header' && (
+            <Button outline onClick={handleResetClick} aria-label="Reset filters">
+              <ArrowPathIcon />
+            </Button>
+          )}
         </div>
         <div className="w-36 grow-3">
           {location === 'header' && <span className="text-sm text-zinc-400">Attribute</span>}
           {location === 'footer' && (
             <Button
+              className="w-full !justify-start text-left"
               outline
               onClick={onAddCondition}
               aria-label="Add a condition"
