@@ -120,6 +120,20 @@ const areSameValues = (left: ConditionValue[], right: ConditionValue[]): boolean
   return true
 }
 
+const mergeCachedAndFetchedOptions = (
+  cachedOptions: Map<string, ConditionValueOption>,
+  fetchedOptions: ConditionValueOption[]
+): ConditionValueOption[] => {
+  const merged = new Map<string, ConditionValueOption>()
+  for (const [key, option] of cachedOptions) {
+    merged.set(key, option)
+  }
+  for (const option of fetchedOptions) {
+    merged.set(String(option.value), option)
+  }
+  return Array.from(merged.values())
+}
+
 export const FilterItemValue = ({
   filterOption,
   selectedFilterCondition,
@@ -438,10 +452,14 @@ export const FilterItemValue = ({
       return
     }
 
+    const optionsForSanitization = isOnDemandSearch
+      ? mergeCachedAndFetchedOptions(selectedOptionsCacheRef.current, selectableOptions)
+      : selectableOptions
+
     setConditionValues((previousValues) => {
       const sanitizedValues = sanitizeSelectableValues(
         previousValues,
-        selectableOptions,
+        optionsForSanitization,
         selectionMaxItems
       )
       const nextValues = isMultiSelection ? sanitizedValues : sanitizedValues.slice(0, 1)
@@ -450,6 +468,7 @@ export const FilterItemValue = ({
   }, [
     isMultiSelection,
     isSelectableAttribute,
+    isOnDemandSearch,
     selectableOptions,
     selectionMaxItems,
     normalizedSelectedFilterCondition,
@@ -519,14 +538,7 @@ export const FilterItemValue = ({
       return selectableOptions
     }
 
-    const merged = new Map<string, ConditionValueOption>()
-    for (const [key, option] of selectedOptionsCacheRef.current) {
-      merged.set(key, option)
-    }
-    for (const option of selectableOptions) {
-      merged.set(String(option.value), option)
-    }
-    return Array.from(merged.values())
+    return mergeCachedAndFetchedOptions(selectedOptionsCacheRef.current, selectableOptions)
   }, [selectableOptions, isOnDemandSearch])
 
   const effectiveOptions = isOnDemandSearch ? onDemandSearchOptions : selectableOptions
