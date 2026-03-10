@@ -63,7 +63,7 @@ export const escapeXml = (value: string): string =>
     .replace(/>/g, '&gt;')
 
 export const parseValues = (condition: string, values: ConditionValue[]): ConditionValue[] => {
-  if (condition !== 'in') {
+  if (condition !== 'in' && condition !== 'not-in') {
     return values
   }
 
@@ -252,6 +252,9 @@ const createFilterExpression = (conditionValue: AppliedFilterCondition): string 
 
   if (condition === 'in') {
     return `${attributeName} in (${literals.join(',')})`
+  }
+  if (condition === 'not-in') {
+    return `not (${attributeName} in (${literals.join(',')}))`
   }
   if (condition === 'begins-with') {
     return `startswith(${attributeName},${firstLiteral})`

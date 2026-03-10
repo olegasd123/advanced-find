@@ -60,6 +60,10 @@ export const formatConditionOperator = (condition: string | null | undefined): s
       return 'contains'
     case 'not-like':
       return 'does not contain'
+    case 'in':
+      return 'in'
+    case 'not-in':
+      return 'not in'
     case 'begins-with':
       return 'starts with'
     case 'not-begin-with':

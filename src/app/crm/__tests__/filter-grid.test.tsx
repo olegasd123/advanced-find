@@ -55,6 +55,7 @@ const createAppConfig = (overrides?: Partial<AppConfig>): AppConfig => ({
         like: 'contains',
         'not-like': 'does not contain',
         in: 'in',
+        'not-in': 'not in',
         'begins-with': 'begins with',
         'not-begin-with': 'does not begin with',
         'ends-with': 'ends with',

@@ -36,10 +36,19 @@ const getCrmFilterConditionsOptions = (
     normalizedType === 'uniqueidentifier'
   ) {
     filters.push(
-      ...['in', 'begins-with', 'not-begin-with', 'ends-with', 'not-end-with', 'like', 'not-like']
+      ...[
+        'in',
+        'not-in',
+        'begins-with',
+        'not-begin-with',
+        'ends-with',
+        'not-end-with',
+        'like',
+        'not-like',
+      ]
     )
   } else if ((normalizedType === 'picklist' || normalizedType === 'lookup') && isMultiSelection) {
-    filters.push(...['in'])
+    filters.push(...['in', 'not-in'])
   } else if (
     normalizedType === 'number' ||
     normalizedType === 'integer' ||
@@ -48,7 +57,7 @@ const getCrmFilterConditionsOptions = (
     normalizedType === 'double' ||
     normalizedType === 'money'
   ) {
-    filters.push(...['in', 'ge', 'gt', 'le', 'lt'])
+    filters.push(...['in', 'not-in', 'ge', 'gt', 'le', 'lt'])
   } else if (normalizedType === 'datetime') {
     filters.push(...['ge', 'gt', 'le', 'lt', 'today', 'tomorrow', 'yesterday'])
   }

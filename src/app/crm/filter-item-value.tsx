@@ -578,7 +578,10 @@ export const FilterItemValue = ({
       return undefined
     }
 
-    if (isPicklistAttribute && normalizedSelectedFilterCondition === 'in') {
+    if (
+      isPicklistAttribute &&
+      (normalizedSelectedFilterCondition === 'in' || normalizedSelectedFilterCondition === 'not-in')
+    ) {
       return undefined
     }
 
@@ -719,7 +722,11 @@ export const FilterItemValue = ({
         )
       }
 
-      if (isPicklistAttribute && normalizedSelectedFilterCondition === 'in') {
+      if (
+        isPicklistAttribute &&
+        (normalizedSelectedFilterCondition === 'in' ||
+          normalizedSelectedFilterCondition === 'not-in')
+      ) {
         return (
           <Input
             type="text"
@@ -769,7 +776,8 @@ export const FilterItemValue = ({
 
   if (
     numberAttributeTypes.has(selectedAttributeType ?? '') &&
-    normalizedSelectedFilterCondition !== 'in'
+    normalizedSelectedFilterCondition !== 'in' &&
+    normalizedSelectedFilterCondition !== 'not-in'
   ) {
     return (
       <Input
@@ -796,7 +804,9 @@ export const FilterItemValue = ({
     <Input
       type="text"
       placeholder={
-        normalizedSelectedFilterCondition === 'in' ? 'Use comma separated values' : 'Value'
+        normalizedSelectedFilterCondition === 'in' || normalizedSelectedFilterCondition === 'not-in'
+          ? 'Use comma separated values'
+          : 'Value'
       }
       value={selectedConditionValue.toString()}
       disabled={isDisabled}

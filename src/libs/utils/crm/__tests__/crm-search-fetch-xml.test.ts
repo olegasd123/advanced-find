@@ -94,4 +94,18 @@ describe('crm-search-fetch-xml', () => {
     expect(xml).toContain('<attribute name="accountid" />')
     expect(xml).toContain('<condition attribute="name" operator="eq" value="Acme" />')
   })
+
+  it('builds not-in condition XML with value list', () => {
+    const xml = buildCrmFilterFetchXml('account', [
+      {
+        filterOption: { EntityName: 'account', AttributeName: 'name', AttributeType: 'string' },
+        condition: 'not-in',
+        values: ['A, B'],
+      },
+    ])
+
+    expect(xml).toContain(
+      '<condition attribute="name" operator="not-in"><value>A</value><value>B</value></condition>'
+    )
+  })
 })

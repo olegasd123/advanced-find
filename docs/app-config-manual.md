@@ -424,6 +424,7 @@ The `Localization` section allows customizing display labels for filter conditio
     "eq": "Equal",
     "ne": "Not equal",
     "in": "In",
+    "not-in": "Not in",
     "null": "Does not contain data",
     "not-null": "Contains data",
     "begins-with": "Begins with",
@@ -546,10 +547,23 @@ Below is a minimal yet complete configuration for a single entity:
       "FilterConditionLabels": {
         "eq": "Equal",
         "ne": "Not equal",
-        "like": "Contains",
-        "not-like": "Does not contain",
+        "in": "In",
+        "not-in": "Not in",
         "null": "Does not contain data",
-        "not-null": "Contains data"
+        "not-null": "Contains data",
+        "begins-with": "Begins with",
+        "not-begin-with": "Does not begin with",
+        "ends-with": "Ends with",
+        "not-end-with": "Does not end with",
+        "gt": "Greater than",
+        "ge": "Greater than or equal",
+        "lt": "Less than",
+        "le": "Less than or equal",
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "yesterday": "Yesterday",
+        "like": "Contains",
+        "not-like": "Does not contain"
       }
     }
   }

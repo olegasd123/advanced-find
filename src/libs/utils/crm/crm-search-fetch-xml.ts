@@ -121,13 +121,13 @@ const createFetchConditionXml = (
     return undefined
   }
 
-  if (condition === 'in') {
+  if (condition === 'in' || condition === 'not-in') {
     const valuesXml = values
       .map(
         (value) => `<value>${escapeXml(toFetchValue(filterOption.AttributeType, value))}</value>`
       )
       .join('')
-    return `<condition attribute="${escapedAttributeName}" operator="in">${valuesXml}</condition>`
+    return `<condition attribute="${escapedAttributeName}" operator="${condition}">${valuesXml}</condition>`
   }
 
   const targetValue = toFetchValue(filterOption.AttributeType, firstValue)

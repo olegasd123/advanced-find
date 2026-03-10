@@ -257,6 +257,7 @@
         "eq": "Equal",
         "ne": "Not equal",
         "in": "In",
+        "not-in": "Not in",
         "null": "Does not contain data",
         "not-null": "Contains data",
         "begins-with": "Begins with",

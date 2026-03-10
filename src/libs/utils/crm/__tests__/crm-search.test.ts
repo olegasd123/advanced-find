@@ -42,14 +42,17 @@ describe('crm-search helpers', () => {
     )
   })
 
-  it('parses in-condition values from single comma-separated item', () => {
+  it('parses in/not-in values from single comma-separated item', () => {
     expect(parseValues('in', [' a, ,b, c '])).toEqual(['a', 'b', 'c'])
+    expect(parseValues('not-in', [' a, ,b, c '])).toEqual(['a', 'b', 'c'])
   })
 
-  it('does not parse non-in or non-single-string values', () => {
+  it('does not parse other conditions or non-single-string values', () => {
     expect(parseValues('eq', [' a, b '])).toEqual([' a, b '])
     expect(parseValues('in', ['a', 'b'])).toEqual(['a', 'b'])
     expect(parseValues('in', [1])).toEqual([1])
+    expect(parseValues('not-in', ['a', 'b'])).toEqual(['a', 'b'])
+    expect(parseValues('not-in', [1])).toEqual([1])
   })
 
   it('converts values for FetchXML', () => {
@@ -124,6 +127,11 @@ describe('buildCrmEntitiesFilter', () => {
         values: ["A, B's"],
       },
       {
+        filterOption: { EntityName: 'account', AttributeName: 'name', AttributeType: 'string' },
+        condition: 'not-in',
+        values: ['C, D'],
+      },
+      {
         filterOption: {
           EntityName: 'account',
           AttributeName: 'createdon',
@@ -142,7 +150,7 @@ describe('buildCrmEntitiesFilter', () => {
 
     const filter = buildCrmEntitiesFilter('account', conditions)
     expect(filter).toBe(
-      "(name in ('A','B''s')) and (Microsoft.Dynamics.CRM.Today(PropertyName='createdon'))"
+      "(name in ('A','B''s')) and (not (name in ('C','D'))) and (Microsoft.Dynamics.CRM.Today(PropertyName='createdon'))"
     )
 
     const empty = buildCrmEntitiesFilter('account', [

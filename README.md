@@ -64,7 +64,7 @@ All search behavior is defined in `assets/app-config.json`. The config specifies
 - **Filter Categories** — logical grouping of filters in the UI
 - **Result View** — columns, pagination, and default sort order
 - **Relation Paths** — multi-entity traversal for filters and columns on related records
-- **Localization** — custom labels for filter conditions
+- **Localization** — custom labels for filter conditions (for example `in`, `not-in`)
 
 See [docs/app-config-manual.md](docs/app-config-manual.md) for the full configuration reference.
 
