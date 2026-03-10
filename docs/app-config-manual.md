@@ -216,14 +216,14 @@ The `Default` object controls how a filter option behaves when initially loaded.
 }
 ```
 
-| Property              | Type    | Default | Description                                                                                              |
-| --------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------- |
-| `IsShown`             | boolean | `false` | When `true`, this filter is automatically added to the filter grid on initial load.                      |
-| `Condition`           | string  | `"eq"`  | Default condition operator. See the [Localization](#localization) section for available condition codes. |
-| `Values`              | array   | `[]`    | Pre-filled filter values. Array of strings or numbers.                                                   |
-| `CannotBeRemoved`     | boolean | `false` | When `true`, the user cannot delete this filter row from the grid.                                       |
-| `IsAttributeDisabled` | boolean | `false` | When `true`, the attribute dropdown is disabled (user cannot change which attribute is filtered).        |
-| `IsDisabled`          | boolean | `false` | When `true`, the entire filter row is disabled (read-only).                                              |
+| Property              | Type    | Default | Description                                                                                                                              |
+| --------------------- | ------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `IsShown`             | boolean | `false` | When `true`, this filter is automatically added to the filter grid on initial load.                                                      |
+| `Condition`           | string  | `"eq"`  | Default condition operator. See the [Localization](#localization) section for available condition codes.                                 |
+| `Values`              | array   | `[]`    | Pre-filled filter values. Array of strings or numbers. Not supported for lookup filters in on-demand mode (`Selection.SearchDelay > 0`). |
+| `CannotBeRemoved`     | boolean | `false` | When `true`, the user cannot delete this filter row from the grid.                                                                       |
+| `IsAttributeDisabled` | boolean | `false` | When `true`, the attribute dropdown is disabled (user cannot change which attribute is filtered).                                        |
+| `IsDisabled`          | boolean | `false` | When `true`, the entire filter row is disabled (read-only).                                                                              |
 
 **Runtime fallback for multi-value selections:** If the active condition is `eq` and the user selected more than one value, the search runs as `in`. If the active condition is `ne` and the user selected more than one value, the search runs as `not-in`.
 
@@ -285,6 +285,8 @@ When `SearchDelay` is set on a lookup filter's `Selection`, the filter switches 
 5. Matching records are displayed in the dropdown.
 
 Previously selected values are preserved across searches, so selecting "John Smith" and then searching for "Jane" will not lose the existing selection.
+
+Default values are not supported in this mode. If a lookup filter uses `Selection.SearchDelay > 0`, do not rely on `Default.Values` for preselection.
 
 **Example:** A lookup for the `modifiedby` attribute that searches by first and last name:
 
