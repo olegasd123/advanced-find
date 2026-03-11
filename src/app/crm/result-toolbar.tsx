@@ -1,5 +1,11 @@
 import * as React from 'react'
-import { ArrowLeftIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/16/solid'
+import {
+  ArrowLeftIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  FunnelIcon,
+  XMarkIcon,
+} from '@heroicons/react/16/solid'
 import { MagnifyingGlassIcon, ViewColumnsIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/catalyst/button'
 import { Checkbox } from '@/components/catalyst/checkbox'
@@ -51,6 +57,73 @@ export const ResultToolbar = ({
 }: ResultToolbarProps) => {
   const appliedFilterGroups = getAppliedFilterGroups(appliedFilters)
   const visibleColumnsCount = visibleColumnKeys.length
+  const appliedFiltersContainerRef = React.useRef<HTMLDivElement | null>(null)
+  const [canScrollAppliedFiltersLeft, setCanScrollAppliedFiltersLeft] = React.useState(false)
+  const [canScrollAppliedFiltersRight, setCanScrollAppliedFiltersRight] = React.useState(false)
+
+  const updateAppliedFiltersScrollState = React.useCallback((): void => {
+    const container = appliedFiltersContainerRef.current
+    if (!container) {
+      setCanScrollAppliedFiltersLeft(false)
+      setCanScrollAppliedFiltersRight(false)
+      return
+    }
+
+    const maxScrollLeft = container.scrollWidth - container.clientWidth
+    const hasOverflow = maxScrollLeft > 1
+    setCanScrollAppliedFiltersLeft(hasOverflow && container.scrollLeft > 1)
+    setCanScrollAppliedFiltersRight(hasOverflow && container.scrollLeft < maxScrollLeft - 1)
+  }, [])
+
+  React.useEffect(() => {
+    const container = appliedFiltersContainerRef.current
+    if (!container) {
+      setCanScrollAppliedFiltersLeft(false)
+      setCanScrollAppliedFiltersRight(false)
+      return
+    }
+
+    const handleScroll = (): void => {
+      updateAppliedFiltersScrollState()
+    }
+    const handleResize = (): void => {
+      updateAppliedFiltersScrollState()
+    }
+
+    container.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('resize', handleResize)
+
+    const resizeObserver =
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(handleResize)
+    resizeObserver?.observe(container)
+    handleResize()
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleResize)
+      resizeObserver?.disconnect()
+    }
+  }, [showAppliedFilters, updateAppliedFiltersScrollState])
+
+  React.useEffect(() => {
+    const frameId = window.requestAnimationFrame(updateAppliedFiltersScrollState)
+    return () => {
+      window.cancelAnimationFrame(frameId)
+    }
+  }, [appliedFilterGroups, updateAppliedFiltersScrollState])
+
+  const handleAppliedFiltersScroll = React.useCallback((direction: 'left' | 'right'): void => {
+    const container = appliedFiltersContainerRef.current
+    if (!container) {
+      return
+    }
+
+    const scrollDelta = Math.max(120, Math.floor(container.clientWidth * 0.6))
+    container.scrollBy({
+      left: direction === 'left' ? -scrollDelta : scrollDelta,
+      behavior: 'smooth',
+    })
+  }, [])
 
   return (
     <div className="flex flex-row items-center gap-4 py-4 border-b border-b-gray-300">
@@ -62,32 +135,59 @@ export const ResultToolbar = ({
         <div className="min-w-0 flex-1 overflow-hidden flex items-center gap-1.5 text-sm text-zinc-600">
           <FunnelIcon className="size-4 shrink-0 text-zinc-400" title="Applied filters" />
           {appliedFilterGroups.length > 0 ? (
-            <div className="hide-scrollbar flex items-center gap-1 overflow-x-auto">
-              {appliedFilterGroups.map((group, groupIndex) => (
-                <React.Fragment key={group.conditionName}>
-                  {groupIndex > 0 && <span className="text-zinc-400">;</span>}
-                  <span className="shrink-0">{group.conditionName}</span>
-                  {group.chips.map((chip, chipIndex) => (
-                    <span
-                      key={`${group.conditionName}-${chipIndex}`}
-                      className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-zinc-600/10 px-1.5 py-0.5 text-xs font-medium text-zinc-700"
-                      title={chip.tooltip}
-                    >
-                      {chip.label}
-                      {onRemoveFilterValue && chip.isRemovable && (
-                        <button
-                          type="button"
-                          className="ml-0.5 inline-flex items-center rounded hover:bg-zinc-600/20"
-                          aria-label={`Remove ${chip.tooltip}`}
-                          onClick={() => onRemoveFilterValue(chip.filterIndex, chip.valueIndex)}
-                        >
-                          <XMarkIcon className="size-3" />
-                        </button>
-                      )}
-                    </span>
-                  ))}
-                </React.Fragment>
-              ))}
+            <div className="min-w-0 flex flex-1 items-center gap-1">
+              {canScrollAppliedFiltersLeft && (
+                <button
+                  type="button"
+                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border border-zinc-300 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+                  aria-label="Scroll applied filters left"
+                  title="Scroll left"
+                  onClick={() => handleAppliedFiltersScroll('left')}
+                >
+                  <ChevronLeftIcon className="size-3.5" />
+                </button>
+              )}
+              <div
+                ref={appliedFiltersContainerRef}
+                className="hide-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto"
+              >
+                {appliedFilterGroups.map((group, groupIndex) => (
+                  <React.Fragment key={group.conditionName}>
+                    {groupIndex > 0 && <span className="text-zinc-400">;</span>}
+                    <span className="shrink-0">{group.conditionName}</span>
+                    {group.chips.map((chip, chipIndex) => (
+                      <span
+                        key={`${group.conditionName}-${chipIndex}`}
+                        className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-zinc-600/10 px-1.5 py-0.5 text-xs font-medium text-zinc-700"
+                        title={chip.tooltip}
+                      >
+                        {chip.label}
+                        {onRemoveFilterValue && chip.isRemovable && (
+                          <button
+                            type="button"
+                            className="ml-0.5 inline-flex items-center rounded hover:bg-zinc-600/20"
+                            aria-label={`Remove ${chip.tooltip}`}
+                            onClick={() => onRemoveFilterValue(chip.filterIndex, chip.valueIndex)}
+                          >
+                            <XMarkIcon className="size-3" />
+                          </button>
+                        )}
+                      </span>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
+              {canScrollAppliedFiltersRight && (
+                <button
+                  type="button"
+                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border border-zinc-300 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+                  aria-label="Scroll applied filters right"
+                  title="Scroll right"
+                  onClick={() => handleAppliedFiltersScroll('right')}
+                >
+                  <ChevronRightIcon className="size-3.5" />
+                </button>
+              )}
             </div>
           ) : (
             <span>none</span>
