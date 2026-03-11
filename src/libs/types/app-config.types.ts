@@ -45,8 +45,8 @@ export interface TableColumnConfig {
   Width?: number | string
 }
 
-interface SearchSchemaConfig {
-  Entities: EntityConfig[]
+interface CrmSearchSchemaConfig {
+  Presets: CrmSearchPresetConfig[]
   Localization: LocalizationConfig
 }
 
@@ -68,18 +68,22 @@ interface LookupConfig {
 }
 
 export interface AppConfig {
-  SearchSchema?: SearchSchemaConfig
+  CrmSearchSchema?: CrmSearchSchemaConfig
 }
 
-export interface EntityConfig {
+export interface CrmSearchPresetConfig {
+  EntityName: string
+  DisplayName?: string
+  IsActive?: boolean
   FilterUniqueOptionsOnly?: boolean
   FilterCategories?: FilterCategoryConfig[]
   RelationPaths?: RelationPathConfig[]
   FilterOptions: FilterOptionConfig[]
   DefaultFilterGroups?: DefaultFilterGroupConfig[]
-  LogicalName: string
   ResultView: ResultViewConfig
 }
+
+export type EntityConfig = CrmSearchPresetConfig
 
 export interface FilterCategoryConfig {
   Id: string

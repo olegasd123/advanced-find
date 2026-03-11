@@ -39,7 +39,7 @@ export const getTargetTableColumn = (
 
   const chain = getTableColumnChain(column, relationPathById)
   return {
-    EntityName: getPathTargetEntityName(entityConfig.LogicalName, chain),
+    EntityName: getPathTargetEntityName(entityConfig.EntityName, chain),
   }
 }
 
@@ -128,7 +128,7 @@ export const resolveSearchTableColumns = (entityConfig: EntityConfig): SearchTab
   return entityConfig.ResultView.Columns.map((column, index) => {
     const chain = getTableColumnChain(column, relationPathById)
     const attributeNames = getResolvedTableColumnAttributes(column)
-    const entityName = getPathTargetEntityName(entityConfig.LogicalName, chain)
+    const entityName = getPathTargetEntityName(entityConfig.EntityName, chain)
     const isRootColumn = chain.length === 0
     const attributes = attributeNames.map((attributeName, attributeIndex) => ({
       attributeName,

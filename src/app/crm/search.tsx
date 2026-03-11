@@ -32,17 +32,21 @@ export const Search = () => {
   const appConfig = appConfigState.appConfig
   const crmRepository = useCrmRepository()
 
-  const configEntities = appConfig?.SearchSchema?.Entities
+  const configPresets = appConfig?.CrmSearchSchema?.Presets
+  const activePresets = React.useMemo(
+    () => configPresets?.filter((preset) => preset.IsActive !== false) ?? [],
+    [configPresets]
+  )
 
   const {
-    currentEntityConfig,
+    currentPresetConfig,
     isResultViewVisible,
     appliedFilters,
-    selectEntityByIndex,
+    selectPresetByIndex,
     openResultView,
     closeResultView,
     updateAppliedFilters,
-  } = useFilterState(configEntities)
+  } = useFilterState(activePresets)
 
   const {
     entitiesMetadata,
@@ -52,43 +56,44 @@ export const Search = () => {
     isMetadataLoading,
   } = useEntityMetadata({
     crmRepository,
-    configEntities,
-    currentEntityConfig,
+    configPresets: activePresets,
+    currentPresetConfig,
   })
 
   const { results, isResultsLoading, resultsError, executeSearch, resetResults } = useSearchQuery({
     crmRepository,
-    currentEntityConfig,
+    currentPresetConfig,
     entitiesMetadata,
     searchTableColumns,
   })
 
   React.useEffect(() => {
     resetResults()
-  }, [currentEntityConfig?.LogicalName, resetResults])
+  }, [currentPresetConfig, resetResults])
 
-  const resultViewPagination = currentEntityConfig?.ResultView.Pagination
-  const resultViewDefaultSort = currentEntityConfig?.ResultView.DefaultSort
-  const resultViewShowAppliedFilters = currentEntityConfig?.ResultView.ShowAppliedFilters === true
+  const resultViewPagination = currentPresetConfig?.ResultView.Pagination
+  const resultViewDefaultSort = currentPresetConfig?.ResultView.DefaultSort
+  const resultViewShowAppliedFilters = currentPresetConfig?.ResultView.ShowAppliedFilters === true
 
-  const selectedEntityIndex = currentEntityConfig
-    ? (configEntities?.findIndex(
-        (entity) => entity.LogicalName === currentEntityConfig.LogicalName
-      ) ?? -1)
+  const selectedPresetIndex = currentPresetConfig
+    ? activePresets.findIndex((preset) => preset === currentPresetConfig)
     : -1
+  const currentPresetKey = currentPresetConfig
+    ? `${currentPresetConfig.EntityName}-${selectedPresetIndex >= 0 ? selectedPresetIndex : 'selected'}`
+    : ''
 
-  const handleCurrentEntityConfigChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const handleCurrentPresetChanged = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     const selectedIndex = parseInt(event.target.value, 10)
     if (Number.isNaN(selectedIndex)) {
-      selectEntityByIndex(-1)
+      selectPresetByIndex(-1)
       return
     }
 
-    selectEntityByIndex(selectedIndex)
+    selectPresetByIndex(selectedIndex)
   }
 
   const handleSearch = async (conditions: AppliedFilterCondition[]): Promise<void> => {
-    if (!crmRepository || !currentEntityConfig) {
+    if (!crmRepository || !currentPresetConfig) {
       return
     }
 
@@ -113,25 +118,27 @@ export const Search = () => {
     return <div className="py-6 text-rose-700">{appConfigState.errorMessage}</div>
   }
 
-  if (!configEntities || configEntities.length === 0) {
-    return <div className="py-6 text-zinc-600">No entities found in app configuration.</div>
+  if (activePresets.length === 0) {
+    return <div className="py-6 text-zinc-600">No active presets found in app configuration.</div>
   }
 
   return (
     <div>
-      {configEntities.length > 1 && (
+      {activePresets.length > 1 && (
         <Select
-          value={selectedEntityIndex >= 0 ? String(selectedEntityIndex) : ''}
-          onChange={handleCurrentEntityConfigChanged}
+          value={selectedPresetIndex >= 0 ? String(selectedPresetIndex) : ''}
+          onChange={handleCurrentPresetChanged}
         >
           <option value="" disabled>
-            Select an entity
+            Select preset
           </option>
-          {configEntities.map((entityInfo, index) => (
-            <option key={entityInfo.LogicalName} value={index}>
-              {entitiesMetadata.find(
-                (entityMetadata) => entityInfo.LogicalName === entityMetadata.LogicalName
-              )?.DisplayCollectionName.UserLocalizedLabel.Label ?? entityInfo.LogicalName}
+          {activePresets.map((presetInfo, index) => (
+            <option key={`${presetInfo.EntityName}-${index}`} value={index}>
+              {presetInfo.DisplayName ??
+                entitiesMetadata.find(
+                  (entityMetadata) => presetInfo.EntityName === entityMetadata.LogicalName
+                )?.DisplayCollectionName.UserLocalizedLabel.Label ??
+                presetInfo.EntityName}
             </option>
           ))}
         </Select>
@@ -139,7 +146,7 @@ export const Search = () => {
 
       {metadataErrorMessage && <div className="py-3 text-rose-700">{metadataErrorMessage}</div>}
 
-      {currentEntityConfig && (
+      {currentPresetConfig && (
         <div className={isResultViewVisible ? 'hidden' : ''}>
           {isMetadataLoading ? (
             <MetadataSkeleton />
@@ -147,11 +154,11 @@ export const Search = () => {
             <ViewErrorBoundary
               viewName="filter view"
               message="The filter view failed to render. Try again or reload the page."
-              resetKey={`filter-${currentEntityConfig.LogicalName}`}
+              resetKey={`filter-${currentPresetKey}`}
             >
               <FilterGrid
-                key={currentEntityConfig.LogicalName}
-                entityConfig={currentEntityConfig}
+                key={currentPresetKey}
+                entityConfig={currentPresetConfig}
                 onSearch={handleSearch}
               />
             </ViewErrorBoundary>
@@ -159,17 +166,17 @@ export const Search = () => {
         </div>
       )}
 
-      {currentEntityConfig && isResultViewVisible && (
+      {currentPresetConfig && isResultViewVisible && (
         <ViewErrorBoundary
           viewName="result view"
           message="The result view failed to render. Try again or go back to filters."
-          resetKey={`result-${currentEntityConfig.LogicalName}-${results.length}`}
+          resetKey={`result-${currentPresetKey}-${results.length}`}
         >
           <ResultGrid
             results={results}
             tableColumns={searchTableColumns}
             tableColumnDisplayNames={tableColumnDisplayNames}
-            columnVisibilityStorageKey={currentEntityConfig.LogicalName}
+            columnVisibilityStorageKey={currentPresetKey}
             pagination={resultViewPagination}
             defaultSort={resultViewDefaultSort}
             showAppliedFilters={resultViewShowAppliedFilters}

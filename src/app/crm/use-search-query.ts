@@ -10,7 +10,7 @@ const errorReporter = createErrorReporter('useSearchQuery')
 
 interface UseSearchQueryParams {
   crmRepository: CrmData | null
-  currentEntityConfig: EntityConfig | undefined
+  currentPresetConfig: EntityConfig | undefined
   entitiesMetadata: EntityMetadata[]
   searchTableColumns: SearchTableColumn[]
 }
@@ -25,7 +25,7 @@ interface UseSearchQueryResult {
 
 export const useSearchQuery = ({
   crmRepository,
-  currentEntityConfig,
+  currentPresetConfig,
   entitiesMetadata,
   searchTableColumns,
 }: UseSearchQueryParams): UseSearchQueryResult => {
@@ -43,12 +43,12 @@ export const useSearchQuery = ({
 
   const executeSearch = React.useCallback(
     async (conditions: AppliedFilterCondition[]): Promise<void> => {
-      if (!crmRepository || !currentEntityConfig) {
+      if (!crmRepository || !currentPresetConfig) {
         return
       }
 
       const selectedEntityMetadata = entitiesMetadata.find(
-        (entityMetadata) => entityMetadata.LogicalName === currentEntityConfig.LogicalName
+        (entityMetadata) => entityMetadata.LogicalName === currentPresetConfig.EntityName
       )
       const entitySetName =
         selectedEntityMetadata?.EntitySetName ?? selectedEntityMetadata?.LogicalCollectionName
@@ -59,7 +59,7 @@ export const useSearchQuery = ({
           error: new Error('Entity collection name is missing for search request'),
           userMessage: 'Search cannot run because entity metadata is incomplete.',
           context: {
-            logicalName: currentEntityConfig.LogicalName,
+            logicalName: currentPresetConfig.EntityName,
           },
         })
         setResultsError(userMessage)
@@ -67,7 +67,7 @@ export const useSearchQuery = ({
       }
 
       const primaryIdAttribute =
-        selectedEntityMetadata?.PrimaryIdAttribute ?? `${currentEntityConfig.LogicalName}id`
+        selectedEntityMetadata?.PrimaryIdAttribute ?? `${currentPresetConfig.EntityName}id`
       const requestId = ++requestIdRef.current
       const isRequestStale = (): boolean => requestId !== requestIdRef.current
 
@@ -77,7 +77,7 @@ export const useSearchQuery = ({
       try {
         const searchService = new SearchService(crmRepository)
         const nextResults = await searchService.executeSearch({
-          entityLogicalName: currentEntityConfig.LogicalName,
+          entityLogicalName: currentPresetConfig.EntityName,
           entitySetName,
           searchTableColumns,
           conditions,
@@ -99,7 +99,7 @@ export const useSearchQuery = ({
           error,
           userMessage: 'Failed to load search results.',
           context: {
-            logicalName: currentEntityConfig.LogicalName,
+            logicalName: currentPresetConfig.EntityName,
             entitySetName,
           },
         })
@@ -111,7 +111,7 @@ export const useSearchQuery = ({
         }
       }
     },
-    [crmRepository, currentEntityConfig, entitiesMetadata, searchTableColumns]
+    [crmRepository, currentPresetConfig, entitiesMetadata, searchTableColumns]
   )
 
   return { results, isResultsLoading, resultsError, executeSearch, resetResults }

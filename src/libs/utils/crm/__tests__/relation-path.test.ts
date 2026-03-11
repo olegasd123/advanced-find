@@ -9,7 +9,7 @@ import {
 } from '@/libs/utils/crm/relation-path'
 
 const createEntityConfig = (): EntityConfig => ({
-  LogicalName: 'account',
+  EntityName: 'account',
   FilterOptions: [],
   ResultView: {
     Columns: [],

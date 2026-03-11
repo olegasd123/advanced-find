@@ -7,7 +7,7 @@ The application is configured through a single JSON file located at `assets/app-
 - [File Location and Loading](#file-location-and-loading)
 - [Validation and Errors](#validation-and-errors)
 - [Top-Level Structure](#top-level-structure)
-- [Entity Configuration](#entity-configuration)
+- [Preset Configuration](#preset-configuration)
 - [Relation Paths](#relation-paths)
 - [Filter Categories](#filter-categories)
 - [Filter Options](#filter-options)
@@ -59,28 +59,31 @@ If validation fails:
 
 ```json
 {
-  "SearchSchema": {
-    "Entities": [],
+  "CrmSearchSchema": {
+    "Presets": [],
     "Localization": {}
   }
 }
 ```
 
-| Property                    | Type   | Required | Description                                                                                    |
-| --------------------------- | ------ | -------- | ---------------------------------------------------------------------------------------------- |
-| `SearchSchema`              | object | No       | Root container for all search-related configuration.                                           |
-| `SearchSchema.Entities`     | array  | Yes      | List of CRM entity configurations. Each entry defines filters and result views for one entity. |
-| `SearchSchema.Localization` | object | Yes      | Localization settings (e.g., filter condition labels).                                         |
+| Property                       | Type   | Required | Description                                                                 |
+| ------------------------------ | ------ | -------- | --------------------------------------------------------------------------- |
+| `CrmSearchSchema`              | object | No       | Root container for all CRM search configuration.                            |
+| `CrmSearchSchema.Presets`      | array  | Yes      | List of search presets. Each preset defines one search setup for an entity. |
+| `CrmSearchSchema.Localization` | object | Yes      | Localization settings (e.g., filter condition labels).                      |
 
 ---
 
-## Entity Configuration
+## Preset Configuration
 
-Each entry in the `Entities` array represents one searchable CRM entity.
+Each entry in the `Presets` array represents one searchable preset.
+You can add multiple presets with the same `EntityName` when you need different filters or result views.
 
 ```json
 {
-  "LogicalName": "invoice",
+  "EntityName": "invoice",
+  "DisplayName": "Invoices",
+  "IsActive": true,
   "FilterUniqueOptionsOnly": true,
   "FilterCategories": [],
   "RelationPaths": [],
@@ -90,15 +93,17 @@ Each entry in the `Entities` array represents one searchable CRM entity.
 }
 ```
 
-| Property                  | Type    | Required | Default | Description                                                                |
-| ------------------------- | ------- | -------- | ------- | -------------------------------------------------------------------------- |
-| `LogicalName`             | string  | **Yes**  | -       | The CRM entity logical name (e.g., `"invoice"`, `"account"`).              |
-| `FilterUniqueOptionsOnly` | boolean | No       | `false` | When `true`, each filter option can only be added to the filter grid once. |
-| `FilterCategories`        | array   | No       | `[]`    | Categories for organizing filter options in the UI dropdown.               |
-| `RelationPaths`           | array   | No       | `[]`    | Reusable relation path definitions for accessing related entities.         |
-| `FilterOptions`           | array   | **Yes**  | -       | Available filter options users can add to the search.                      |
-| `DefaultFilterGroups`     | array   | No       | `[]`    | Pre-configured filter groups shown when the search loads.                  |
-| `ResultView`              | object  | **Yes**  | -       | Defines result table columns, pagination, and sorting.                     |
+| Property                  | Type    | Required | Default | Description                                                                     |
+| ------------------------- | ------- | -------- | ------- | ------------------------------------------------------------------------------- |
+| `EntityName`              | string  | **Yes**  | -       | The CRM entity logical name (for example `"invoice"` or `"account"`).           |
+| `DisplayName`             | string  | No       | -       | Label for the entity selector. If omitted, CRM `DisplayCollectionName` is used. |
+| `IsActive`                | boolean | No       | `true`  | When `false`, the preset is hidden in the entity selector.                      |
+| `FilterUniqueOptionsOnly` | boolean | No       | `false` | When `true`, each filter option can only be added to the filter grid once.      |
+| `FilterCategories`        | array   | No       | `[]`    | Categories for organizing filter options in the UI dropdown.                    |
+| `RelationPaths`           | array   | No       | `[]`    | Reusable relation path definitions for accessing related entities.              |
+| `FilterOptions`           | array   | **Yes**  | -       | Available filter options users can add to the search.                           |
+| `DefaultFilterGroups`     | array   | No       | `[]`    | Pre-configured filter groups shown when the search loads.                       |
+| `ResultView`              | object  | **Yes**  | -       | Defines result table columns, pagination, and sorting.                          |
 
 ---
 
@@ -199,7 +204,7 @@ Filter options define the available filters that users can add to the search. Ea
 **Runtime-populated properties** (do not set these in the config):
 
 - `AttributeType` - Automatically populated from CRM metadata.
-- `EntityName` - Automatically resolved from the relation path or primary entity.
+- `EntityName` (inside `FilterOptions`) - Automatically resolved from the relation path or primary entity.
 
 ### Default Filter Behavior
 
@@ -467,10 +472,10 @@ Below is a minimal yet complete configuration for a single entity:
 
 ```json
 {
-  "SearchSchema": {
-    "Entities": [
+  "CrmSearchSchema": {
+    "Presets": [
       {
-        "LogicalName": "contact",
+        "EntityName": "contact",
         "RelationPaths": [
           {
             "Id": "contact-account",

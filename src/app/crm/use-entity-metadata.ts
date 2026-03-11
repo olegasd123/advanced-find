@@ -13,8 +13,8 @@ const errorReporter = createErrorReporter('useEntityMetadata')
 
 interface UseEntityMetadataParams {
   crmRepository: CrmData | null
-  configEntities: EntityConfig[] | undefined
-  currentEntityConfig: EntityConfig | undefined
+  configPresets: EntityConfig[] | undefined
+  currentPresetConfig: EntityConfig | undefined
 }
 
 interface UseEntityMetadataResult {
@@ -35,8 +35,8 @@ const getErrorMessage = (error: unknown): string => {
 
 export const useEntityMetadata = ({
   crmRepository,
-  configEntities,
-  currentEntityConfig,
+  configPresets,
+  currentPresetConfig,
 }: UseEntityMetadataParams): UseEntityMetadataResult => {
   const [entitiesMetadata, setEntitiesMetadata] = React.useState<EntityMetadata[]>([])
   const [tableColumnDisplayNames, setTableColumnDisplayNames] = React.useState<
@@ -48,20 +48,20 @@ export const useEntityMetadata = ({
   const [isTableColumnNamesLoading, setIsTableColumnNamesLoading] = React.useState(false)
   const requestIdRef = React.useRef(0)
   const appConfigValidationPlan = React.useMemo(
-    () => buildAppConfigMetadataValidationPlan(configEntities),
-    [configEntities]
+    () => buildAppConfigMetadataValidationPlan(configPresets),
+    [configPresets]
   )
 
   const searchTableColumns = React.useMemo(() => {
-    if (!currentEntityConfig) {
+    if (!currentPresetConfig) {
       return []
     }
 
-    return resolveSearchTableColumns(currentEntityConfig)
-  }, [currentEntityConfig])
+    return resolveSearchTableColumns(currentPresetConfig)
+  }, [currentPresetConfig])
 
   React.useEffect(() => {
-    if (!crmRepository || !configEntities) {
+    if (!crmRepository || !configPresets) {
       setEntitiesMetadata([])
       setEntitiesMetadataErrorMessage(undefined)
       setIsEntitiesMetadataLoading(false)
@@ -75,7 +75,7 @@ export const useEntityMetadata = ({
     const loadEntitiesMetadata = async (): Promise<void> => {
       try {
         const metadata = await crmRepository.getEntitiesMetadata(
-          appConfigValidationPlan.configuredEntityLogicalNames
+          appConfigValidationPlan.configuredEntityNames
         )
         if (isCancelled) {
           return
@@ -83,13 +83,12 @@ export const useEntityMetadata = ({
 
         const configIssues = [...appConfigValidationPlan.issues]
         const metadataByLogicalName = new Set(metadata.map((item) => item.LogicalName))
-        const missingEntityLogicalNames =
-          appConfigValidationPlan.configuredEntityLogicalNames.filter(
-            (entityLogicalName) => !metadataByLogicalName.has(entityLogicalName)
-          )
+        const missingEntityNames = appConfigValidationPlan.configuredEntityNames.filter(
+          (entityName) => !metadataByLogicalName.has(entityName)
+        )
 
-        for (const entityLogicalName of missingEntityLogicalNames) {
-          configIssues.push(`Entity "${entityLogicalName}" was not found in CRM metadata.`)
+        for (const entityName of missingEntityNames) {
+          configIssues.push(`Entity "${entityName}" was not found in CRM metadata.`)
         }
 
         for (const [
@@ -169,7 +168,7 @@ export const useEntityMetadata = ({
     return () => {
       isCancelled = true
     }
-  }, [appConfigValidationPlan, configEntities, crmRepository])
+  }, [appConfigValidationPlan, configPresets, crmRepository])
 
   React.useEffect(() => {
     const requestId = ++requestIdRef.current
@@ -177,7 +176,7 @@ export const useEntityMetadata = ({
     setTableColumnNamesErrorMessage(undefined)
     setIsTableColumnNamesLoading(false)
 
-    if (!crmRepository || !currentEntityConfig) {
+    if (!crmRepository || !currentPresetConfig) {
       return
     }
 
@@ -242,11 +241,11 @@ export const useEntityMetadata = ({
         location: 'load table column display names',
         error,
         userMessage: 'Failed to load table column names.',
-        context: { entityLogicalName: currentEntityConfig.LogicalName },
+        context: { entityName: currentPresetConfig.EntityName },
       })
       setTableColumnNamesErrorMessage(userMessage)
     })
-  }, [crmRepository, currentEntityConfig, searchTableColumns])
+  }, [crmRepository, currentPresetConfig, searchTableColumns])
 
   const metadataErrorMessage = entitiesMetadataErrorMessage ?? tableColumnNamesErrorMessage
   const isMetadataLoading = isEntitiesMetadataLoading || isTableColumnNamesLoading

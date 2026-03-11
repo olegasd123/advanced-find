@@ -3,67 +3,62 @@ import { EntityConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 interface UseFilterStateResult {
-  currentEntityConfig: EntityConfig | undefined
+  currentPresetConfig: EntityConfig | undefined
   isResultViewVisible: boolean
   appliedFilters: AppliedFilterCondition[]
-  selectEntityByIndex: (index: number) => void
+  selectPresetByIndex: (index: number) => void
   openResultView: (conditions: AppliedFilterCondition[]) => void
   closeResultView: () => void
   updateAppliedFilters: (conditions: AppliedFilterCondition[]) => void
 }
 
-export const useFilterState = (
-  configEntities: EntityConfig[] | undefined
-): UseFilterStateResult => {
-  const [currentEntityConfig, setCurrentEntityConfig] = React.useState<EntityConfig | undefined>()
+export const useFilterState = (configPresets: EntityConfig[] | undefined): UseFilterStateResult => {
+  const [currentPresetConfig, setCurrentPresetConfig] = React.useState<EntityConfig | undefined>()
   const [isResultViewVisible, setIsResultViewVisible] = React.useState(false)
   const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilterCondition[]>([])
 
   React.useEffect(() => {
-    if (!configEntities || configEntities.length === 0) {
-      setCurrentEntityConfig(undefined)
+    if (!configPresets || configPresets.length === 0) {
+      setCurrentPresetConfig(undefined)
       setIsResultViewVisible(false)
       setAppliedFilters([])
       return
     }
 
-    if (configEntities.length === 1) {
-      setCurrentEntityConfig(configEntities[0])
+    if (configPresets.length === 1) {
+      setCurrentPresetConfig(configPresets[0])
       setIsResultViewVisible(false)
       setAppliedFilters([])
       return
     }
 
-    setCurrentEntityConfig((previousEntityConfig) => {
-      if (!previousEntityConfig) {
-        return previousEntityConfig
+    setCurrentPresetConfig((previousPresetConfig) => {
+      if (!previousPresetConfig) {
+        return previousPresetConfig
       }
 
-      const entity = configEntities.find(
-        (item) => item.LogicalName === previousEntityConfig.LogicalName
-      )
-      return entity
+      return configPresets.find((item) => item === previousPresetConfig)
     })
-  }, [configEntities])
+  }, [configPresets])
 
   React.useEffect(() => {
-    if (currentEntityConfig) {
+    if (currentPresetConfig) {
       return
     }
 
     setIsResultViewVisible(false)
     setAppliedFilters([])
-  }, [currentEntityConfig])
+  }, [currentPresetConfig])
 
-  const selectEntityByIndex = React.useCallback(
+  const selectPresetByIndex = React.useCallback(
     (index: number): void => {
-      const nextEntityConfig =
-        Number.isInteger(index) && index >= 0 ? configEntities?.at(index) : undefined
-      setCurrentEntityConfig(nextEntityConfig)
+      const nextPresetConfig =
+        Number.isInteger(index) && index >= 0 ? configPresets?.at(index) : undefined
+      setCurrentPresetConfig(nextPresetConfig)
       setIsResultViewVisible(false)
       setAppliedFilters([])
     },
-    [configEntities]
+    [configPresets]
   )
 
   const openResultView = React.useCallback((conditions: AppliedFilterCondition[]): void => {
@@ -80,10 +75,10 @@ export const useFilterState = (
   }, [])
 
   return {
-    currentEntityConfig,
+    currentPresetConfig,
     isResultViewVisible,
     appliedFilters,
-    selectEntityByIndex,
+    selectPresetByIndex,
     openResultView,
     closeResultView,
     updateAppliedFilters,

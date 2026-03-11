@@ -1,8 +1,8 @@
 {
-  "SearchSchema": {
-    "Entities": [
+  "CrmSearchSchema": {
+    "Presets": [
       {
-        "LogicalName": "invoice",
+        "EntityName": "invoice",
         "RelationPaths": [
           {
             "Id": "invoice-created-by",
@@ -164,7 +164,8 @@
         }
       },
       {
-        "LogicalName": "account",
+        "EntityName": "account",
+        "DisplayName": "Accounts search",
         "RelationPaths": [
           {
             "Id": "account-created-by",

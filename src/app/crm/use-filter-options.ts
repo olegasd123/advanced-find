@@ -151,7 +151,7 @@ export const useFilterOptions = ({
 
     const getData = async () => {
       await fillOptionsWithMetadataInfo(
-        entityConfig.LogicalName,
+        entityConfig.EntityName,
         entityConfig.FilterOptions,
         relationPathById,
         (entityLogicalName, groupedMissedDisplayNames) =>

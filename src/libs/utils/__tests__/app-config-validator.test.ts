@@ -6,7 +6,7 @@ import {
 } from '@/libs/utils/app-config-validator'
 
 const createEntityConfig = (overrides?: Partial<EntityConfig>): EntityConfig => ({
-  LogicalName: 'account',
+  EntityName: 'account',
   FilterCategories: [{ Id: 'main', DisplayName: 'Main' }],
   RelationPaths: [
     {
@@ -49,7 +49,7 @@ describe('app-config-validator', () => {
     const result = buildAppConfigMetadataValidationPlan([config])
 
     expect(result.issues).toEqual([])
-    expect(result.configuredEntityLogicalNames).toEqual(['account'])
+    expect(result.configuredEntityNames).toEqual(['account'])
     expect(result.requiredAttributesByEntity.get('account')).toEqual([
       'accountnumber',
       'name',
@@ -135,16 +135,14 @@ describe('app-config-validator', () => {
     )
   })
 
-  it('reports duplicate entity logical names', () => {
-    const account = createEntityConfig({ LogicalName: 'account' })
-    const duplicate = createEntityConfig({ LogicalName: ' Account ' })
+  it('allows duplicate preset entity names', () => {
+    const account = createEntityConfig({ EntityName: 'account' })
+    const duplicate = createEntityConfig({ EntityName: ' Account ' })
 
     const result = buildAppConfigMetadataValidationPlan([account, duplicate])
 
-    expect(result.issues).toContain(
-      'SearchSchema.Entities[1] has duplicate LogicalName " Account ".'
-    )
-    expect(result.configuredEntityLogicalNames).toEqual(['account'])
+    expect(result.issues).toEqual([])
+    expect(result.configuredEntityNames).toEqual(['account'])
   })
 
   it('builds a compact user message from issues', () => {

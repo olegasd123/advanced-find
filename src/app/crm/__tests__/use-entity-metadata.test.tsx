@@ -5,7 +5,7 @@ import { EntityConfig } from '@/libs/types/app-config.types'
 import { CrmData } from '@/libs/types/entity.types'
 
 const createEntityConfig = (): EntityConfig => ({
-  LogicalName: 'invoice',
+  EntityName: 'invoice',
   FilterCategories: [{ Id: 'misc', DisplayName: 'Misc' }],
   RelationPaths: [
     {
@@ -90,8 +90,8 @@ describe('useEntityMetadata', () => {
     const { result } = renderHook(() =>
       useEntityMetadata({
         crmRepository,
-        configEntities: [entityConfig],
-        currentEntityConfig: undefined,
+        configPresets: [entityConfig],
+        currentPresetConfig: undefined,
       })
     )
 

@@ -21,7 +21,7 @@ const createEntityConfig = (
   filterOptions: FilterOptionConfig[],
   overrides: Partial<EntityConfig> = {}
 ): EntityConfig => ({
-  LogicalName: 'account',
+  EntityName: 'account',
   FilterOptions: filterOptions,
   ResultView: { Columns: [] },
   ...overrides,
@@ -44,8 +44,8 @@ const createCrmRepositoryMock = (): CrmData => ({
 })
 
 const createAppConfig = (overrides?: Partial<AppConfig>): AppConfig => ({
-  SearchSchema: {
-    Entities: [],
+  CrmSearchSchema: {
+    Presets: [],
     Localization: {
       FilterConditionLabels: {
         eq: 'equals',

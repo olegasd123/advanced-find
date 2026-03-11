@@ -45,7 +45,7 @@ vi.mock('@/app/view-error-boundary', () => ({
 }))
 
 const entityConfig: EntityConfig = {
-  LogicalName: 'account',
+  EntityName: 'account',
   FilterOptions: [],
   ResultView: {
     Columns: [],
@@ -63,8 +63,8 @@ const createDefaultUseEntityMetadataResult = () => ({
 beforeEach(() => {
   mocks.useAppConfig.mockReturnValue({
     appConfig: {
-      SearchSchema: {
-        Entities: [entityConfig],
+      CrmSearchSchema: {
+        Presets: [entityConfig],
         Localization: {},
       },
     },
@@ -75,12 +75,13 @@ beforeEach(() => {
   mocks.useCrmRepository.mockReturnValue({})
 
   mocks.useFilterState.mockReturnValue({
-    currentEntityConfig: entityConfig,
+    currentPresetConfig: entityConfig,
     isResultViewVisible: false,
     appliedFilters: [],
-    selectEntityByIndex: vi.fn(),
+    selectPresetByIndex: vi.fn(),
     openResultView: vi.fn(),
     closeResultView: vi.fn(),
+    updateAppliedFilters: vi.fn(),
   })
 
   mocks.useEntityMetadata.mockReturnValue(createDefaultUseEntityMetadataResult())
@@ -116,5 +117,65 @@ describe('Search', () => {
 
     expect(screen.getByTestId('filter-grid')).toBeInTheDocument()
     expect(screen.queryByLabelText('Loading entity metadata')).not.toBeInTheDocument()
+  })
+
+  it('uses preset display name and hides inactive presets in selector', () => {
+    const invoicePreset: EntityConfig = {
+      EntityName: 'invoice',
+      DisplayName: 'Invoices',
+      FilterOptions: [],
+      ResultView: { Columns: [] },
+    }
+    const accountPreset: EntityConfig = {
+      EntityName: 'account',
+      FilterOptions: [],
+      ResultView: { Columns: [] },
+    }
+    const inactivePreset: EntityConfig = {
+      EntityName: 'contact',
+      DisplayName: 'Contacts',
+      IsActive: false,
+      FilterOptions: [],
+      ResultView: { Columns: [] },
+    }
+
+    mocks.useAppConfig.mockReturnValue({
+      appConfig: {
+        CrmSearchSchema: {
+          Presets: [invoicePreset, accountPreset, inactivePreset],
+          Localization: {},
+        },
+      },
+      isLoading: false,
+      errorMessage: undefined,
+    })
+    mocks.useFilterState.mockReturnValue({
+      currentPresetConfig: invoicePreset,
+      isResultViewVisible: false,
+      appliedFilters: [],
+      selectPresetByIndex: vi.fn(),
+      openResultView: vi.fn(),
+      closeResultView: vi.fn(),
+      updateAppliedFilters: vi.fn(),
+    })
+    mocks.useEntityMetadata.mockReturnValue({
+      ...createDefaultUseEntityMetadataResult(),
+      entitiesMetadata: [
+        {
+          LogicalName: 'account',
+          EntitySetName: 'accounts',
+          PrimaryIdAttribute: 'accountid',
+          LogicalCollectionName: 'accounts',
+          DisplayName: { UserLocalizedLabel: { Label: 'Account' } },
+          DisplayCollectionName: { UserLocalizedLabel: { Label: 'Accounts' } },
+        },
+      ],
+    })
+
+    render(<Search />)
+
+    expect(screen.getByRole('option', { name: 'Invoices' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Accounts' })).toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: 'Contacts' })).not.toBeInTheDocument()
   })
 })

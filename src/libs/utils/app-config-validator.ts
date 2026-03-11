@@ -20,21 +20,21 @@ interface LegacyTableColumnConfig extends TableColumnConfig {
 }
 
 interface AppConfigValidationContext {
-  rootEntityLogicalName: string
+  rootEntityName: string
   relationPathById: Map<string, RelationPathStepConfig[]>
   issues: Set<string>
   requiredAttributesByEntity: Map<string, Set<string>>
 }
 
 export interface AppConfigMetadataValidationPlan {
-  configuredEntityLogicalNames: string[]
+  configuredEntityNames: string[]
   requiredAttributesByEntity: Map<string, string[]>
   issues: string[]
 }
 
 const maxIssuesInUserMessage = 3
 
-const normalizeLogicalName = (value: string | undefined): string | undefined => {
+const normalizeEntityName = (value: string | undefined): string | undefined => {
   const normalized = value?.trim()
   return normalized && normalized.length > 0 ? normalized : undefined
 }
@@ -49,20 +49,19 @@ const addIssue = (issues: Set<string>, message: string): void => {
 
 const addAttributeRequirement = (
   requiredAttributesByEntity: Map<string, Set<string>>,
-  entityLogicalName: string,
-  attributeLogicalName: string
+  entityName: string,
+  attributeName: string
 ): void => {
-  const normalizedEntityLogicalName = normalizeLogicalName(entityLogicalName)
-  const normalizedAttributeLogicalName = normalizeLogicalName(attributeLogicalName)
+  const normalizedEntityName = normalizeEntityName(entityName)
+  const normalizedAttributeName = normalizeEntityName(attributeName)
 
-  if (!normalizedEntityLogicalName || !normalizedAttributeLogicalName) {
+  if (!normalizedEntityName || !normalizedAttributeName) {
     return
   }
 
-  const attributeNames =
-    requiredAttributesByEntity.get(normalizedEntityLogicalName) ?? new Set<string>()
-  attributeNames.add(normalizedAttributeLogicalName)
-  requiredAttributesByEntity.set(normalizedEntityLogicalName, attributeNames)
+  const attributeNames = requiredAttributesByEntity.get(normalizedEntityName) ?? new Set<string>()
+  attributeNames.add(normalizedAttributeName)
+  requiredAttributesByEntity.set(normalizedEntityName, attributeNames)
 }
 
 const getColumnAttributes = (column?: TableColumnConfig): string[] => {
@@ -131,7 +130,7 @@ const collectRelationPathConfigIssues = (
   const seenPathIds = new Set<string>()
 
   for (const [index, relationPath] of (relationPaths ?? []).entries()) {
-    const location = `Entity "${context.rootEntityLogicalName}" RelationPaths[${index}]`
+    const location = `Entity "${context.rootEntityName}" RelationPaths[${index}]`
     const normalizedId = getNormalizedConfigId(relationPath.Id)
     if (!normalizedId) {
       addIssue(context.issues, `${location} has an empty Id.`)
@@ -158,15 +157,15 @@ const collectRelationPathConfigIssues = (
       continue
     }
 
-    let sourceEntityLogicalName = context.rootEntityLogicalName
+    let sourceEntityName = context.rootEntityName
     for (const step of normalizedSteps) {
       addAttributeRequirement(
         context.requiredAttributesByEntity,
-        sourceEntityLogicalName,
+        sourceEntityName,
         step.FromAttribute
       )
       addAttributeRequirement(context.requiredAttributesByEntity, step.EntityName, step.ToAttribute)
-      sourceEntityLogicalName = step.EntityName
+      sourceEntityName = step.EntityName
     }
   }
 }
@@ -179,7 +178,7 @@ const collectFilterOptionIssues = (
   const filterOptionIds = new Set<string>()
 
   for (const [index, filterOption] of (filterOptions ?? []).entries()) {
-    const location = `Entity "${context.rootEntityLogicalName}" FilterOptions[${index}]`
+    const location = `Entity "${context.rootEntityName}" FilterOptions[${index}]`
     const normalizedOptionId = getNormalizedConfigId(filterOption.Id)
     if (normalizedOptionId) {
       if (filterOptionIds.has(normalizedOptionId)) {
@@ -200,30 +199,19 @@ const collectFilterOptionIssues = (
       filterOption.Path,
       location
     )
-    const pathTargetLogicalName = getPathTargetEntityName(
-      context.rootEntityLogicalName,
-      resolvedPath
-    )
-    const optionEntityLogicalName = normalizeLogicalName(filterOption.EntityName)
-    if (
-      optionEntityLogicalName &&
-      resolvedPath.length > 0 &&
-      optionEntityLogicalName !== pathTargetLogicalName
-    ) {
+    const pathTargetEntityName = getPathTargetEntityName(context.rootEntityName, resolvedPath)
+    const optionEntityName = normalizeEntityName(filterOption.EntityName)
+    if (optionEntityName && resolvedPath.length > 0 && optionEntityName !== pathTargetEntityName) {
       addIssue(
         context.issues,
-        `${location} has EntityName "${filterOption.EntityName}" but the relation path target is "${pathTargetLogicalName}".`
+        `${location} has EntityName "${filterOption.EntityName}" but the relation path target is "${pathTargetEntityName}".`
       )
     }
 
-    const targetEntityLogicalName = optionEntityLogicalName ?? pathTargetLogicalName
-    const attributeName = normalizeLogicalName(filterOption.AttributeName)
+    const targetEntityName = optionEntityName ?? pathTargetEntityName
+    const attributeName = normalizeEntityName(filterOption.AttributeName)
     if (attributeName) {
-      addAttributeRequirement(
-        context.requiredAttributesByEntity,
-        targetEntityLogicalName,
-        attributeName
-      )
+      addAttributeRequirement(context.requiredAttributesByEntity, targetEntityName, attributeName)
     }
 
     const filterSelection = filterOption.Selection
@@ -252,7 +240,7 @@ const collectResultViewIssues = (
   const normalizedColumnIds = new Set<string>()
 
   for (const [index, column] of entityConfig.ResultView.Columns.entries()) {
-    const location = `Entity "${context.rootEntityLogicalName}" ResultView.Columns[${index}]`
+    const location = `Entity "${context.rootEntityName}" ResultView.Columns[${index}]`
     const normalizedColumnId = getNormalizedConfigId(column.Id) ?? createColumnKey(index)
     if (normalizedColumnIds.has(normalizedColumnId)) {
       addIssue(context.issues, `${location} has duplicate Id "${column.Id ?? normalizedColumnId}".`)
@@ -261,10 +249,7 @@ const collectResultViewIssues = (
     }
 
     const resolvedPath = resolveValidatedPath(context, column.PathId, column.Path, location)
-    const targetEntityLogicalName = getPathTargetEntityName(
-      context.rootEntityLogicalName,
-      resolvedPath
-    )
+    const targetEntityName = getPathTargetEntityName(context.rootEntityName, resolvedPath)
 
     const attributeNames = getResolvedColumnAttributes(column)
     if (attributeNames.length === 0) {
@@ -276,16 +261,12 @@ const collectResultViewIssues = (
     }
 
     for (const attributeName of attributeNames) {
-      addAttributeRequirement(
-        context.requiredAttributesByEntity,
-        targetEntityLogicalName,
-        attributeName
-      )
+      addAttributeRequirement(context.requiredAttributesByEntity, targetEntityName, attributeName)
     }
   }
 
   for (const [index, defaultSort] of (entityConfig.ResultView.DefaultSort ?? []).entries()) {
-    const location = `Entity "${context.rootEntityLogicalName}" ResultView.DefaultSort[${index}]`
+    const location = `Entity "${context.rootEntityName}" ResultView.DefaultSort[${index}]`
     const normalizedSortColumnId = getNormalizedConfigId(defaultSort.ColumnId)
     if (!normalizedSortColumnId) {
       addIssue(context.issues, `${location} has an empty ColumnId.`)
@@ -306,7 +287,7 @@ const collectDefaultFilterGroupIssues = (
   const filterOptionsLength = entityConfig.FilterOptions.length
 
   for (const [groupIndex, group] of (entityConfig.DefaultFilterGroups ?? []).entries()) {
-    const groupLocation = `Entity "${context.rootEntityLogicalName}" DefaultFilterGroups[${groupIndex}]`
+    const groupLocation = `Entity "${context.rootEntityName}" DefaultFilterGroups[${groupIndex}]`
     for (const optionIndex of group.FilterOptionIndexes ?? []) {
       if (!Number.isInteger(optionIndex) || optionIndex < 0 || optionIndex >= filterOptionsLength) {
         addIssue(
@@ -333,15 +314,15 @@ const collectEntityValidationPlan = (
   issues: Set<string>,
   requiredAttributesByEntity: Map<string, Set<string>>
 ): string | undefined => {
-  const rootEntityLogicalName = normalizeLogicalName(entityConfig.LogicalName)
-  if (!rootEntityLogicalName) {
-    addIssue(issues, `SearchSchema.Entities contains an entity with an empty LogicalName.`)
+  const rootEntityName = normalizeEntityName(entityConfig.EntityName)
+  if (!rootEntityName) {
+    addIssue(issues, `CrmSearchSchema.Presets contains a preset with an empty EntityName.`)
     return undefined
   }
 
   const relationPathById = getRelationPathById(entityConfig)
   const context: AppConfigValidationContext = {
-    rootEntityLogicalName,
+    rootEntityName,
     relationPathById,
     issues,
     requiredAttributesByEntity,
@@ -349,7 +330,7 @@ const collectEntityValidationPlan = (
 
   const categoryIds = new Set<string>()
   for (const [index, category] of (entityConfig.FilterCategories ?? []).entries()) {
-    const categoryLocation = `Entity "${rootEntityLogicalName}" FilterCategories[${index}]`
+    const categoryLocation = `Entity "${rootEntityName}" FilterCategories[${index}]`
     const normalizedCategoryId = getNormalizedConfigId(category.Id)
     if (!normalizedCategoryId) {
       addIssue(issues, `${categoryLocation} has an empty Id.`)
@@ -373,7 +354,7 @@ const collectEntityValidationPlan = (
   collectDefaultFilterGroupIssues(entityConfig, filterOptionIds, context)
   collectResultViewIssues(entityConfig, context)
 
-  return rootEntityLogicalName
+  return rootEntityName
 }
 
 const toSortedAttributeMap = (source: Map<string, Set<string>>): Map<string, string[]> => {
@@ -382,9 +363,9 @@ const toSortedAttributeMap = (source: Map<string, Set<string>>): Map<string, str
   )
 
   const result = new Map<string, string[]>()
-  for (const [entityLogicalName, attributes] of entries) {
+  for (const [entityName, attributes] of entries) {
     result.set(
-      entityLogicalName,
+      entityName,
       Array.from(attributes).sort((a, b) => a.localeCompare(b))
     )
   }
@@ -393,11 +374,11 @@ const toSortedAttributeMap = (source: Map<string, Set<string>>): Map<string, str
 }
 
 export const buildAppConfigMetadataValidationPlan = (
-  configEntities: EntityConfig[] | undefined
+  configPresets: EntityConfig[] | undefined
 ): AppConfigMetadataValidationPlan => {
-  if (!configEntities || configEntities.length === 0) {
+  if (!configPresets || configPresets.length === 0) {
     return {
-      configuredEntityLogicalNames: [],
+      configuredEntityNames: [],
       requiredAttributesByEntity: new Map(),
       issues: [],
     }
@@ -405,34 +386,26 @@ export const buildAppConfigMetadataValidationPlan = (
 
   const issues = new Set<string>()
   const requiredAttributesByEntity = new Map<string, Set<string>>()
-  const configuredEntityLogicalNames: string[] = []
-  const seenEntityLogicalNames = new Set<string>()
+  const configuredEntityNames: string[] = []
+  const seenEntityNames = new Set<string>()
 
-  for (const [index, entityConfig] of configEntities.entries()) {
-    const entityLogicalName = collectEntityValidationPlan(
-      entityConfig,
-      issues,
-      requiredAttributesByEntity
-    )
-    if (!entityLogicalName) {
+  for (const configPreset of configPresets) {
+    const entityName = collectEntityValidationPlan(configPreset, issues, requiredAttributesByEntity)
+    if (!entityName) {
       continue
     }
 
-    const normalizedEntityLogicalName = entityLogicalName.toLowerCase()
-    if (seenEntityLogicalNames.has(normalizedEntityLogicalName)) {
-      addIssue(
-        issues,
-        `SearchSchema.Entities[${index}] has duplicate LogicalName "${entityConfig.LogicalName}".`
-      )
+    const normalizedEntityName = entityName.toLowerCase()
+    if (seenEntityNames.has(normalizedEntityName)) {
       continue
     }
 
-    seenEntityLogicalNames.add(normalizedEntityLogicalName)
-    configuredEntityLogicalNames.push(entityLogicalName)
+    seenEntityNames.add(normalizedEntityName)
+    configuredEntityNames.push(entityName)
   }
 
   return {
-    configuredEntityLogicalNames,
+    configuredEntityNames,
     requiredAttributesByEntity: toSortedAttributeMap(requiredAttributesByEntity),
     issues: Array.from(issues),
   }

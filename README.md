@@ -59,7 +59,7 @@ Set runtime values in `.env`:
 
 All search behavior is defined in `assets/app-config.json`. The config specifies:
 
-- **Entities** — which CRM entities are searchable
+- **Presets** — which CRM entities are searchable and how each preset appears in the selector
 - **Filter Options** — available filters with defaults, lookups, and picklist support
 - **Filter Categories** — logical grouping of filters in the UI
 - **Result View** — columns, pagination, and default sort order

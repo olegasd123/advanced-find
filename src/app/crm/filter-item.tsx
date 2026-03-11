@@ -139,7 +139,7 @@ export const FilterItem = ({
   const currentConditionRef = React.useRef<AppliedFilterCondition | undefined>(currentCondition)
   const hasInsetGroupDivider = groupPosition === 'first' || groupPosition === 'middle'
 
-  const localization = useAppConfig().appConfig?.SearchSchema?.Localization
+  const localization = useAppConfig().appConfig?.CrmSearchSchema?.Localization
   const selectedFilterOption = selectedAttribute?.FilterOptionConfig
   const normalizeCategoryId = React.useCallback((value: string | undefined): string | undefined => {
     const normalized = value?.trim()

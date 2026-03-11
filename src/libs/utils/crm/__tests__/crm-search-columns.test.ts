@@ -7,7 +7,7 @@ import {
 } from '@/libs/utils/crm/crm-search-columns'
 
 const createEntityConfig = (columns: TableColumnConfig[]): EntityConfig => ({
-  LogicalName: 'account',
+  EntityName: 'account',
   FilterOptions: [],
   RelationPaths: [
     {
