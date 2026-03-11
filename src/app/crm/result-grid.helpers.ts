@@ -144,6 +144,16 @@ export interface AppliedFilterDescription {
   conditionValue: string | undefined
 }
 
+export interface AppliedFilterChip {
+  label: string
+  tooltip: string
+}
+
+export interface AppliedFilterGroup {
+  conditionName: string
+  chips: AppliedFilterChip[]
+}
+
 export const getAppliedFilterDescriptions = (
   appliedFilters: AppliedFilterCondition[]
 ): AppliedFilterDescription[] => {
@@ -183,4 +193,51 @@ export const getAppliedFiltersText = (descriptions: AppliedFilterDescription[]):
   }
 
   return 'Applied filters: none'
+}
+
+export const getAppliedFilterGroups = (
+  appliedFilters: AppliedFilterCondition[]
+): AppliedFilterGroup[] => {
+  const validFilters = appliedFilters.filter(
+    (condition) =>
+      Boolean(condition.filterOption?.AttributeName && condition.condition) &&
+      hasConditionValue(condition)
+  )
+
+  const groupMap = new Map<string, AppliedFilterChip[]>()
+
+  for (const condition of validFilters) {
+    const attributeName =
+      condition.filterOption?.DisplayName ?? condition.filterOption?.AttributeName
+    const rawConditionName = condition.condition ?? ''
+    const conditionName = formatConditionOperator(rawConditionName)
+
+    const chips = groupMap.get(conditionName) ?? []
+    groupMap.set(conditionName, chips)
+
+    if (noValueConditions.has(rawConditionName)) {
+      chips.push({
+        label: attributeName ?? '',
+        tooltip: `${attributeName} ${conditionName}`,
+      })
+    } else {
+      const fullDescription = `${attributeName} ${conditionName} ${formatConditionValue(condition)}`
+      const chipValues =
+        condition.displayValues && condition.displayValues.length > 0
+          ? condition.displayValues
+          : condition.values.map(String)
+
+      for (const value of chipValues) {
+        chips.push({
+          label: value,
+          tooltip: fullDescription,
+        })
+      }
+    }
+  }
+
+  return Array.from(groupMap.entries()).map(([conditionName, chips]) => ({
+    conditionName,
+    chips,
+  }))
 }

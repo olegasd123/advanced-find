@@ -279,8 +279,10 @@ describe('ResultGrid', () => {
         showAppliedFilters: true,
       })
 
-      expect(screen.getByText('Company Name')).toBeInTheDocument()
-      expect(screen.getByText('Acme')).toBeInTheDocument()
+      expect(screen.getByText('=')).toBeInTheDocument()
+      const chip = screen.getByText('Acme')
+      expect(chip).toBeInTheDocument()
+      expect(chip).toHaveAttribute('title', 'Company Name = Acme')
     })
 
     it('shows "none" when no meaningful filters applied', () => {

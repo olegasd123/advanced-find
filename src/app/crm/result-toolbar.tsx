@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ArrowLeftIcon } from '@heroicons/react/16/solid'
+import { ArrowLeftIcon, FunnelIcon } from '@heroicons/react/16/solid'
 import { MagnifyingGlassIcon, ViewColumnsIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/catalyst/button'
 import { Checkbox } from '@/components/catalyst/checkbox'
@@ -13,11 +13,7 @@ import { Input, InputGroup } from '@/components/catalyst/input'
 import { Select } from '@/components/catalyst/select'
 import { PaginationOption } from '@/hooks/use-pagination'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import {
-  getAppliedFilterDescriptions,
-  getAppliedFiltersText,
-  getColumnHeader,
-} from '@/app/crm/result-grid.helpers'
+import { getAppliedFilterGroups, getColumnHeader } from '@/app/crm/result-grid.helpers'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 
 interface ResultToolbarProps {
@@ -51,8 +47,7 @@ export const ResultToolbar = ({
   onToggleColumnVisibility,
   tableColumnDisplayNames,
 }: ResultToolbarProps) => {
-  const appliedFilterDescriptions = getAppliedFilterDescriptions(appliedFilters)
-  const appliedFiltersText = getAppliedFiltersText(appliedFilterDescriptions)
+  const appliedFilterGroups = getAppliedFilterGroups(appliedFilters)
   const visibleColumnsCount = visibleColumnKeys.length
 
   return (
@@ -62,30 +57,29 @@ export const ResultToolbar = ({
         <span className="font-normal">Back</span>
       </Button>
       {showAppliedFilters && (
-        <div
-          className="min-w-0 flex-1 overflow-hidden text-sm text-zinc-600"
-          title={appliedFiltersText}
-        >
-          <div className="truncate">
-            <span>Applied filters: </span>
-            {appliedFilterDescriptions.length > 0 ? (
-              appliedFilterDescriptions.map((item, index) => (
-                <React.Fragment key={`${item.key}-${index}`}>
-                  {index > 0 && <span>; </span>}
-                  <span>{item.attributeName} </span>
-                  <span>{item.conditionName}</span>
-                  {item.conditionValue && (
-                    <>
-                      <span> </span>
-                      <span className="text-zinc-950">{item.conditionValue}</span>
-                    </>
-                  )}
+        <div className="min-w-0 flex-1 overflow-hidden flex items-center gap-1.5 text-sm text-zinc-600">
+          <FunnelIcon className="size-4 shrink-0 text-zinc-400" title="Applied filters" />
+          {appliedFilterGroups.length > 0 ? (
+            <div className="flex items-center gap-1 overflow-x-auto">
+              {appliedFilterGroups.map((group, groupIndex) => (
+                <React.Fragment key={group.conditionName}>
+                  {groupIndex > 0 && <span className="text-zinc-400">;</span>}
+                  <span className="shrink-0">{group.conditionName}</span>
+                  {group.chips.map((chip, chipIndex) => (
+                    <span
+                      key={`${group.conditionName}-${chipIndex}`}
+                      className="inline-flex shrink-0 items-center rounded-md bg-zinc-600/10 px-1.5 py-0.5 text-xs font-medium text-zinc-700"
+                      title={chip.tooltip}
+                    >
+                      {chip.label}
+                    </span>
+                  ))}
                 </React.Fragment>
-              ))
-            ) : (
-              <span>none</span>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <span>none</span>
+          )}
         </div>
       )}
       <div className="ml-auto flex items-center gap-2">
