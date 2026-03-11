@@ -3,6 +3,7 @@
     "Presets": [
       {
         "EntityName": "invoice",
+        "IsActive": true,
         "RelationPaths": [
           {
             "Id": "invoice-created-by",

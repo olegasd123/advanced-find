@@ -126,6 +126,7 @@ export const Search = () => {
     <div>
       {activePresets.length > 1 && (
         <Select
+          className="mt-4"
           value={selectedPresetIndex >= 0 ? String(selectedPresetIndex) : ''}
           onChange={handleCurrentPresetChanged}
         >
