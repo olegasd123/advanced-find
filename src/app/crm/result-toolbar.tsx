@@ -62,7 +62,7 @@ export const ResultToolbar = ({
         <div className="min-w-0 flex-1 overflow-hidden flex items-center gap-1.5 text-sm text-zinc-600">
           <FunnelIcon className="size-4 shrink-0 text-zinc-400" title="Applied filters" />
           {appliedFilterGroups.length > 0 ? (
-            <div className="flex items-center gap-1 overflow-x-auto">
+            <div className="hide-scrollbar flex items-center gap-1 overflow-x-auto">
               {appliedFilterGroups.map((group, groupIndex) => (
                 <React.Fragment key={group.conditionName}>
                   {groupIndex > 0 && <span className="text-zinc-400">;</span>}
