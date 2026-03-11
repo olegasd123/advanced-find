@@ -142,6 +142,7 @@ export interface AppliedFilterChip {
   tooltip: string
   filterIndex: number
   valueIndex: number | undefined
+  isRemovable: boolean
 }
 
 export interface AppliedFilterGroup {
@@ -168,6 +169,10 @@ export const getAppliedFilterGroups = (
       condition.filterOption?.DisplayName ?? condition.filterOption?.AttributeName
     const rawConditionName = condition.condition ?? ''
     const conditionName = formatConditionOperator(rawConditionName)
+    const isRemovable = !(
+      condition.filterOption?.Default?.IsDisabled ||
+      condition.filterOption?.Default?.CannotBeRemoved
+    )
 
     const chips = groupMap.get(conditionName) ?? []
     groupMap.set(conditionName, chips)
@@ -178,6 +183,7 @@ export const getAppliedFilterGroups = (
         tooltip: `${attributeName} ${conditionName}`,
         filterIndex,
         valueIndex: undefined,
+        isRemovable,
       })
     } else {
       const fullDescription = `${attributeName} ${conditionName} ${formatConditionValue(condition)}`
@@ -192,6 +198,7 @@ export const getAppliedFilterGroups = (
           tooltip: fullDescription,
           filterIndex,
           valueIndex,
+          isRemovable,
         })
       }
     }

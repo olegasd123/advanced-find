@@ -93,7 +93,8 @@
             "CategoryId": "general",
             "AttributeName": "modifiedby",
             "Default": {
-              "IsShown": true
+              "IsShown": true,
+              "IsDisabled": true
             },
             "Selection": {
               "Multiple": true,

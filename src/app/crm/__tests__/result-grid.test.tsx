@@ -322,6 +322,62 @@ describe('ResultGrid', () => {
 
       expect(onRemoveFilterValue).toHaveBeenCalledWith(0, 0)
     })
+
+    it('hides chip delete button when filter has CannotBeRemoved flag', () => {
+      const onRemoveFilterValue = vi.fn()
+      const appliedFilters: AppliedFilterCondition[] = [
+        {
+          filterOption: {
+            DisplayName: 'Company Name',
+            AttributeName: 'name',
+            AttributeType: 'string',
+            Default: { CannotBeRemoved: true },
+          },
+          condition: 'eq',
+          values: ['Acme'],
+        },
+      ]
+
+      const { container } = renderResultGrid({
+        appliedFilters,
+        showAppliedFilters: true,
+        onRemoveFilterValue,
+      })
+
+      const removeButton = container.querySelector(
+        'button[aria-label="Remove Company Name = Acme"]'
+      )
+      expect(removeButton).toBeNull()
+      expect(onRemoveFilterValue).not.toHaveBeenCalled()
+    })
+
+    it('hides chip delete button when filter has IsDisabled flag', () => {
+      const onRemoveFilterValue = vi.fn()
+      const appliedFilters: AppliedFilterCondition[] = [
+        {
+          filterOption: {
+            DisplayName: 'Company Name',
+            AttributeName: 'name',
+            AttributeType: 'string',
+            Default: { IsDisabled: true },
+          },
+          condition: 'eq',
+          values: ['Acme'],
+        },
+      ]
+
+      const { container } = renderResultGrid({
+        appliedFilters,
+        showAppliedFilters: true,
+        onRemoveFilterValue,
+      })
+
+      const removeButton = container.querySelector(
+        'button[aria-label="Remove Company Name = Acme"]'
+      )
+      expect(removeButton).toBeNull()
+      expect(onRemoveFilterValue).not.toHaveBeenCalled()
+    })
   })
 
   describe('back button', () => {

@@ -74,7 +74,7 @@ export const ResultToolbar = ({
                       title={chip.tooltip}
                     >
                       {chip.label}
-                      {onRemoveFilterValue && (
+                      {onRemoveFilterValue && chip.isRemovable && (
                         <button
                           type="button"
                           className="ml-0.5 inline-flex items-center rounded hover:bg-zinc-600/20"
