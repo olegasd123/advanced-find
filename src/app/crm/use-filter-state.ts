@@ -75,12 +75,9 @@ export const useFilterState = (
     setIsResultViewVisible(false)
   }, [])
 
-  const updateAppliedFilters = React.useCallback(
-    (conditions: AppliedFilterCondition[]): void => {
-      setAppliedFilters(conditions)
-    },
-    []
-  )
+  const updateAppliedFilters = React.useCallback((conditions: AppliedFilterCondition[]): void => {
+    setAppliedFilters(conditions)
+  }, [])
 
   return {
     currentEntityConfig,

@@ -79,9 +79,7 @@ export const ResultToolbar = ({
                           type="button"
                           className="ml-0.5 inline-flex items-center rounded hover:bg-zinc-600/20"
                           aria-label={`Remove ${chip.tooltip}`}
-                          onClick={() =>
-                            onRemoveFilterValue(chip.filterIndex, chip.valueIndex)
-                          }
+                          onClick={() => onRemoveFilterValue(chip.filterIndex, chip.valueIndex)}
                         >
                           <XMarkIcon className="size-3" />
                         </button>

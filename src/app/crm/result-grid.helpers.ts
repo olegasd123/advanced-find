@@ -206,7 +206,7 @@ export const getAppliedFilterGroups = (
     const condition = appliedFilters[filterIndex]
 
     if (
-      !Boolean(condition.filterOption?.AttributeName && condition.condition) ||
+      !(condition.filterOption?.AttributeName && condition.condition) ||
       !hasConditionValue(condition)
     ) {
       continue
