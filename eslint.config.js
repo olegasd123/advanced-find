@@ -20,6 +20,17 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
       'react-refresh/only-export-components': [
         'warn',
         {
@@ -27,6 +38,12 @@ export default tseslint.config(
           allowExportNames: ['useAppConfig', 'useCrmRepository'],
         },
       ],
+    },
+  },
+  {
+    files: ['src/components/catalyst/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
   eslintConfigPrettier
