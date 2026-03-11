@@ -323,7 +323,7 @@ describe('ResultGrid', () => {
       expect(onRemoveFilterValue).toHaveBeenCalledWith(0, 0)
     })
 
-    it('hides chip delete button when filter has CannotBeRemoved flag', () => {
+    it('keeps chip delete button when filter has CannotBeRemoved flag', () => {
       const onRemoveFilterValue = vi.fn()
       const appliedFilters: AppliedFilterCondition[] = [
         {
@@ -347,8 +347,9 @@ describe('ResultGrid', () => {
       const removeButton = container.querySelector(
         'button[aria-label="Remove Company Name = Acme"]'
       )
-      expect(removeButton).toBeNull()
-      expect(onRemoveFilterValue).not.toHaveBeenCalled()
+      expect(removeButton).not.toBeNull()
+      fireEvent.click(removeButton!)
+      expect(onRemoveFilterValue).toHaveBeenCalledWith(0, 0)
     })
 
     it('hides chip delete button when filter has IsDisabled flag', () => {

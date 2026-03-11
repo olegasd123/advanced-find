@@ -169,10 +169,7 @@ export const getAppliedFilterGroups = (
       condition.filterOption?.DisplayName ?? condition.filterOption?.AttributeName
     const rawConditionName = condition.condition ?? ''
     const conditionName = formatConditionOperator(rawConditionName)
-    const isRemovable = !(
-      condition.filterOption?.Default?.IsDisabled ||
-      condition.filterOption?.Default?.CannotBeRemoved
-    )
+    const isRemovable = !condition.filterOption?.Default?.IsDisabled
 
     const chips = groupMap.get(conditionName) ?? []
     groupMap.set(conditionName, chips)
