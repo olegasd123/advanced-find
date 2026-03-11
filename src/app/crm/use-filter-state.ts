@@ -9,6 +9,7 @@ interface UseFilterStateResult {
   selectEntityByIndex: (index: number) => void
   openResultView: (conditions: AppliedFilterCondition[]) => void
   closeResultView: () => void
+  updateAppliedFilters: (conditions: AppliedFilterCondition[]) => void
 }
 
 export const useFilterState = (
@@ -74,6 +75,13 @@ export const useFilterState = (
     setIsResultViewVisible(false)
   }, [])
 
+  const updateAppliedFilters = React.useCallback(
+    (conditions: AppliedFilterCondition[]): void => {
+      setAppliedFilters(conditions)
+    },
+    []
+  )
+
   return {
     currentEntityConfig,
     isResultViewVisible,
@@ -81,5 +89,6 @@ export const useFilterState = (
     selectEntityByIndex,
     openResultView,
     closeResultView,
+    updateAppliedFilters,
   }
 }

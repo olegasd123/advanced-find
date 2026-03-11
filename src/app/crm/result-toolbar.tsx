@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ArrowLeftIcon, FunnelIcon } from '@heroicons/react/16/solid'
+import { ArrowLeftIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/16/solid'
 import { MagnifyingGlassIcon, ViewColumnsIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/catalyst/button'
 import { Checkbox } from '@/components/catalyst/checkbox'
@@ -20,6 +20,7 @@ interface ResultToolbarProps {
   onBack?: () => void
   showAppliedFilters?: boolean
   appliedFilters: AppliedFilterCondition[]
+  onRemoveFilterValue?: (filterIndex: number, valueIndex: number | undefined) => void
   tableSearchText: string
   onTableSearchTextChanged: (event: React.ChangeEvent<HTMLInputElement>) => void
   isPaginationEnabled: boolean
@@ -36,6 +37,7 @@ export const ResultToolbar = ({
   onBack,
   showAppliedFilters,
   appliedFilters,
+  onRemoveFilterValue,
   tableSearchText,
   onTableSearchTextChanged,
   isPaginationEnabled,
@@ -68,10 +70,22 @@ export const ResultToolbar = ({
                   {group.chips.map((chip, chipIndex) => (
                     <span
                       key={`${group.conditionName}-${chipIndex}`}
-                      className="inline-flex shrink-0 items-center rounded-md bg-zinc-600/10 px-1.5 py-0.5 text-xs font-medium text-zinc-700"
+                      className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-zinc-600/10 px-1.5 py-0.5 text-xs font-medium text-zinc-700"
                       title={chip.tooltip}
                     >
                       {chip.label}
+                      {onRemoveFilterValue && (
+                        <button
+                          type="button"
+                          className="ml-0.5 inline-flex items-center rounded hover:bg-zinc-600/20"
+                          aria-label={`Remove ${chip.tooltip}`}
+                          onClick={() =>
+                            onRemoveFilterValue(chip.filterIndex, chip.valueIndex)
+                          }
+                        >
+                          <XMarkIcon className="size-3" />
+                        </button>
+                      )}
                     </span>
                   ))}
                 </React.Fragment>

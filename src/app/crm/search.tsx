@@ -9,6 +9,7 @@ import { FilterGrid } from '@/app/crm/filter-grid'
 import { ResultGrid } from '@/app/crm/result-grid'
 import { ViewErrorBoundary } from '@/app/view-error-boundary'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
+import { removeAppliedFilterValue } from '@/app/crm/result-grid.helpers'
 
 const MetadataSkeleton = () => (
   <div className="pt-4" role="status" aria-label="Loading entity metadata">
@@ -40,6 +41,7 @@ export const Search = () => {
     selectEntityByIndex,
     openResultView,
     closeResultView,
+    updateAppliedFilters,
   } = useFilterState(configEntities)
 
   const {
@@ -92,6 +94,15 @@ export const Search = () => {
 
     openResultView(conditions)
     await executeSearch(conditions)
+  }
+
+  const handleRemoveFilterValue = async (
+    filterIndex: number,
+    valueIndex: number | undefined
+  ): Promise<void> => {
+    const nextFilters = removeAppliedFilterValue(appliedFilters, filterIndex, valueIndex)
+    updateAppliedFilters(nextFilters)
+    await executeSearch(nextFilters)
   }
 
   if (appConfigState.isLoading) {
@@ -165,6 +176,7 @@ export const Search = () => {
             isLoading={isResultsLoading}
             errorMessage={resultsError}
             appliedFilters={appliedFilters}
+            onRemoveFilterValue={handleRemoveFilterValue}
             onBack={closeResultView}
           />
         </ViewErrorBoundary>

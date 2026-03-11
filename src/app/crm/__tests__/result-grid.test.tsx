@@ -293,6 +293,35 @@ describe('ResultGrid', () => {
 
       expect(screen.getByText('none')).toBeInTheDocument()
     })
+
+    it('calls onRemoveFilterValue when chip delete button is clicked', () => {
+      const onRemoveFilterValue = vi.fn()
+      const appliedFilters: AppliedFilterCondition[] = [
+        {
+          filterOption: {
+            DisplayName: 'Company Name',
+            AttributeName: 'name',
+            AttributeType: 'string',
+          },
+          condition: 'eq',
+          values: ['Acme'],
+        },
+      ]
+
+      const { container } = renderResultGrid({
+        appliedFilters,
+        showAppliedFilters: true,
+        onRemoveFilterValue,
+      })
+
+      const removeButton = container.querySelector(
+        'button[aria-label="Remove Company Name = Acme"]'
+      )
+      expect(removeButton).not.toBeNull()
+      fireEvent.click(removeButton!)
+
+      expect(onRemoveFilterValue).toHaveBeenCalledWith(0, 0)
+    })
   })
 
   describe('back button', () => {

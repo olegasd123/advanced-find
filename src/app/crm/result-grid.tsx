@@ -25,6 +25,7 @@ interface ResultGridProps {
   isLoading?: boolean
   errorMessage?: string
   appliedFilters: AppliedFilterCondition[]
+  onRemoveFilterValue?: (filterIndex: number, valueIndex: number | undefined) => void
   onBack?: () => void
 }
 
@@ -39,6 +40,7 @@ export const ResultGrid = ({
   isLoading,
   errorMessage,
   appliedFilters,
+  onRemoveFilterValue,
   onBack,
 }: ResultGridProps) => {
   const columns = tableColumns
@@ -121,6 +123,7 @@ export const ResultGrid = ({
         onBack={onBack}
         showAppliedFilters={showAppliedFilters}
         appliedFilters={appliedFilters}
+        onRemoveFilterValue={onRemoveFilterValue}
         tableSearchText={tableSearchText}
         onTableSearchTextChanged={handleTableSearchTextChanged}
         isPaginationEnabled={isPaginationEnabled}

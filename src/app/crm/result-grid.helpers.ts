@@ -147,6 +147,8 @@ export interface AppliedFilterDescription {
 export interface AppliedFilterChip {
   label: string
   tooltip: string
+  filterIndex: number
+  valueIndex: number | undefined
 }
 
 export interface AppliedFilterGroup {
@@ -198,15 +200,18 @@ export const getAppliedFiltersText = (descriptions: AppliedFilterDescription[]):
 export const getAppliedFilterGroups = (
   appliedFilters: AppliedFilterCondition[]
 ): AppliedFilterGroup[] => {
-  const validFilters = appliedFilters.filter(
-    (condition) =>
-      Boolean(condition.filterOption?.AttributeName && condition.condition) &&
-      hasConditionValue(condition)
-  )
-
   const groupMap = new Map<string, AppliedFilterChip[]>()
 
-  for (const condition of validFilters) {
+  for (let filterIndex = 0; filterIndex < appliedFilters.length; filterIndex++) {
+    const condition = appliedFilters[filterIndex]
+
+    if (
+      !Boolean(condition.filterOption?.AttributeName && condition.condition) ||
+      !hasConditionValue(condition)
+    ) {
+      continue
+    }
+
     const attributeName =
       condition.filterOption?.DisplayName ?? condition.filterOption?.AttributeName
     const rawConditionName = condition.condition ?? ''
@@ -219,6 +224,8 @@ export const getAppliedFilterGroups = (
       chips.push({
         label: attributeName ?? '',
         tooltip: `${attributeName} ${conditionName}`,
+        filterIndex,
+        valueIndex: undefined,
       })
     } else {
       const fullDescription = `${attributeName} ${conditionName} ${formatConditionValue(condition)}`
@@ -227,10 +234,12 @@ export const getAppliedFilterGroups = (
           ? condition.displayValues
           : condition.values.map(String)
 
-      for (const value of chipValues) {
+      for (let valueIndex = 0; valueIndex < chipValues.length; valueIndex++) {
         chips.push({
-          label: value,
+          label: chipValues[valueIndex],
           tooltip: fullDescription,
+          filterIndex,
+          valueIndex,
         })
       }
     }
@@ -240,4 +249,29 @@ export const getAppliedFilterGroups = (
     conditionName,
     chips,
   }))
+}
+
+export const removeAppliedFilterValue = (
+  appliedFilters: AppliedFilterCondition[],
+  filterIndex: number,
+  valueIndex: number | undefined
+): AppliedFilterCondition[] => {
+  const filter = appliedFilters[filterIndex]
+  if (!filter) {
+    return appliedFilters
+  }
+
+  // No-value conditions or single-value filters: remove the entire filter
+  if (valueIndex === undefined || filter.values.length <= 1) {
+    return appliedFilters.filter((_, index) => index !== filterIndex)
+  }
+
+  // Multi-value filter: remove only the specific value
+  const updatedFilter: AppliedFilterCondition = {
+    ...filter,
+    values: filter.values.filter((_, index) => index !== valueIndex),
+    displayValues: filter.displayValues?.filter((_, index) => index !== valueIndex),
+  }
+
+  return appliedFilters.map((item, index) => (index === filterIndex ? updatedFilter : item))
 }
