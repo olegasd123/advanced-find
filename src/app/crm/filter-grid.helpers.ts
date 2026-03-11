@@ -25,11 +25,6 @@ export interface FilterGroupState {
   title?: string
 }
 
-export interface DefaultFilterState {
-  visibleFilterOptions: VisibleFilterOption[]
-  groupsById: Record<number, FilterGroupState>
-}
-
 // --- Constants ---
 
 export const DRAG_MOVEMENT_THRESHOLD_PX = filterDragThresholdPx

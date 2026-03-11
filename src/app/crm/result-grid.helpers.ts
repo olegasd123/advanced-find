@@ -137,13 +137,6 @@ export const getDefaultColumnWidth = (column: SearchTableColumn): number | undef
 
 // --- Applied filter formatting ---
 
-export interface AppliedFilterDescription {
-  key: string
-  attributeName: string | undefined
-  conditionName: string
-  conditionValue: string | undefined
-}
-
 export interface AppliedFilterChip {
   label: string
   tooltip: string
@@ -154,47 +147,6 @@ export interface AppliedFilterChip {
 export interface AppliedFilterGroup {
   conditionName: string
   chips: AppliedFilterChip[]
-}
-
-export const getAppliedFilterDescriptions = (
-  appliedFilters: AppliedFilterCondition[]
-): AppliedFilterDescription[] => {
-  return appliedFilters
-    .filter(
-      (condition) =>
-        Boolean(condition.filterOption?.AttributeName && condition.condition) &&
-        hasConditionValue(condition)
-    )
-    .map((condition) => {
-      const attributeName =
-        condition.filterOption?.DisplayName ?? condition.filterOption?.AttributeName
-      const rawConditionName = condition.condition ?? ''
-      const conditionName = formatConditionOperator(rawConditionName)
-      const conditionValue = noValueConditions.has(rawConditionName)
-        ? undefined
-        : formatConditionValue(condition)
-
-      return {
-        key: `${attributeName}-${conditionName}-${conditionValue ?? ''}`,
-        attributeName,
-        conditionName,
-        conditionValue,
-      }
-    })
-}
-
-export const getAppliedFiltersText = (descriptions: AppliedFilterDescription[]): string => {
-  if (descriptions.length > 0) {
-    return `Applied filters: ${descriptions
-      .map((item) =>
-        item.conditionValue
-          ? `${item.attributeName} ${item.conditionName} ${item.conditionValue}`
-          : `${item.attributeName} ${item.conditionName}`
-      )
-      .join('; ')}`
-  }
-
-  return 'Applied filters: none'
 }
 
 export const getAppliedFilterGroups = (
