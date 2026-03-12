@@ -8,131 +8,17 @@ import { useCrmRepository } from '@/hooks/use-crm-repository'
 import { createErrorReporter } from '@/libs/utils/error-reporter'
 import { buildLookupSearchFilter } from '@/libs/utils/crm/odata-lookup-search'
 import { ConditionValue } from '@/libs/types/filter.types'
-
-interface ConditionValueOption {
-  value: string | number
-  displayName: string
-}
-
-const errorReporter = createErrorReporter('FilterItemValue')
-
-const noValueConditions = new Set(['null', 'not-null', 'today', 'tomorrow', 'yesterday'])
-
-const numberAttributeTypes = new Set(['Number', 'Integer', 'BigInt', 'Decimal', 'Double', 'Money'])
-
-const dateAttributeTypes = new Set(['DateTime'])
-
-const isNoValueCondition = (condition: string | null | undefined): boolean => {
-  if (!condition) {
-    return false
-  }
-
-  return noValueConditions.has(condition)
-}
-
-const sanitizeSelectableValues = (
-  values: ConditionValue[],
-  options: ConditionValueOption[],
-  maxItems?: number
-): ConditionValue[] => {
-  const optionValueByKey = new Map<string, ConditionValue>()
-  for (const option of options) {
-    const key = String(option.value)
-    if (!optionValueByKey.has(key)) {
-      optionValueByKey.set(key, option.value)
-    }
-  }
-
-  const uniqueValues: ConditionValue[] = []
-  for (const value of values) {
-    const normalizedValue = optionValueByKey.get(String(value))
-    if (normalizedValue !== undefined && !uniqueValues.includes(normalizedValue)) {
-      uniqueValues.push(normalizedValue)
-    }
-  }
-
-  const safeMaxItems = maxItems && maxItems > 0 ? maxItems : undefined
-  if (safeMaxItems && uniqueValues.length > safeMaxItems) {
-    uniqueValues.length = safeMaxItems
-  }
-
-  return uniqueValues
-}
-
-const formatLookupDisplayValue = (
-  item: Record<string, unknown>,
-  attributeNames: string[],
-  format: string | undefined,
-  fallbackValue: string
-): string => {
-  const values = attributeNames.map((attributeName) => {
-    const value = item[attributeName]
-    return value === undefined || value === null ? '' : String(value).trim()
-  })
-
-  if (format) {
-    const formattedValue = format.replace(/\{(\d+)\}/g, (_, indexValue: string) => {
-      const index = Number(indexValue)
-      if (!Number.isFinite(index)) {
-        return ''
-      }
-      return values[index] ?? ''
-    })
-
-    const trimmedFormattedValue = formattedValue.replace(/\s+/g, ' ').trim()
-    if (trimmedFormattedValue.length > 0) {
-      return trimmedFormattedValue
-    }
-  }
-
-  const joinedValue = values.filter((value) => value.length > 0).join(' ')
-  return joinedValue.length > 0 ? joinedValue : fallbackValue
-}
-
-const normalizeEntityItems = (data: unknown): Record<string, unknown>[] => {
-  if (Array.isArray(data)) {
-    return data as Record<string, unknown>[]
-  }
-
-  if (
-    data &&
-    typeof data === 'object' &&
-    'value' in data &&
-    Array.isArray((data as { value?: unknown }).value)
-  ) {
-    return (data as { value: Record<string, unknown>[] }).value
-  }
-
-  return []
-}
-
-const areSameValues = (left: ConditionValue[], right: ConditionValue[]): boolean => {
-  if (left.length !== right.length) {
-    return false
-  }
-
-  for (let index = 0; index < left.length; index++) {
-    if (left[index] !== right[index]) {
-      return false
-    }
-  }
-
-  return true
-}
-
-const mergeCachedAndFetchedOptions = (
-  cachedOptions: Map<string, ConditionValueOption>,
-  fetchedOptions: ConditionValueOption[]
-): ConditionValueOption[] => {
-  const merged = new Map<string, ConditionValueOption>()
-  for (const [key, option] of cachedOptions) {
-    merged.set(key, option)
-  }
-  for (const option of fetchedOptions) {
-    merged.set(String(option.value), option)
-  }
-  return Array.from(merged.values())
-}
+import {
+  ConditionValueOption,
+  areSameValues,
+  dateAttributeTypes,
+  formatLookupDisplayValue,
+  isNoValueCondition,
+  mergeCachedAndFetchedOptions,
+  normalizeEntityItems,
+  numberAttributeTypes,
+  sanitizeSelectableValues,
+} from './filter-item-value.helpers'
 
 export const FilterItemValue = ({
   filterOption,
