@@ -222,6 +222,10 @@
               "MinItems": 1,
               "MaxItems": 2
             }
+          },
+          {
+            "CategoryId": "general",
+            "AttributeName": "createdon"
           }
         ],
         "DefaultFilterGroups": [
