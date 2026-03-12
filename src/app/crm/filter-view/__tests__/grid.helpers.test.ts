@@ -2,19 +2,19 @@ import { describe, expect, it } from 'vitest'
 import {
   cloneGroups,
   compactGroups,
-  FilterGroupState,
+  GroupState,
   getGroupIdByOptionId,
   moveOptionAfterTarget,
   normalizeGroupTitle,
-  VisibleFilterOption,
-} from '@/app/crm/filter-view/filter-grid.helpers'
+  VisibleOption,
+} from '@/app/crm/filter-view/grid.helpers'
 
-const createVisibleOption = (id: number): VisibleFilterOption => ({
+const createVisibleOption = (id: number): VisibleOption => ({
   id,
   option: {},
 })
 
-const createGroup = (id: number, optionIds: number[]): FilterGroupState => ({
+const createGroup = (id: number, optionIds: number[]): GroupState => ({
   id,
   operator: 'and',
   optionIds,
@@ -24,7 +24,7 @@ const createGroup = (id: number, optionIds: number[]): FilterGroupState => ({
 
 describe('filter-grid.helpers', () => {
   it('clones groups without sharing optionIds arrays', () => {
-    const source: Record<number, FilterGroupState> = {
+    const source: Record<number, GroupState> = {
       1: createGroup(1, [1, 2]),
     }
 
@@ -52,7 +52,7 @@ describe('filter-grid.helpers', () => {
       createVisibleOption(3),
     ]
 
-    const groupsById: Record<number, FilterGroupState> = {
+    const groupsById: Record<number, GroupState> = {
       1: createGroup(1, [3, 1, 3]),
       2: createGroup(2, [2]),
       3: createGroup(3, [4, 99, 2]),

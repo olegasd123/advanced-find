@@ -4,14 +4,14 @@ import { Bars3Icon, TrashIcon } from '@heroicons/react/16/solid'
 import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox'
 import { Listbox, ListboxLabel, ListboxOption } from '@/components/catalyst/listbox'
 import { ComboboxOptionCategory } from '@/components/controls/combobox-option-category'
-import { FilterOption } from '@/app/crm/filter-view/filter-grid.helpers'
-import { FilterItemValue } from '@/app/crm/filter-view/filter-item-value'
+import { Option } from '@/app/crm/filter-view/grid.helpers'
+import { ItemValue } from '@/app/crm/filter-view/item-value'
 import { useAppConfig } from '@/hooks/use-app-config'
 import { FilterCategoryConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition, ConditionValue } from '@/libs/types/filter.types'
 import clsx from 'clsx'
 
-const EMPTY_FILTER_OPTION: FilterOption = {}
+const EMPTY_OPTION: Option = {}
 
 interface CrmFilterConditionOption {
   value: string
@@ -67,20 +67,20 @@ const getCrmFilterConditionsOptions = (
   })
 }
 
-interface FilterOptionCategoryEntry {
+interface OptionCategoryEntry {
   kind: 'category'
   categoryId: string
   displayName: string
 }
 
-interface FilterOptionValueEntry {
+interface OptionValueEntry {
   kind: 'option'
-  option: FilterOption
+  option: Option
 }
 
-type FilterOptionEntry = FilterOptionCategoryEntry | FilterOptionValueEntry
+type OptionEntry = OptionCategoryEntry | OptionValueEntry
 
-export const FilterItem = ({
+export const Item = ({
   optionId,
   options,
   categories,
@@ -100,10 +100,10 @@ export const FilterItem = ({
   onConditionChanged,
 }: {
   optionId: number
-  options: FilterOption[]
+  options: Option[]
   categories: FilterCategoryConfig[]
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
-  currentOption?: FilterOption
+  currentOption?: Option
   currentCondition?: AppliedFilterCondition
   isGroupable?: boolean
   groupPosition?: 'none' | 'first' | 'middle' | 'last' | 'only'
@@ -119,8 +119,8 @@ export const FilterItem = ({
 }) => {
   const initialSelectedFilterOption =
     currentCondition?.filterOption ?? currentOption?.FilterOptionConfig
-  const [selectedAttribute, setSelectedAttribute] = React.useState<FilterOption>(
-    currentOption ?? EMPTY_FILTER_OPTION
+  const [selectedAttribute, setSelectedAttribute] = React.useState<Option>(
+    currentOption ?? EMPTY_OPTION
   )
   const [filterConditions, setFilterConditions] = React.useState<
     CrmFilterConditionOption[] | undefined
@@ -157,7 +157,7 @@ export const FilterItem = ({
     return map
   }, [categories, normalizeCategoryId])
   const visibleOptions = React.useMemo(() => {
-    const next: FilterOptionEntry[] = []
+    const next: OptionEntry[] = []
     const shownCategoryIds = new Set<string>()
 
     for (const option of options) {
@@ -197,7 +197,7 @@ export const FilterItem = ({
   ])
 
   const compareFilterOption = React.useCallback(
-    (left: FilterOptionEntry, right: FilterOptionEntry): boolean => {
+    (left: OptionEntry, right: OptionEntry): boolean => {
       if (left.kind !== 'option' || right.kind !== 'option') {
         return false
       }
@@ -209,7 +209,7 @@ export const FilterItem = ({
     },
     []
   )
-  const selectedAttributeEntry = React.useMemo<FilterOptionEntry>(() => {
+  const selectedAttributeEntry = React.useMemo<OptionEntry>(() => {
     return {
       kind: 'option',
       option: selectedAttribute,
@@ -231,7 +231,7 @@ export const FilterItem = ({
       selectedOptionFromList ??
         (selectedFilterOptionFromState
           ? { FilterOptionConfig: selectedFilterOptionFromState }
-          : EMPTY_FILTER_OPTION)
+          : EMPTY_OPTION)
     )
 
     // Apply default values from config to the condition only for initialization,
@@ -268,13 +268,13 @@ export const FilterItem = ({
     )
   }, [currentOption, localization?.FilterConditionLabels, options])
 
-  const handleAttributeChanged = (value: FilterOptionEntry | null): void => {
+  const handleAttributeChanged = (value: OptionEntry | null): void => {
     if (!value || value.kind !== 'option') {
       return
     }
 
     const filterOption = value.option?.FilterOptionConfig
-    setSelectedAttribute(value.option ?? EMPTY_FILTER_OPTION)
+    setSelectedAttribute(value.option ?? EMPTY_OPTION)
 
     const options = getCrmFilterConditionsOptions(
       filterOption?.AttributeType,
@@ -399,7 +399,7 @@ export const FilterItem = ({
         <Combobox
           options={visibleOptions}
           by={compareFilterOption}
-          displayValue={(option: FilterOptionEntry) =>
+          displayValue={(option: OptionEntry) =>
             option.kind === 'option' ? option.option?.FilterOptionConfig?.DisplayName : undefined
           }
           value={selectedAttributeEntry}
@@ -437,7 +437,7 @@ export const FilterItem = ({
         )}
       </div>
       <div className="w-64 grow-8">
-        <FilterItemValue
+        <ItemValue
           filterOption={selectedFilterOption}
           selectedFilterCondition={selectedFilterCondition}
           values={selectedConditionValues}

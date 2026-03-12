@@ -19,11 +19,11 @@ import { Input, InputGroup } from '@/components/catalyst/input'
 import { Select } from '@/components/catalyst/select'
 import { PaginationOption } from '@/hooks/use-pagination'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import { getAppliedFilterGroups, getColumnHeader } from '@/app/crm/result-view/result-grid.helpers'
+import { getAppliedFilterGroups, getColumnHeader } from '@/app/crm/result-view/grid.helpers'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import clsx from 'clsx'
 
-interface ResultToolbarProps {
+interface ToolbarProps {
   onBack?: () => void
   showAppliedFilters?: boolean
   appliedFilters: AppliedFilterCondition[]
@@ -40,7 +40,7 @@ interface ResultToolbarProps {
   tableColumnDisplayNames?: Record<string, string>
 }
 
-export const ResultToolbar = ({
+export const Toolbar = ({
   onBack,
   showAppliedFilters,
   appliedFilters,
@@ -55,7 +55,7 @@ export const ResultToolbar = ({
   visibleColumnKeys,
   onToggleColumnVisibility,
   tableColumnDisplayNames,
-}: ResultToolbarProps) => {
+}: ToolbarProps) => {
   const appliedFilterGroups = getAppliedFilterGroups(appliedFilters)
   const visibleColumnsCount = visibleColumnKeys.length
   const appliedFiltersContainerRef = React.useRef<HTMLDivElement | null>(null)

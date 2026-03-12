@@ -7,11 +7,11 @@ import {
   isNoValueCondition,
   mergeCachedAndFetchedOptions,
   sanitizeSelectableValues,
-} from './filter-item-value.helpers'
+} from './item-value.helpers'
 import { useSelectableOptions } from './use-selectable-options'
-import { OnDemandSearchValue, SelectableValue, ScalarValue } from './filter-item-value-inputs'
+import { OnDemandSearchValue, SelectableValue, ScalarValue } from './item-value-inputs'
 
-export const FilterItemValue = ({
+export const ItemValue = ({
   filterOption,
   selectedFilterCondition,
   values,

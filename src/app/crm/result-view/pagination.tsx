@@ -1,5 +1,5 @@
 import {
-  Pagination,
+  Pagination as CatalystPagination,
   PaginationGap,
   PaginationList,
   PaginationNext,
@@ -8,7 +8,7 @@ import {
 } from '@/components/catalyst/pagination'
 import { VisiblePageItem } from '@/hooks/use-pagination'
 
-interface ResultPaginationProps {
+interface PaginationProps {
   isPaginationEnabled: boolean
   currentPage: number
   totalPages: number
@@ -18,7 +18,7 @@ interface ResultPaginationProps {
   paginationSummaryText: string
 }
 
-export const ResultPagination = ({
+export const Pagination = ({
   isPaginationEnabled,
   currentPage,
   totalPages,
@@ -26,14 +26,14 @@ export const ResultPagination = ({
   onPageButtonClick,
   isSummaryVisible,
   paginationSummaryText,
-}: ResultPaginationProps) => {
+}: PaginationProps) => {
   if (!isPaginationEnabled) {
     return null
   }
 
   return (
     <div className="pt-3 flex items-center gap-4">
-      <Pagination className="justify-start">
+      <CatalystPagination className="justify-start">
         <PaginationPrevious
           className="!grow-0 !basis-auto"
           disabled={currentPage <= 1}
@@ -60,7 +60,7 @@ export const ResultPagination = ({
           disabled={currentPage >= totalPages}
           onClick={() => onPageButtonClick(Math.min(totalPages, currentPage + 1))}
         />
-      </Pagination>
+      </CatalystPagination>
       {isSummaryVisible && (
         <div className="ml-auto text-sm text-zinc-600">{paginationSummaryText}</div>
       )}

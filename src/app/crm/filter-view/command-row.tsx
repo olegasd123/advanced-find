@@ -6,7 +6,7 @@ import clsx from 'clsx'
 
 export type CommandRowLocation = 'header' | 'footer'
 
-export const FilterCommandRow = ({
+export const CommandRow = ({
   location,
   onAddCondition,
   onResetFilters,

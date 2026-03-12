@@ -5,18 +5,18 @@ import { filterDragThresholdPx } from '@/libs/utils/env'
 
 // --- Types ---
 
-export interface FilterOption {
+export interface Option {
   FilterOptionConfig?: FilterOptionConfig
   optionId?: string
   sourceIndex?: number
 }
 
-export interface VisibleFilterOption {
+export interface VisibleOption {
   id: number
-  option: FilterOption
+  option: Option
 }
 
-export interface FilterGroupState {
+export interface GroupState {
   id: number
   operator: FilterGroupOperator
   optionIds: number[]
@@ -38,10 +38,8 @@ export const normalizeGroupTitle = (title: string | undefined): string | undefin
   return normalizedTitle ? normalizedTitle : undefined
 }
 
-export const cloneGroups = (
-  groupsById: Record<number, FilterGroupState>
-): Record<number, FilterGroupState> => {
-  const next: Record<number, FilterGroupState> = {}
+export const cloneGroups = (groupsById: Record<number, GroupState>): Record<number, GroupState> => {
+  const next: Record<number, GroupState> = {}
   for (const [groupId, group] of Object.entries(groupsById)) {
     next[Number(groupId)] = {
       ...group,
@@ -52,7 +50,7 @@ export const cloneGroups = (
 }
 
 export const getGroupIdByOptionId = (
-  groupsById: Record<number, FilterGroupState>,
+  groupsById: Record<number, GroupState>,
   optionId: number
 ): number | undefined => {
   for (const [groupId, group] of Object.entries(groupsById)) {
@@ -65,7 +63,7 @@ export const getGroupIdByOptionId = (
 
 export const sortOptionIdsByVisibleOrder = (
   optionIds: number[],
-  visibleFilterOptions: VisibleFilterOption[]
+  visibleFilterOptions: VisibleOption[]
 ): number[] => {
   const orderByOptionId = visibleFilterOptions.reduce<Record<number, number>>(
     (accumulator, item, index) => {
@@ -85,10 +83,10 @@ export const sortOptionIdsByVisibleOrder = (
 }
 
 export const moveOptionAfterTarget = (
-  visibleFilterOptions: VisibleFilterOption[],
+  visibleFilterOptions: VisibleOption[],
   sourceOptionId: number,
   targetOptionId: number
-): VisibleFilterOption[] => {
+): VisibleOption[] => {
   const sourceIndex = visibleFilterOptions.findIndex((item) => item.id === sourceOptionId)
   const targetIndex = visibleFilterOptions.findIndex((item) => item.id === targetOptionId)
   if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) {
@@ -103,9 +101,9 @@ export const moveOptionAfterTarget = (
 }
 
 export const compactGroups = (
-  groupsById: Record<number, FilterGroupState>,
-  visibleFilterOptions: VisibleFilterOption[]
-): Record<number, FilterGroupState> => {
+  groupsById: Record<number, GroupState>,
+  visibleFilterOptions: VisibleOption[]
+): Record<number, GroupState> => {
   const visibleOptionIds = new Set(visibleFilterOptions.map((item) => item.id))
   const next = cloneGroups(groupsById)
 

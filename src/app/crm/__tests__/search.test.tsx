@@ -32,12 +32,12 @@ vi.mock('@/app/crm/use-search-query', () => ({
   useSearchQuery: mocks.useSearchQuery,
 }))
 
-vi.mock('@/app/crm/filter-view/filter-grid', () => ({
-  FilterGrid: () => <div data-testid="filter-grid" />,
+vi.mock('@/app/crm/filter-view/grid', () => ({
+  Grid: () => <div data-testid="filter-grid" />,
 }))
 
-vi.mock('@/app/crm/result-view/result-grid', () => ({
-  ResultGrid: () => <div data-testid="result-grid" />,
+vi.mock('@/app/crm/result-view/grid', () => ({
+  Grid: () => <div data-testid="result-grid" />,
 }))
 
 vi.mock('@/app/view-error-boundary', () => ({

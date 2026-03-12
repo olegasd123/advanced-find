@@ -13,25 +13,25 @@ import {
   resolveConfigPath,
 } from '@/libs/utils/crm/relation-path'
 import { useCrmRepository } from '@/hooks/use-crm-repository'
-import { FilterOption, VisibleFilterOption } from '@/app/crm/filter-view/filter-grid.helpers'
+import { Option, VisibleOption } from '@/app/crm/filter-view/grid.helpers'
 
 const logger = createLogger('filter-utils')
 
-interface UseFilterOptionsResult {
-  filterOptions: FilterOption[] | undefined
-  visibleFilterOptions: VisibleFilterOption[]
-  defaultVisibleFilterOptions: VisibleFilterOption[]
+interface UseOptionsResult {
+  filterOptions: Option[] | undefined
+  visibleFilterOptions: VisibleOption[]
+  defaultVisibleFilterOptions: VisibleOption[]
   defaultsRevision: number
-  setVisibleFilterOptions: React.Dispatch<React.SetStateAction<VisibleFilterOption[]>>
+  setVisibleFilterOptions: React.Dispatch<React.SetStateAction<VisibleOption[]>>
   addCondition: () => void
   removeCondition: (optionId: number) => void
   resetVisibleFilterOptions: () => void
 }
 
-const buildDefaultVisibleFilterOptions = (
-  options: FilterOption[] | undefined,
+const buildDefaultVisibleOptions = (
+  options: Option[] | undefined,
   optionIdRef: React.MutableRefObject<number>
-): VisibleFilterOption[] => {
+): VisibleOption[] => {
   return (
     options
       ?.filter((filterOption) => filterOption?.FilterOptionConfig?.Default?.IsShown)
@@ -111,15 +111,11 @@ const fillOptionsWithMetadataInfo = async (
   }
 }
 
-export const useFilterOptions = ({
-  entityConfig,
-}: {
-  entityConfig?: EntityConfig
-}): UseFilterOptionsResult => {
-  const [filterOptions, setFilterOptions] = React.useState<FilterOption[]>()
-  const [visibleFilterOptions, setVisibleFilterOptions] = React.useState<VisibleFilterOption[]>([])
+export const useOptions = ({ entityConfig }: { entityConfig?: EntityConfig }): UseOptionsResult => {
+  const [filterOptions, setFilterOptions] = React.useState<Option[]>()
+  const [visibleFilterOptions, setVisibleFilterOptions] = React.useState<VisibleOption[]>([])
   const [defaultVisibleFilterOptions, setDefaultVisibleFilterOptions] = React.useState<
-    VisibleFilterOption[]
+    VisibleOption[]
   >([])
   const [defaultsRevision, setDefaultsRevision] = React.useState(0)
   const crm = useCrmRepository()
@@ -130,8 +126,8 @@ export const useFilterOptions = ({
     [entityConfig]
   )
 
-  const applyDefaultVisibleFilterOptions = React.useCallback((options?: FilterOption[]): void => {
-    const nextVisibleFilterOptions = buildDefaultVisibleFilterOptions(options, optionIdRef)
+  const applyDefaultVisibleOptions = React.useCallback((options?: Option[]): void => {
+    const nextVisibleFilterOptions = buildDefaultVisibleOptions(options, optionIdRef)
     setVisibleFilterOptions(nextVisibleFilterOptions)
     setDefaultVisibleFilterOptions(nextVisibleFilterOptions)
     setDefaultsRevision((previous) => previous + 1)
@@ -165,12 +161,12 @@ export const useFilterOptions = ({
 
       if (requestId === requestIdRef.current) {
         setFilterOptions(options)
-        applyDefaultVisibleFilterOptions(options)
+        applyDefaultVisibleOptions(options)
       }
     }
 
     void getData()
-  }, [applyDefaultVisibleFilterOptions, crm, entityConfig, relationPathById])
+  }, [applyDefaultVisibleOptions, crm, entityConfig, relationPathById])
 
   const addCondition = React.useCallback((): void => {
     setVisibleFilterOptions((previous) => [
@@ -187,8 +183,8 @@ export const useFilterOptions = ({
   }, [])
 
   const resetVisibleFilterOptions = React.useCallback((): void => {
-    applyDefaultVisibleFilterOptions(filterOptions)
-  }, [applyDefaultVisibleFilterOptions, filterOptions])
+    applyDefaultVisibleOptions(filterOptions)
+  }, [applyDefaultVisibleOptions, filterOptions])
 
   return {
     filterOptions,

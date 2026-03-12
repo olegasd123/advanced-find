@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { FilterItemValue } from '@/app/crm/filter-view/filter-item-value'
+import { ItemValue } from '@/app/crm/filter-view/item-value'
 import { FilterOptionConfig } from '@/libs/types/app-config.types'
 import { CrmData } from '@/libs/types/entity.types'
 
@@ -48,14 +48,14 @@ const createOnDemandLookupFilterOption = (): FilterOptionConfig => ({
   Lookup: { AttributeNames: ['fullname'] },
 })
 
-describe('FilterItemValue', () => {
+describe('ItemValue', () => {
   it('keeps selected values when on-demand search results are replaced by a new query', async () => {
     const crmRepository = createCrmRepositoryMock()
     const onConditionValuesChanged = vi.fn()
 
     const { container } = render(
       <CrmRepositoryContext.Provider value={crmRepository}>
-        <FilterItemValue
+        <ItemValue
           filterOption={createOnDemandLookupFilterOption()}
           selectedFilterCondition="eq"
           onConditionValuesChanged={onConditionValuesChanged}

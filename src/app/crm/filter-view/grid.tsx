@@ -5,28 +5,28 @@ import { Button } from '@/components/catalyst/button'
 import { Select } from '@/components/catalyst/select'
 import { EntityConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition, FilterGroupOperator } from '@/libs/types/filter.types'
-import { FilterItem } from '@/app/crm/filter-view/filter-item'
-import { FilterCommandRow } from '@/app/crm/filter-view/filter-command-row'
-import { VisibleFilterOption } from '@/app/crm/filter-view/filter-grid.helpers'
-import { useFilterOptions } from '@/app/crm/filter-view/use-filter-options'
-import { useFilterConditions } from '@/app/crm/filter-view/use-filter-conditions'
-import { FilterDragDropProvider } from '@/app/crm/filter-view/filter-drag-drop-provider'
-import { useFilterDragDropContext } from '@/app/crm/filter-view/filter-drag-drop-context'
+import { Item } from '@/app/crm/filter-view/item'
+import { CommandRow } from '@/app/crm/filter-view/command-row'
+import { VisibleOption } from '@/app/crm/filter-view/grid.helpers'
+import { useOptions } from '@/app/crm/filter-view/use-options'
+import { useConditions } from '@/app/crm/filter-view/use-conditions'
+import { DragDropProvider } from '@/app/crm/filter-view/drag-drop-provider'
+import { useDragDropContext } from '@/app/crm/filter-view/drag-drop-context'
 
-export type { FilterOption } from '@/app/crm/filter-view/filter-grid.helpers'
+export type { Option } from '@/app/crm/filter-view/grid.helpers'
 
-interface FilterGridProps {
+interface GridProps {
   entityConfig?: EntityConfig
   onSearch?: (conditions: AppliedFilterCondition[]) => void
 }
 
-interface FilterGridContentProps {
+interface GridContentProps {
   entityConfig?: EntityConfig
-  filterOptions: VisibleFilterOption['option'][] | undefined
-  visibleFilterOptions: VisibleFilterOption[]
+  filterOptions: VisibleOption['option'][] | undefined
+  visibleFilterOptions: VisibleOption[]
   conditionsById: Record<number, AppliedFilterCondition>
-  groupsById: ReturnType<typeof useFilterConditions>['groupsById']
-  groupIdByOptionId: ReturnType<typeof useFilterConditions>['groupIdByOptionId']
+  groupsById: ReturnType<typeof useConditions>['groupsById']
+  groupIdByOptionId: ReturnType<typeof useConditions>['groupIdByOptionId']
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
   isOptionGroupable: (optionId: number) => boolean
   onDeleteCondition: (optionId: number) => void
@@ -39,7 +39,7 @@ interface FilterGridContentProps {
   defaultsRevision: number
 }
 
-const FilterGridContent = ({
+const GridContent = ({
   entityConfig,
   filterOptions,
   visibleFilterOptions,
@@ -56,7 +56,7 @@ const FilterGridContent = ({
   onResetFilters,
   onSearch,
   defaultsRevision,
-}: FilterGridContentProps) => {
+}: GridContentProps) => {
   const {
     dragPreviewPosition,
     dropTargetKey,
@@ -67,7 +67,7 @@ const FilterGridContent = ({
     handleItemPointerEnter,
     handleItemPointerLeave,
     handleDropOnItem,
-  } = useFilterDragDropContext()
+  } = useDragDropContext()
 
   React.useEffect(() => {
     clearDragState()
@@ -78,14 +78,14 @@ const FilterGridContent = ({
     clearDragState()
   }, [clearDragState, onResetFilters])
 
-  const renderFilterItem = (
-    item: VisibleFilterOption,
+  const renderItem = (
+    item: VisibleOption,
     groupPosition: 'none' | 'first' | 'middle' | 'last' | 'only' = 'none'
   ): React.ReactNode => {
     const isGroupable = isOptionGroupable(item.id)
 
     return (
-      <FilterItem
+      <Item
         key={item.id}
         optionId={item.id}
         options={filterOptions ?? []}
@@ -114,11 +114,7 @@ const FilterGridContent = ({
 
   return (
     <div>
-      <FilterCommandRow
-        location="header"
-        onAddCondition={onAddCondition}
-        onResetFilters={handleReset}
-      />
+      <CommandRow location="header" onAddCondition={onAddCondition} onResetFilters={handleReset} />
 
       {visibleFilterOptions.map((item) => {
         const groupId = groupIdByOptionId.get(item.id)
@@ -177,12 +173,12 @@ const FilterGridContent = ({
                 </Button>
               </div>
             )}
-            {renderFilterItem(item, groupPosition)}
+            {renderItem(item, groupPosition)}
           </React.Fragment>
         )
       })}
 
-      <FilterCommandRow
+      <CommandRow
         location="footer"
         onAddCondition={onAddCondition}
         onResetFilters={handleReset}
@@ -205,7 +201,7 @@ const FilterGridContent = ({
   )
 }
 
-export const FilterGrid = ({ entityConfig, onSearch }: FilterGridProps) => {
+export const Grid = ({ entityConfig, onSearch }: GridProps) => {
   const {
     filterOptions,
     visibleFilterOptions,
@@ -215,7 +211,7 @@ export const FilterGrid = ({ entityConfig, onSearch }: FilterGridProps) => {
     addCondition,
     removeCondition,
     resetVisibleFilterOptions,
-  } = useFilterOptions({ entityConfig })
+  } = useOptions({ entityConfig })
 
   const {
     groupsById,
@@ -229,7 +225,7 @@ export const FilterGrid = ({ entityConfig, onSearch }: FilterGridProps) => {
     handleUngroup,
     handleConditionChanged,
     handleSearch,
-  } = useFilterConditions({
+  } = useConditions({
     entityConfig,
     visibleFilterOptions,
     defaultVisibleFilterOptions,
@@ -238,7 +234,7 @@ export const FilterGrid = ({ entityConfig, onSearch }: FilterGridProps) => {
   })
 
   return (
-    <FilterDragDropProvider
+    <DragDropProvider
       visibleFilterOptions={visibleFilterOptions}
       setVisibleFilterOptions={setVisibleFilterOptions}
       groupsById={groupsById}
@@ -246,7 +242,7 @@ export const FilterGrid = ({ entityConfig, onSearch }: FilterGridProps) => {
       isOptionGroupable={isOptionGroupable}
       groupIdRef={groupIdRef}
     >
-      <FilterGridContent
+      <GridContent
         entityConfig={entityConfig}
         filterOptions={filterOptions}
         visibleFilterOptions={visibleFilterOptions}
@@ -264,6 +260,6 @@ export const FilterGrid = ({ entityConfig, onSearch }: FilterGridProps) => {
         onSearch={handleSearch}
         defaultsRevision={defaultsRevision}
       />
-    </FilterDragDropProvider>
+    </DragDropProvider>
   )
 }

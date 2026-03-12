@@ -2,7 +2,7 @@ import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/c
 import { SearchCombobox } from '@/components/controls/search-combobox'
 import { Listbox, ListboxLabel, ListboxOption } from '@/components/catalyst/listbox'
 import { Input } from '@/components/catalyst/input'
-import { ConditionValueOption } from './filter-item-value.helpers'
+import { ConditionValueOption } from './item-value.helpers'
 
 export const OnDemandSearchValue = ({
   options,

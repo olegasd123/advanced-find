@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {
-  Table,
+  Table as CatalystTable,
   TableBody,
   TableColumn,
   TableHead,
@@ -11,14 +11,14 @@ import { ColumnResizeState } from '@/hooks/use-column-resize'
 import { SortRule } from '@/hooks/use-table-sort'
 import { SearchTableColumn } from '@/libs/types/search.types'
 import { ExpandableCellText } from '@/app/crm/result-view/expandable-cell-text'
-import { getColumnCellValue, getColumnHeader } from '@/app/crm/result-view/result-grid.helpers'
+import { getColumnCellValue, getColumnHeader } from '@/app/crm/result-view/grid.helpers'
 
 interface DisplayedResultRow {
   row: Record<string, unknown>
   rowIndex: number
 }
 
-interface ResultTableProps {
+interface TableProps {
   visibleColumns: SearchTableColumn[]
   tableColumnDisplayNames?: Record<string, string>
   columnWidthsByKey: Record<string, number>
@@ -36,7 +36,7 @@ interface ResultTableProps {
   onCellExpandedChanged: (cellKey: string, shouldBeExpanded: boolean) => void
 }
 
-export const ResultTable = ({
+export const Table = ({
   visibleColumns,
   tableColumnDisplayNames,
   columnWidthsByKey,
@@ -52,12 +52,12 @@ export const ResultTable = ({
   displayedRows,
   expandedCellKeys,
   onCellExpandedChanged,
-}: ResultTableProps) => {
+}: TableProps) => {
   const columnSpan = Math.max(visibleColumns.length, 1)
 
   return (
     <div className="pt-4">
-      <Table striped dense fixed>
+      <CatalystTable striped dense fixed>
         <colgroup>
           {visibleColumns.map((column) => (
             <col
@@ -200,7 +200,7 @@ export const ResultTable = ({
               </TableRow>
             ))}
         </TableBody>
-      </Table>
+      </CatalystTable>
     </div>
   )
 }

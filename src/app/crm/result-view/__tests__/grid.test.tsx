@@ -1,6 +1,6 @@
 import { vi, describe, expect, it } from 'vitest'
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { ResultGrid } from '@/app/crm/result-view/result-grid'
+import { Grid } from '@/app/crm/result-view/grid'
 import { SearchTableColumn } from '@/libs/types/search.types'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import { TableColumnConfig } from '@/libs/types/app-config.types'
@@ -41,9 +41,9 @@ const defaultRows: Record<string, unknown>[] = [
 
 const defaultAppliedFilters: AppliedFilterCondition[] = []
 
-const renderResultGrid = (overrides?: Partial<Parameters<typeof ResultGrid>[0]>) => {
+const renderGrid = (overrides?: Partial<Parameters<typeof Grid>[0]>) => {
   return render(
-    <ResultGrid
+    <Grid
       results={defaultRows}
       tableColumns={defaultColumns}
       appliedFilters={defaultAppliedFilters}
@@ -107,10 +107,10 @@ const setScrollerMetrics = (
   })
 }
 
-describe('ResultGrid', () => {
+describe('Grid', () => {
   describe('rendering', () => {
     it('renders column headers', () => {
-      const { container } = renderResultGrid()
+      const { container } = renderGrid()
 
       const thead = container.querySelector('thead')!
       expect(within(thead).getByText('Name')).toBeInTheDocument()
@@ -119,7 +119,7 @@ describe('ResultGrid', () => {
     })
 
     it('renders row data in table cells', () => {
-      const { container } = renderResultGrid()
+      const { container } = renderGrid()
 
       const tbody = getTableBody(container)
       expect(within(tbody).getAllByText('Acme Corp').length).toBeGreaterThanOrEqual(1)
@@ -129,26 +129,26 @@ describe('ResultGrid', () => {
     })
 
     it('shows "No results found" when results array is empty', () => {
-      renderResultGrid({ results: [] })
+      renderGrid({ results: [] })
 
       expect(screen.getByText('No results found')).toBeInTheDocument()
     })
 
     it('shows error message when provided', () => {
-      renderResultGrid({ errorMessage: 'Something went wrong' })
+      renderGrid({ errorMessage: 'Something went wrong' })
 
       expect(screen.getByText('Something went wrong')).toBeInTheDocument()
     })
 
     it('shows loading skeleton rows when isLoading is true', () => {
-      const { container } = renderResultGrid({ isLoading: true })
+      const { container } = renderGrid({ isLoading: true })
 
       const skeletonDivs = container.querySelectorAll('.animate-pulse')
       expect(skeletonDivs.length).toBeGreaterThan(0)
     })
 
     it('does not show data rows when loading', () => {
-      const { container } = renderResultGrid({ isLoading: true })
+      const { container } = renderGrid({ isLoading: true })
 
       const tbody = getTableBody(container)
       expect(within(tbody).queryByText('Acme Corp')).not.toBeInTheDocument()
@@ -157,7 +157,7 @@ describe('ResultGrid', () => {
 
   describe('table search filtering', () => {
     it('filters rows by search text in visible columns', () => {
-      const { container } = renderResultGrid()
+      const { container } = renderGrid()
 
       const searchInput = container.querySelector<HTMLInputElement>(
         'input[placeholder="Search in results"]'
@@ -171,7 +171,7 @@ describe('ResultGrid', () => {
     })
 
     it('shows "No matching results." when search matches nothing', () => {
-      const { container } = renderResultGrid()
+      const { container } = renderGrid()
 
       const searchInput = container.querySelector<HTMLInputElement>(
         'input[placeholder="Search in results"]'
@@ -182,7 +182,7 @@ describe('ResultGrid', () => {
     })
 
     it('is case insensitive', () => {
-      const { container } = renderResultGrid()
+      const { container } = renderGrid()
 
       const searchInput = container.querySelector<HTMLInputElement>(
         'input[placeholder="Search in results"]'
@@ -197,7 +197,7 @@ describe('ResultGrid', () => {
 
   describe('sorting', () => {
     it('sorts ascending on first column header click', () => {
-      const { container } = renderResultGrid()
+      const { container } = renderGrid()
 
       const sortButton = container.querySelector<HTMLButtonElement>(
         'thead button[title*="Sort by Name"]'
@@ -213,7 +213,7 @@ describe('ResultGrid', () => {
     })
 
     it('toggles sort direction on second click', () => {
-      const { container } = renderResultGrid()
+      const { container } = renderGrid()
 
       const sortButton = container.querySelector<HTMLButtonElement>(
         'thead button[title*="Sort by Name"]'
@@ -241,7 +241,7 @@ describe('ResultGrid', () => {
     }))
 
     it('paginates results when pagination config is provided', () => {
-      const { container } = renderResultGrid({
+      const { container } = renderGrid({
         results: manyRows,
         pagination: paginationConfig,
       })
@@ -253,7 +253,7 @@ describe('ResultGrid', () => {
     })
 
     it('shows pagination summary', () => {
-      renderResultGrid({
+      renderGrid({
         results: manyRows,
         pagination: paginationConfig,
       })
@@ -262,7 +262,7 @@ describe('ResultGrid', () => {
     })
 
     it('navigates to next page', () => {
-      const { container } = renderResultGrid({
+      const { container } = renderGrid({
         results: manyRows,
         pagination: paginationConfig,
       })
@@ -277,7 +277,7 @@ describe('ResultGrid', () => {
     })
 
     it('does not render pagination controls when config is absent', () => {
-      const { container } = renderResultGrid()
+      const { container } = renderGrid()
 
       const nextButton = container.querySelector('button[aria-label="Next page"]')
       const prevButton = container.querySelector('button[aria-label="Previous page"]')
@@ -301,7 +301,7 @@ describe('ResultGrid', () => {
     ]
 
     it('shows applied filter descriptions in toolbar', () => {
-      renderResultGrid({
+      renderGrid({
         appliedFilters,
         showAppliedFilters: true,
       })
@@ -313,7 +313,7 @@ describe('ResultGrid', () => {
     })
 
     it('shows "none" when no meaningful filters applied', () => {
-      renderResultGrid({
+      renderGrid({
         appliedFilters: [],
         showAppliedFilters: true,
       })
@@ -324,7 +324,7 @@ describe('ResultGrid', () => {
     it('calls onRemoveFilterValue when chip delete button is clicked', () => {
       const onRemoveFilterValue = vi.fn()
 
-      const { container } = renderResultGrid({
+      const { container } = renderGrid({
         appliedFilters,
         showAppliedFilters: true,
         onRemoveFilterValue,
@@ -354,7 +354,7 @@ describe('ResultGrid', () => {
         },
       ]
 
-      const { container } = renderResultGrid({
+      const { container } = renderGrid({
         appliedFilters: notRemovableAppliedFilters,
         showAppliedFilters: true,
         onRemoveFilterValue,
@@ -383,7 +383,7 @@ describe('ResultGrid', () => {
         },
       ]
 
-      const { container } = renderResultGrid({
+      const { container } = renderGrid({
         appliedFilters: disabledAppliedFilters,
         showAppliedFilters: true,
         onRemoveFilterValue,
@@ -397,7 +397,7 @@ describe('ResultGrid', () => {
     })
 
     it('hides scroll buttons when chips do not overflow', () => {
-      const { container } = renderResultGrid({
+      const { container } = renderGrid({
         appliedFilters,
         showAppliedFilters: true,
       })
@@ -417,7 +417,7 @@ describe('ResultGrid', () => {
     })
 
     it('shows scroll buttons and disables them at scroll edges', () => {
-      const { container } = renderResultGrid({
+      const { container } = renderGrid({
         appliedFilters,
         showAppliedFilters: true,
       })
@@ -446,7 +446,7 @@ describe('ResultGrid', () => {
   describe('back button', () => {
     it('calls onBack when back button is clicked', () => {
       const onBack = vi.fn()
-      const { container } = renderResultGrid({ onBack })
+      const { container } = renderGrid({ onBack })
 
       const backButton = findButtonByAriaLabel(container, 'Back')
       fireEvent.click(backButton)
@@ -458,7 +458,7 @@ describe('ResultGrid', () => {
   describe('empty cell display', () => {
     it('shows dash for missing cell values', () => {
       const rows = [{ name: 'Test', city: undefined, revenue: '' }]
-      const { container } = renderResultGrid({ results: rows })
+      const { container } = renderGrid({ results: rows })
 
       const tbody = getTableBody(container)
       const dashes = within(tbody).getAllByText('-')

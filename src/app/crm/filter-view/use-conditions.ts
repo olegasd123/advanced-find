@@ -4,16 +4,16 @@ import { AppliedFilterCondition, FilterGroupOperator } from '@/libs/types/filter
 import { getNormalizedConfigId } from '@/libs/utils/crm/relation-path'
 import {
   compactGroups,
-  FilterGroupState,
+  GroupState,
   normalizeGroupOperator,
   normalizeGroupTitle,
   sortOptionIdsByVisibleOrder,
-  VisibleFilterOption,
-} from '@/app/crm/filter-view/filter-grid.helpers'
+  VisibleOption,
+} from '@/app/crm/filter-view/grid.helpers'
 
-interface UseFilterConditionsResult {
-  groupsById: Record<number, FilterGroupState>
-  setGroupsById: React.Dispatch<React.SetStateAction<Record<number, FilterGroupState>>>
+interface UseConditionsResult {
+  groupsById: Record<number, GroupState>
+  setGroupsById: React.Dispatch<React.SetStateAction<Record<number, GroupState>>>
   conditionsById: Record<number, AppliedFilterCondition>
   groupIdRef: React.RefObject<number>
   groupIdByOptionId: Map<number, number>
@@ -27,10 +27,10 @@ interface UseFilterConditionsResult {
 
 const buildDefaultGroupsById = (
   entityConfig: EntityConfig | undefined,
-  defaultVisibleFilterOptions: VisibleFilterOption[],
+  defaultVisibleFilterOptions: VisibleOption[],
   groupIdRef: React.RefObject<number>
-): Record<number, FilterGroupState> => {
-  const groups: Record<number, FilterGroupState> = {}
+): Record<number, GroupState> => {
+  const groups: Record<number, GroupState> = {}
   const visibleOptionIdsBySourceIndex = new Map<number, number>()
   const visibleOptionIdsByConfigId = new Map<string, number>()
 
@@ -103,7 +103,7 @@ const buildDefaultGroupsById = (
 
 const removeInvisibleConditions = (
   previous: Record<number, AppliedFilterCondition>,
-  visibleFilterOptions: VisibleFilterOption[]
+  visibleFilterOptions: VisibleOption[]
 ): Record<number, AppliedFilterCondition> => {
   const visibleOptionIds = new Set(visibleFilterOptions.map((item) => item.id))
   let hasChanges = false
@@ -122,8 +122,8 @@ const removeInvisibleConditions = (
 }
 
 const areGroupsEqual = (
-  left: Record<number, FilterGroupState>,
-  right: Record<number, FilterGroupState>
+  left: Record<number, GroupState>,
+  right: Record<number, GroupState>
 ): boolean => {
   const leftGroupIds = Object.keys(left)
   const rightGroupIds = Object.keys(right)
@@ -159,7 +159,7 @@ const areGroupsEqual = (
   return true
 }
 
-export const useFilterConditions = ({
+export const useConditions = ({
   entityConfig,
   visibleFilterOptions,
   defaultVisibleFilterOptions,
@@ -167,12 +167,12 @@ export const useFilterConditions = ({
   onSearch,
 }: {
   entityConfig?: EntityConfig
-  visibleFilterOptions: VisibleFilterOption[]
-  defaultVisibleFilterOptions: VisibleFilterOption[]
+  visibleFilterOptions: VisibleOption[]
+  defaultVisibleFilterOptions: VisibleOption[]
   defaultsRevision: number
   onSearch?: (conditions: AppliedFilterCondition[]) => void
-}): UseFilterConditionsResult => {
-  const [groupsById, setGroupsById] = React.useState<Record<number, FilterGroupState>>({})
+}): UseConditionsResult => {
+  const [groupsById, setGroupsById] = React.useState<Record<number, GroupState>>({})
   const [conditionsById, setConditionsById] = React.useState<
     Record<number, AppliedFilterCondition>
   >({})

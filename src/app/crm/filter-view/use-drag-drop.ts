@@ -3,14 +3,14 @@ import {
   cloneGroups,
   compactGroups,
   DRAG_MOVEMENT_THRESHOLD_PX,
-  FilterGroupState,
+  GroupState,
   getGroupIdByOptionId,
   moveOptionAfterTarget,
   sortOptionIdsByVisibleOrder,
-  VisibleFilterOption,
-} from '@/app/crm/filter-view/filter-grid.helpers'
+  VisibleOption,
+} from '@/app/crm/filter-view/grid.helpers'
 
-export const useFilterDragDrop = ({
+export const useDragDrop = ({
   visibleFilterOptions,
   setVisibleFilterOptions,
   groupsById,
@@ -18,10 +18,10 @@ export const useFilterDragDrop = ({
   isOptionGroupable,
   groupIdRef,
 }: {
-  visibleFilterOptions: VisibleFilterOption[]
-  setVisibleFilterOptions: React.Dispatch<React.SetStateAction<VisibleFilterOption[]>>
-  groupsById: Record<number, FilterGroupState>
-  setGroupsById: React.Dispatch<React.SetStateAction<Record<number, FilterGroupState>>>
+  visibleFilterOptions: VisibleOption[]
+  setVisibleFilterOptions: React.Dispatch<React.SetStateAction<VisibleOption[]>>
+  groupsById: Record<number, GroupState>
+  setGroupsById: React.Dispatch<React.SetStateAction<Record<number, GroupState>>>
   isOptionGroupable: (optionId: number) => boolean
   groupIdRef: React.RefObject<number>
 }) => {

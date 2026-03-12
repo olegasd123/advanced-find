@@ -5,19 +5,16 @@ import {
 } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import {
-  getColumnCellValue,
-  getDefaultColumnWidth,
-} from '@/app/crm/result-view/result-grid.helpers'
+import { getColumnCellValue, getDefaultColumnWidth } from '@/app/crm/result-view/grid.helpers'
 import { useColumnResize } from '@/hooks/use-column-resize'
 import { useColumnVisibility } from '@/hooks/use-column-visibility'
 import { usePagination } from '@/hooks/use-pagination'
 import { useTableSort } from '@/hooks/use-table-sort'
-import { ResultToolbar } from '@/app/crm/result-view/result-toolbar'
-import { ResultTable } from '@/app/crm/result-view/result-table'
-import { ResultPagination } from '@/app/crm/result-view/result-pagination'
+import { Toolbar } from '@/app/crm/result-view/toolbar'
+import { Table } from '@/app/crm/result-view/table'
+import { Pagination } from '@/app/crm/result-view/pagination'
 
-interface ResultGridProps {
+interface GridProps {
   results: Record<string, unknown>[]
   tableColumns: SearchTableColumn[]
   tableColumnDisplayNames?: Record<string, string>
@@ -32,7 +29,7 @@ interface ResultGridProps {
   onBack?: () => void
 }
 
-export const ResultGrid = ({
+export const Grid = ({
   results,
   tableColumns,
   tableColumnDisplayNames,
@@ -45,7 +42,7 @@ export const ResultGrid = ({
   appliedFilters,
   onRemoveFilterValue,
   onBack,
-}: ResultGridProps) => {
+}: GridProps) => {
   const columns = tableColumns
 
   const { visibleColumns, visibleColumnKeys, toggleColumnVisibility } = useColumnVisibility(
@@ -122,7 +119,7 @@ export const ResultGrid = ({
 
   return (
     <>
-      <ResultToolbar
+      <Toolbar
         onBack={onBack}
         showAppliedFilters={showAppliedFilters}
         appliedFilters={appliedFilters}
@@ -139,7 +136,7 @@ export const ResultGrid = ({
         tableColumnDisplayNames={tableColumnDisplayNames}
       />
 
-      <ResultTable
+      <Table
         visibleColumns={visibleColumns}
         tableColumnDisplayNames={tableColumnDisplayNames}
         columnWidthsByKey={columnWidthsByKey}
@@ -157,7 +154,7 @@ export const ResultGrid = ({
         onCellExpandedChanged={handleCellExpandedChanged}
       />
 
-      <ResultPagination
+      <Pagination
         isPaginationEnabled={isPaginationEnabled}
         currentPage={currentPage}
         totalPages={totalPages}

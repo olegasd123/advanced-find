@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, waitFor } from '@testing-library/react'
-import { FilterGrid } from '@/app/crm/filter-view/filter-grid'
+import { Grid } from '@/app/crm/filter-view/grid'
 import { AppConfig, EntityConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import { CrmData } from '@/libs/types/entity.types'
@@ -84,7 +84,7 @@ vi.mock('@/hooks/use-crm-repository', () => ({
   useCrmRepository: () => React.useContext(CrmRepositoryContext),
 }))
 
-const renderFilterGrid = (
+const renderGrid = (
   entityConfig: EntityConfig,
   options?: {
     onSearch?: (conditions: AppliedFilterCondition[]) => void
@@ -98,7 +98,7 @@ const renderFilterGrid = (
   return render(
     <AppConfigContext.Provider value={{ appConfig, isLoading: false }}>
       <CrmRepositoryContext.Provider value={crm}>
-        <FilterGrid entityConfig={entityConfig} onSearch={options?.onSearch} />
+        <Grid entityConfig={entityConfig} onSearch={options?.onSearch} />
       </CrmRepositoryContext.Provider>
     </AppConfigContext.Provider>
   )
@@ -131,11 +131,11 @@ const findComboboxInputByValue = (
 
 // --- Tests ---
 
-describe('FilterGrid', () => {
+describe('Grid', () => {
   describe('rendering', () => {
     it('renders header labels (Attribute, Condition, Value)', async () => {
       const entityConfig = createEntityConfig([])
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       expect(container.querySelector('span')).toBeTruthy()
       expect(container.textContent).toContain('Attribute')
@@ -153,7 +153,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Account Name')).toBeTruthy()
@@ -168,7 +168,7 @@ describe('FilterGrid', () => {
         createFilterOption({ DisplayName: 'Status', AttributeName: 'statecode' }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Account Name')).toBeTruthy()
@@ -182,7 +182,7 @@ describe('FilterGrid', () => {
       const entityConfig = createEntityConfig([
         createFilterOption({ DisplayName: 'Account Name', AttributeName: 'name' }),
       ])
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Account Name')).toBeTruthy()
@@ -211,7 +211,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Account Name')).toBeTruthy()
@@ -234,7 +234,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Required Field')).toBeTruthy()
@@ -256,7 +256,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig, { onSearch })
+      const { container } = renderGrid(entityConfig, { onSearch })
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Account Name')).toBeTruthy()
@@ -281,7 +281,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig, { onSearch })
+      const { container } = renderGrid(entityConfig, { onSearch })
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Account Name')).toBeTruthy()
@@ -312,7 +312,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Account Name')).toBeTruthy()
@@ -381,7 +381,7 @@ describe('FilterGrid', () => {
           },
         ],
       })
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Name')).toBeTruthy()
@@ -419,7 +419,7 @@ describe('FilterGrid', () => {
           },
         ],
       })
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(container.textContent).toContain('Group')
@@ -457,7 +457,7 @@ describe('FilterGrid', () => {
           },
         ],
       })
-      const { container } = renderFilterGrid(entityConfig, { onSearch })
+      const { container } = renderGrid(entityConfig, { onSearch })
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'City')).toBeTruthy()
@@ -499,7 +499,7 @@ describe('FilterGrid', () => {
           },
         ],
       })
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(container.textContent).toContain('Group')
@@ -520,7 +520,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Locked Field')).toBeTruthy()
@@ -542,7 +542,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Name')).toBeTruthy()
@@ -563,7 +563,7 @@ describe('FilterGrid', () => {
         }),
       ]
       const entityConfig = createEntityConfig(filterOptions)
-      const { container } = renderFilterGrid(entityConfig)
+      const { container } = renderGrid(entityConfig)
 
       await waitFor(() => {
         expect(findComboboxInputByValue(container, 'Fixed')).toBeTruthy()

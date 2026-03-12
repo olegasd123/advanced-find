@@ -10,9 +10,9 @@ import {
   isNoValueCondition,
   normalizeEntityItems,
   sanitizeSelectableValues,
-} from './filter-item-value.helpers'
+} from './item-value.helpers'
 
-const errorReporter = createErrorReporter('FilterItemValue')
+const errorReporter = createErrorReporter('ItemValue')
 
 interface LookupMetadata {
   entityCollectionName: string
