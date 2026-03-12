@@ -21,6 +21,7 @@ import { PaginationOption } from '@/hooks/use-pagination'
 import { SearchTableColumn } from '@/libs/types/search.types'
 import { getAppliedFilterGroups, getColumnHeader } from '@/app/crm/result-grid.helpers'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
+import clsx from 'clsx'
 
 interface ResultToolbarProps {
   onBack?: () => void
@@ -58,12 +59,14 @@ export const ResultToolbar = ({
   const appliedFilterGroups = getAppliedFilterGroups(appliedFilters)
   const visibleColumnsCount = visibleColumnKeys.length
   const appliedFiltersContainerRef = React.useRef<HTMLDivElement | null>(null)
+  const [isAppliedFiltersOverflowing, setIsAppliedFiltersOverflowing] = React.useState(false)
   const [canScrollAppliedFiltersLeft, setCanScrollAppliedFiltersLeft] = React.useState(false)
   const [canScrollAppliedFiltersRight, setCanScrollAppliedFiltersRight] = React.useState(false)
 
   const updateAppliedFiltersScrollState = React.useCallback((): void => {
     const container = appliedFiltersContainerRef.current
     if (!container) {
+      setIsAppliedFiltersOverflowing(false)
       setCanScrollAppliedFiltersLeft(false)
       setCanScrollAppliedFiltersRight(false)
       return
@@ -71,6 +74,7 @@ export const ResultToolbar = ({
 
     const maxScrollLeft = container.scrollWidth - container.clientWidth
     const hasOverflow = maxScrollLeft > 1
+    setIsAppliedFiltersOverflowing(hasOverflow)
     setCanScrollAppliedFiltersLeft(hasOverflow && container.scrollLeft > 1)
     setCanScrollAppliedFiltersRight(hasOverflow && container.scrollLeft < maxScrollLeft - 1)
   }, [])
@@ -125,6 +129,9 @@ export const ResultToolbar = ({
     })
   }, [])
 
+  const appliedFiltersScrollButtonClassName =
+    'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border border-zinc-300 text-zinc-500 disabled:opacity-50'
+
   return (
     <div className="flex flex-row items-center gap-4 py-4 border-b border-b-gray-300">
       <Button outline onClick={onBack} aria-label="Back" title="Back">
@@ -136,12 +143,16 @@ export const ResultToolbar = ({
           <FunnelIcon className="size-4 shrink-0 text-zinc-400" title="Applied filters" />
           {appliedFilterGroups.length > 0 ? (
             <div className="min-w-0 flex flex-1 items-center gap-1">
-              {canScrollAppliedFiltersLeft && (
+              {isAppliedFiltersOverflowing && (
                 <button
                   type="button"
-                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border border-zinc-300 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+                  className={clsx(
+                    appliedFiltersScrollButtonClassName,
+                    canScrollAppliedFiltersLeft && 'hover:bg-zinc-100 hover:text-zinc-700'
+                  )}
                   aria-label="Scroll applied filters left"
                   title="Scroll left"
+                  disabled={!canScrollAppliedFiltersLeft}
                   onClick={() => handleAppliedFiltersScroll('left')}
                 >
                   <ChevronLeftIcon className="size-3.5" />
@@ -177,12 +188,16 @@ export const ResultToolbar = ({
                   </React.Fragment>
                 ))}
               </div>
-              {canScrollAppliedFiltersRight && (
+              {isAppliedFiltersOverflowing && (
                 <button
                   type="button"
-                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border border-zinc-300 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+                  className={clsx(
+                    appliedFiltersScrollButtonClassName,
+                    canScrollAppliedFiltersRight && 'hover:bg-zinc-100 hover:text-zinc-700'
+                  )}
                   aria-label="Scroll applied filters right"
                   title="Scroll right"
+                  disabled={!canScrollAppliedFiltersRight}
                   onClick={() => handleAppliedFiltersScroll('right')}
                 >
                   <ChevronRightIcon className="size-3.5" />

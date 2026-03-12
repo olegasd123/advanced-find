@@ -80,6 +80,33 @@ const findButtonByAriaLabel = (container: HTMLElement, label: string): HTMLButto
   return button as HTMLButtonElement
 }
 
+const getAppliedFiltersScroller = (container: HTMLElement): HTMLDivElement => {
+  const scroller = container.querySelector('.hide-scrollbar')
+  if (!scroller) {
+    throw new Error('Applied filters scroller not found')
+  }
+  return scroller as HTMLDivElement
+}
+
+const setScrollerMetrics = (
+  scroller: HTMLDivElement,
+  metrics: { clientWidth: number; scrollWidth: number; scrollLeft: number }
+): void => {
+  Object.defineProperty(scroller, 'clientWidth', {
+    configurable: true,
+    value: metrics.clientWidth,
+  })
+  Object.defineProperty(scroller, 'scrollWidth', {
+    configurable: true,
+    value: metrics.scrollWidth,
+  })
+  Object.defineProperty(scroller, 'scrollLeft', {
+    configurable: true,
+    writable: true,
+    value: metrics.scrollLeft,
+  })
+}
+
 describe('ResultGrid', () => {
   describe('rendering', () => {
     it('renders column headers', () => {
@@ -261,19 +288,19 @@ describe('ResultGrid', () => {
   })
 
   describe('applied filters', () => {
-    it('shows applied filter descriptions in toolbar', () => {
-      const appliedFilters: AppliedFilterCondition[] = [
-        {
-          filterOption: {
-            DisplayName: 'Company Name',
-            AttributeName: 'name',
-            AttributeType: 'string',
-          },
-          condition: 'eq',
-          values: ['Acme'],
+    const appliedFilters: AppliedFilterCondition[] = [
+      {
+        filterOption: {
+          DisplayName: 'Company Name',
+          AttributeName: 'name',
+          AttributeType: 'string',
         },
-      ]
+        condition: 'eq',
+        values: ['Acme'],
+      },
+    ]
 
+    it('shows applied filter descriptions in toolbar', () => {
       renderResultGrid({
         appliedFilters,
         showAppliedFilters: true,
@@ -296,17 +323,6 @@ describe('ResultGrid', () => {
 
     it('calls onRemoveFilterValue when chip delete button is clicked', () => {
       const onRemoveFilterValue = vi.fn()
-      const appliedFilters: AppliedFilterCondition[] = [
-        {
-          filterOption: {
-            DisplayName: 'Company Name',
-            AttributeName: 'name',
-            AttributeType: 'string',
-          },
-          condition: 'eq',
-          values: ['Acme'],
-        },
-      ]
 
       const { container } = renderResultGrid({
         appliedFilters,
@@ -325,7 +341,7 @@ describe('ResultGrid', () => {
 
     it('keeps chip delete button when filter has CannotBeRemoved flag', () => {
       const onRemoveFilterValue = vi.fn()
-      const appliedFilters: AppliedFilterCondition[] = [
+      const notRemovableAppliedFilters: AppliedFilterCondition[] = [
         {
           filterOption: {
             DisplayName: 'Company Name',
@@ -339,7 +355,7 @@ describe('ResultGrid', () => {
       ]
 
       const { container } = renderResultGrid({
-        appliedFilters,
+        appliedFilters: notRemovableAppliedFilters,
         showAppliedFilters: true,
         onRemoveFilterValue,
       })
@@ -354,7 +370,7 @@ describe('ResultGrid', () => {
 
     it('hides chip delete button when filter has IsDisabled flag', () => {
       const onRemoveFilterValue = vi.fn()
-      const appliedFilters: AppliedFilterCondition[] = [
+      const disabledAppliedFilters: AppliedFilterCondition[] = [
         {
           filterOption: {
             DisplayName: 'Company Name',
@@ -368,7 +384,7 @@ describe('ResultGrid', () => {
       ]
 
       const { container } = renderResultGrid({
-        appliedFilters,
+        appliedFilters: disabledAppliedFilters,
         showAppliedFilters: true,
         onRemoveFilterValue,
       })
@@ -378,6 +394,52 @@ describe('ResultGrid', () => {
       )
       expect(removeButton).toBeNull()
       expect(onRemoveFilterValue).not.toHaveBeenCalled()
+    })
+
+    it('hides scroll buttons when chips do not overflow', () => {
+      const { container } = renderResultGrid({
+        appliedFilters,
+        showAppliedFilters: true,
+      })
+      const scroller = getAppliedFiltersScroller(container)
+      setScrollerMetrics(scroller, {
+        clientWidth: 300,
+        scrollWidth: 300,
+        scrollLeft: 0,
+      })
+
+      fireEvent(window, new Event('resize'))
+
+      expect(container.querySelector('button[aria-label="Scroll applied filters left"]')).toBeNull()
+      expect(
+        container.querySelector('button[aria-label="Scroll applied filters right"]')
+      ).toBeNull()
+    })
+
+    it('shows scroll buttons and disables them at scroll edges', () => {
+      const { container } = renderResultGrid({
+        appliedFilters,
+        showAppliedFilters: true,
+      })
+      const scroller = getAppliedFiltersScroller(container)
+      setScrollerMetrics(scroller, {
+        clientWidth: 100,
+        scrollWidth: 320,
+        scrollLeft: 0,
+      })
+
+      fireEvent(window, new Event('resize'))
+
+      const leftButton = findButtonByAriaLabel(container, 'Scroll applied filters left')
+      const rightButton = findButtonByAriaLabel(container, 'Scroll applied filters right')
+      expect(leftButton).toBeDisabled()
+      expect(rightButton).not.toBeDisabled()
+
+      scroller.scrollLeft = 220
+      fireEvent.scroll(scroller)
+
+      expect(leftButton).not.toBeDisabled()
+      expect(rightButton).toBeDisabled()
     })
   })
 
