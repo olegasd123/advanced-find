@@ -1,6 +1,6 @@
 import { vi, describe, expect, it } from 'vitest'
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { ResultGrid } from '@/app/crm/result-grid'
+import { ResultGrid } from '@/app/crm/result-view/result-grid'
 import { SearchTableColumn } from '@/libs/types/search.types'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import { TableColumnConfig } from '@/libs/types/app-config.types'

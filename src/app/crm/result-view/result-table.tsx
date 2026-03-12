@@ -10,8 +10,8 @@ import {
 import { ColumnResizeState } from '@/hooks/use-column-resize'
 import { SortRule } from '@/hooks/use-table-sort'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import { ExpandableCellText } from '@/app/crm/expandable-cell-text'
-import { getColumnCellValue, getColumnHeader } from '@/app/crm/result-grid.helpers'
+import { ExpandableCellText } from '@/app/crm/result-view/expandable-cell-text'
+import { getColumnCellValue, getColumnHeader } from '@/app/crm/result-view/result-grid.helpers'
 
 interface DisplayedResultRow {
   row: Record<string, unknown>

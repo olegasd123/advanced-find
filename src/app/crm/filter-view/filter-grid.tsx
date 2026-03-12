@@ -5,15 +5,15 @@ import { Button } from '@/components/catalyst/button'
 import { Select } from '@/components/catalyst/select'
 import { EntityConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition, FilterGroupOperator } from '@/libs/types/filter.types'
-import { FilterItem } from '@/app/crm/filter-item'
-import { FilterCommandRow } from '@/app/crm/filter-command-row'
-import { VisibleFilterOption } from '@/app/crm/filter-grid.helpers'
-import { useFilterOptions } from '@/app/crm/use-filter-options'
-import { useFilterConditions } from '@/app/crm/use-filter-conditions'
-import { FilterDragDropProvider } from '@/app/crm/filter-drag-drop-provider'
-import { useFilterDragDropContext } from '@/app/crm/filter-drag-drop-context'
+import { FilterItem } from '@/app/crm/filter-view/filter-item'
+import { FilterCommandRow } from '@/app/crm/filter-view/filter-command-row'
+import { VisibleFilterOption } from '@/app/crm/filter-view/filter-grid.helpers'
+import { useFilterOptions } from '@/app/crm/filter-view/use-filter-options'
+import { useFilterConditions } from '@/app/crm/filter-view/use-filter-conditions'
+import { FilterDragDropProvider } from '@/app/crm/filter-view/filter-drag-drop-provider'
+import { useFilterDragDropContext } from '@/app/crm/filter-view/filter-drag-drop-context'
 
-export type { FilterOption } from '@/app/crm/filter-grid.helpers'
+export type { FilterOption } from '@/app/crm/filter-view/filter-grid.helpers'
 
 interface FilterGridProps {
   entityConfig?: EntityConfig

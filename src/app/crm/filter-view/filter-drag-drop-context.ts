@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFilterDragDrop } from '@/app/crm/use-filter-drag-drop'
+import { useFilterDragDrop } from '@/app/crm/filter-view/use-filter-drag-drop'
 
 export type FilterDragDropContextValue = ReturnType<typeof useFilterDragDrop>
 

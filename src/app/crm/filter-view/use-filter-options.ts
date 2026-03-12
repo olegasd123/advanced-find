@@ -13,7 +13,7 @@ import {
   resolveConfigPath,
 } from '@/libs/utils/crm/relation-path'
 import { useCrmRepository } from '@/hooks/use-crm-repository'
-import { FilterOption, VisibleFilterOption } from '@/app/crm/filter-grid.helpers'
+import { FilterOption, VisibleFilterOption } from '@/app/crm/filter-view/filter-grid.helpers'
 
 const logger = createLogger('filter-utils')
 

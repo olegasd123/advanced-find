@@ -8,7 +8,7 @@ import {
   moveOptionAfterTarget,
   sortOptionIdsByVisibleOrder,
   VisibleFilterOption,
-} from '@/app/crm/filter-grid.helpers'
+} from '@/app/crm/filter-view/filter-grid.helpers'
 
 export const useFilterDragDrop = ({
   visibleFilterOptions,

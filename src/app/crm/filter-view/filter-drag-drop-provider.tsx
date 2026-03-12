@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { FilterGroupState, VisibleFilterOption } from '@/app/crm/filter-grid.helpers'
-import { FilterDragDropContext } from '@/app/crm/filter-drag-drop-context'
-import { useFilterDragDrop } from '@/app/crm/use-filter-drag-drop'
+import { FilterGroupState, VisibleFilterOption } from '@/app/crm/filter-view/filter-grid.helpers'
+import { FilterDragDropContext } from '@/app/crm/filter-view/filter-drag-drop-context'
+import { useFilterDragDrop } from '@/app/crm/filter-view/use-filter-drag-drop'
 
 interface FilterDragDropProviderProps {
   visibleFilterOptions: VisibleFilterOption[]

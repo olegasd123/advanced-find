@@ -9,7 +9,7 @@ import {
   normalizeGroupTitle,
   sortOptionIdsByVisibleOrder,
   VisibleFilterOption,
-} from '@/app/crm/filter-grid.helpers'
+} from '@/app/crm/filter-view/filter-grid.helpers'
 
 interface UseFilterConditionsResult {
   groupsById: Record<number, FilterGroupState>

@@ -7,7 +7,7 @@ import {
   moveOptionAfterTarget,
   normalizeGroupTitle,
   VisibleFilterOption,
-} from '@/app/crm/filter-grid.helpers'
+} from '@/app/crm/filter-view/filter-grid.helpers'
 
 const createVisibleOption = (id: number): VisibleFilterOption => ({
   id,

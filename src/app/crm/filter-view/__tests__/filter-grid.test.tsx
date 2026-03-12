@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, waitFor } from '@testing-library/react'
-import { FilterGrid } from '@/app/crm/filter-grid'
+import { FilterGrid } from '@/app/crm/filter-view/filter-grid'
 import { AppConfig, EntityConfig, FilterOptionConfig } from '@/libs/types/app-config.types'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import { CrmData } from '@/libs/types/entity.types'

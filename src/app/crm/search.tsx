@@ -5,11 +5,11 @@ import { useEntityMetadata } from '@/app/crm/use-entity-metadata'
 import { useFilterState } from '@/app/crm/use-filter-state'
 import { useSearchQuery } from '@/app/crm/use-search-query'
 import { Select } from '@/components/catalyst/select'
-import { FilterGrid } from '@/app/crm/filter-grid'
-import { ResultGrid } from '@/app/crm/result-grid'
+import { FilterGrid } from '@/app/crm/filter-view/filter-grid'
+import { ResultGrid } from '@/app/crm/result-view/result-grid'
 import { ViewErrorBoundary } from '@/app/view-error-boundary'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
-import { removeAppliedFilterValue } from '@/app/crm/result-grid.helpers'
+import { removeAppliedFilterValue } from '@/app/crm/result-view/result-grid.helpers'
 
 const MetadataSkeleton = () => (
   <div className="pt-4" role="status" aria-label="Loading entity metadata">

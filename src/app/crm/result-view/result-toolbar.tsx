@@ -19,7 +19,7 @@ import { Input, InputGroup } from '@/components/catalyst/input'
 import { Select } from '@/components/catalyst/select'
 import { PaginationOption } from '@/hooks/use-pagination'
 import { SearchTableColumn } from '@/libs/types/search.types'
-import { getAppliedFilterGroups, getColumnHeader } from '@/app/crm/result-grid.helpers'
+import { getAppliedFilterGroups, getColumnHeader } from '@/app/crm/result-view/result-grid.helpers'
 import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import clsx from 'clsx'
 
