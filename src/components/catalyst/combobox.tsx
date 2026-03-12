@@ -6,15 +6,15 @@ import * as React from 'react'
 
 type BaseComboboxProps<T> = {
   options: T[]
-  displayValue: (value: T) => string | undefined
-  displayInputValue?: (values: T[]) => string
-  filter?: (value: T, query: string) => boolean
   className?: string
   placeholder?: string
   autoFocus?: boolean
   'aria-label'?: string
-  children: (value: NonNullable<T>) => React.ReactElement
   anchor?: 'top' | 'bottom'
+  displayValue: (value: T) => string | undefined
+  displayInputValue?: (values: T[]) => string
+  filter?: (value: T, query: string) => boolean
+  children: (value: NonNullable<T>) => React.ReactElement
   onClose?: () => void
 }
 

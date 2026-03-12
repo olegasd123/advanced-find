@@ -13,9 +13,9 @@ interface PaginationProps {
   currentPage: number
   totalPages: number
   visiblePageItems: VisiblePageItem[]
-  onPageButtonClick: (page: number) => void
   isSummaryVisible: boolean
   paginationSummaryText: string
+  onPageButtonClick: (page: number) => void
 }
 
 export const Pagination = ({
@@ -23,9 +23,9 @@ export const Pagination = ({
   currentPage,
   totalPages,
   visiblePageItems,
-  onPageButtonClick,
   isSummaryVisible,
   paginationSummaryText,
+  onPageButtonClick,
 }: PaginationProps) => {
   if (!isPaginationEnabled) {
     return null

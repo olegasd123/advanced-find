@@ -5,22 +5,22 @@ import { useDragDrop } from '@/app/crm/filter-view/use-drag-drop'
 
 interface DragDropProviderProps {
   visibleFilterOptions: VisibleOption[]
-  setVisibleFilterOptions: React.Dispatch<React.SetStateAction<VisibleOption[]>>
   groupsById: Record<number, GroupState>
-  setGroupsById: React.Dispatch<React.SetStateAction<Record<number, GroupState>>>
-  isOptionGroupable: (optionId: number) => boolean
   groupIdRef: React.RefObject<number>
   children: React.ReactNode
+  setVisibleFilterOptions: React.Dispatch<React.SetStateAction<VisibleOption[]>>
+  setGroupsById: React.Dispatch<React.SetStateAction<Record<number, GroupState>>>
+  isOptionGroupable: (optionId: number) => boolean
 }
 
 export const DragDropProvider = ({
   visibleFilterOptions,
-  setVisibleFilterOptions,
   groupsById,
-  setGroupsById,
-  isOptionGroupable,
   groupIdRef,
   children,
+  setVisibleFilterOptions,
+  setGroupsById,
+  isOptionGroupable,
 }: DragDropProviderProps) => {
   const dragDropState = useDragDrop({
     visibleFilterOptions,

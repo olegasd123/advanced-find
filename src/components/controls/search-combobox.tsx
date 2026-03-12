@@ -12,15 +12,15 @@ type BaseSearchComboboxProps<T> = {
   isLoading?: boolean
   searchDelay: number
   minCharacters?: number
-  displayValue: (value: T) => string | undefined
-  displayInputValue?: (values: T[]) => string
-  onSearch: (query: string) => void
   className?: string
   placeholder?: string
   autoFocus?: boolean
   'aria-label'?: string
-  children: (value: NonNullable<T>) => React.ReactElement
   anchor?: 'top' | 'bottom'
+  displayValue: (value: T) => string | undefined
+  displayInputValue?: (values: T[]) => string
+  onSearch: (query: string) => void
+  children: (value: NonNullable<T>) => React.ReactElement
   onClose?: () => void
 }
 

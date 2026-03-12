@@ -28,6 +28,7 @@ interface GridContentProps {
   groupsById: ReturnType<typeof useConditions>['groupsById']
   groupIdByOptionId: ReturnType<typeof useConditions>['groupIdByOptionId']
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
+  defaultsRevision: number
   isOptionGroupable: (optionId: number) => boolean
   onDeleteCondition: (optionId: number) => void
   onConditionChanged: (optionId: number, condition: AppliedFilterCondition) => void
@@ -36,7 +37,6 @@ interface GridContentProps {
   onAddCondition: () => void
   onResetFilters: () => void
   onSearch: () => void
-  defaultsRevision: number
 }
 
 const GridContent = ({
@@ -47,6 +47,7 @@ const GridContent = ({
   groupsById,
   groupIdByOptionId,
   selectedFilterOptions,
+  defaultsRevision,
   isOptionGroupable,
   onDeleteCondition,
   onConditionChanged,
@@ -55,7 +56,6 @@ const GridContent = ({
   onAddCondition,
   onResetFilters,
   onSearch,
-  defaultsRevision,
 }: GridContentProps) => {
   const {
     dragPreviewPosition,

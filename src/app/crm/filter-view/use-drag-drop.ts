@@ -12,18 +12,18 @@ import {
 
 export const useDragDrop = ({
   visibleFilterOptions,
-  setVisibleFilterOptions,
   groupsById,
+  groupIdRef,
+  setVisibleFilterOptions,
   setGroupsById,
   isOptionGroupable,
-  groupIdRef,
 }: {
   visibleFilterOptions: VisibleOption[]
-  setVisibleFilterOptions: React.Dispatch<React.SetStateAction<VisibleOption[]>>
   groupsById: Record<number, GroupState>
+  groupIdRef: React.RefObject<number>
+  setVisibleFilterOptions: React.Dispatch<React.SetStateAction<VisibleOption[]>>
   setGroupsById: React.Dispatch<React.SetStateAction<Record<number, GroupState>>>
   isOptionGroupable: (optionId: number) => boolean
-  groupIdRef: React.RefObject<number>
 }) => {
   const [draggingOptionId, setDraggingOptionId] = React.useState<number>()
   const [dragPreviewPosition, setDragPreviewPosition] = React.useState<{
@@ -300,8 +300,8 @@ export const useDragDrop = ({
     draggingOptionId,
     dragPreviewPosition,
     dropTargetKey,
-    setDropTargetKey,
     clearDragState,
+    setDropTargetKey,
     handlePointerDragStart,
     handleItemDragOver,
     handleItemPointerEnter,

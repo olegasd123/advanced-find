@@ -120,20 +120,20 @@ export const Grid = ({
   return (
     <>
       <Toolbar
-        onBack={onBack}
         showAppliedFilters={showAppliedFilters}
         appliedFilters={appliedFilters}
-        onRemoveFilterValue={onRemoveFilterValue}
         tableSearchText={tableSearchText}
-        onTableSearchTextChanged={handleTableSearchTextChanged}
         isPaginationEnabled={isPaginationEnabled}
         selectedPageSizeValue={selectedPageSizeValue}
         paginationOptions={paginationOptions}
-        onPageSizeChanged={handlePageSizeChanged}
         columns={columns}
         visibleColumnKeys={visibleColumnKeys}
-        onToggleColumnVisibility={toggleColumnVisibility}
         tableColumnDisplayNames={tableColumnDisplayNames}
+        onRemoveFilterValue={onRemoveFilterValue}
+        onTableSearchTextChanged={handleTableSearchTextChanged}
+        onBack={onBack}
+        onPageSizeChanged={handlePageSizeChanged}
+        onToggleColumnVisibility={toggleColumnVisibility}
       />
 
       <Table

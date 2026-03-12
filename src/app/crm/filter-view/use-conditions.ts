@@ -13,11 +13,11 @@ import {
 
 interface UseConditionsResult {
   groupsById: Record<number, GroupState>
-  setGroupsById: React.Dispatch<React.SetStateAction<Record<number, GroupState>>>
   conditionsById: Record<number, AppliedFilterCondition>
   groupIdRef: React.RefObject<number>
   groupIdByOptionId: Map<number, number>
   selectedFilterOptions: ReadonlySet<FilterOptionConfig>
+  setGroupsById: React.Dispatch<React.SetStateAction<Record<number, GroupState>>>
   isOptionGroupable: (optionId: number) => boolean
   handleGroupOperatorChanged: (groupId: number, operator: FilterGroupOperator) => void
   handleUngroup: (groupId: number) => void
@@ -320,11 +320,11 @@ export const useConditions = ({
 
   return {
     groupsById,
-    setGroupsById,
     conditionsById,
     groupIdRef,
     groupIdByOptionId,
     selectedFilterOptions,
+    setGroupsById,
     isOptionGroupable,
     handleGroupOperatorChanged,
     handleUngroup,

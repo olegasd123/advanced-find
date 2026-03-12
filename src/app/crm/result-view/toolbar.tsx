@@ -24,37 +24,37 @@ import { AppliedFilterCondition } from '@/libs/types/filter.types'
 import clsx from 'clsx'
 
 interface ToolbarProps {
-  onBack?: () => void
   showAppliedFilters?: boolean
   appliedFilters: AppliedFilterCondition[]
-  onRemoveFilterValue?: (filterIndex: number, valueIndex: number | undefined) => void
   tableSearchText: string
-  onTableSearchTextChanged: (event: React.ChangeEvent<HTMLInputElement>) => void
   isPaginationEnabled: boolean
   selectedPageSizeValue: string
   paginationOptions: PaginationOption[]
-  onPageSizeChanged: (event: React.ChangeEvent<HTMLSelectElement>) => void
   columns: SearchTableColumn[]
   visibleColumnKeys: string[]
-  onToggleColumnVisibility: (columnKey: string) => void
   tableColumnDisplayNames?: Record<string, string>
+  onRemoveFilterValue?: (filterIndex: number, valueIndex: number | undefined) => void
+  onTableSearchTextChanged: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onBack?: () => void
+  onPageSizeChanged: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  onToggleColumnVisibility: (columnKey: string) => void
 }
 
 export const Toolbar = ({
-  onBack,
   showAppliedFilters,
   appliedFilters,
-  onRemoveFilterValue,
   tableSearchText,
-  onTableSearchTextChanged,
   isPaginationEnabled,
   selectedPageSizeValue,
   paginationOptions,
-  onPageSizeChanged,
   columns,
   visibleColumnKeys,
-  onToggleColumnVisibility,
   tableColumnDisplayNames,
+  onRemoveFilterValue,
+  onTableSearchTextChanged,
+  onBack,
+  onPageSizeChanged,
+  onToggleColumnVisibility,
 }: ToolbarProps) => {
   const appliedFilterGroups = getAppliedFilterGroups(appliedFilters)
   const visibleColumnsCount = visibleColumnKeys.length

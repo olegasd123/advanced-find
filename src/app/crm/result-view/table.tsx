@@ -23,16 +23,16 @@ interface TableProps {
   tableColumnDisplayNames?: Record<string, string>
   columnWidthsByKey: Record<string, number>
   columnResizeState: ColumnResizeState | null
-  onColumnResizeStart: (event: React.PointerEvent<HTMLButtonElement>, columnKey: string) => void
   visibleSortRules: SortRule[]
   visibleSortRuleByColumnKey: Map<string, SortRule>
-  onSortChanged: (columnKey: string, shouldAddToSortOrder: boolean) => void
   isLoading?: boolean
   errorMessage?: string
   results: Record<string, unknown>[]
   filteredRows: Record<string, unknown>[]
   displayedRows: DisplayedResultRow[]
   expandedCellKeys: Set<string>
+  onColumnResizeStart: (event: React.PointerEvent<HTMLButtonElement>, columnKey: string) => void
+  onSortChanged: (columnKey: string, shouldAddToSortOrder: boolean) => void
   onCellExpandedChanged: (cellKey: string, shouldBeExpanded: boolean) => void
 }
 
@@ -41,16 +41,16 @@ export const Table = ({
   tableColumnDisplayNames,
   columnWidthsByKey,
   columnResizeState,
-  onColumnResizeStart,
   visibleSortRules,
   visibleSortRuleByColumnKey,
-  onSortChanged,
   isLoading,
   errorMessage,
   results,
   filteredRows,
   displayedRows,
   expandedCellKeys,
+  onColumnResizeStart,
+  onSortChanged,
   onCellExpandedChanged,
 }: TableProps) => {
   const columnSpan = Math.max(visibleColumns.length, 1)
