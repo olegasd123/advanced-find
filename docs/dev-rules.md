@@ -16,6 +16,7 @@ This document defines the shared coding standards for the advanced-find project.
 - Prefer TypeScript `interface` declarations for describing object shapes; use `type` when unions or mapped types are needed.
 - Use discriminated unions and branded types for domain concepts instead of raw primitives whenever feasible.
 - Co-locate component-specific types next to the component; share cross-cutting domain types under `src/libs/types`.
+- In `interface`/`type` object fields and component prop declarations, keep value/state fields first and callback/function fields last (for example, `on*`, `set*`, `handle*` after non-function fields).
 - Components must be function components with hooks; avoid legacy class components.
 - Declare all components, hooks, and utilities as arrow functions to keep signatures uniform and enable easy binding.
 - Keep hooks pure: the first line of a hook should be another hook call or synchronous logic, not side effects.
