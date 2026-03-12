@@ -1,20 +1,15 @@
 import * as React from 'react'
-import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox'
-import { SearchCombobox } from '@/components/controls/search-combobox'
-import { Listbox, ListboxLabel, ListboxOption } from '@/components/catalyst/listbox'
-import { Input } from '@/components/catalyst/input'
 import { FilterOptionConfig } from '@/libs/types/app-config.types'
 import { ConditionValue } from '@/libs/types/filter.types'
 import {
   ConditionValueOption,
   areSameValues,
-  dateAttributeTypes,
   isNoValueCondition,
   mergeCachedAndFetchedOptions,
-  numberAttributeTypes,
   sanitizeSelectableValues,
 } from './filter-item-value.helpers'
 import { useSelectableOptions } from './use-selectable-options'
+import { OnDemandSearchValue, SelectableValue, ScalarValue } from './filter-item-value-inputs'
 
 export const FilterItemValue = ({
   filterOption,
@@ -81,6 +76,7 @@ export const FilterItemValue = ({
     isOnDemandSearch,
     selectableOptions,
     selectionMaxItems,
+    selectedOptionsCacheRef,
     normalizedSelectedFilterCondition,
   ])
 
@@ -149,7 +145,7 @@ export const FilterItemValue = ({
     }
 
     return mergeCachedAndFetchedOptions(selectedOptionsCacheRef.current, selectableOptions)
-  }, [selectableOptions, isOnDemandSearch])
+  }, [selectableOptions, isOnDemandSearch, selectedOptionsCacheRef])
 
   const effectiveOptions = isOnDemandSearch ? onDemandSearchOptions : selectableOptions
 
@@ -165,7 +161,7 @@ export const FilterItemValue = ({
     for (const option of selectedSelectionValues) {
       selectedOptionsCacheRef.current.set(String(option.value), option)
     }
-  }, [selectedSelectionValues, isOnDemandSearch])
+  }, [selectedSelectionValues, isOnDemandSearch, selectedOptionsCacheRef])
   const conditionDisplayValues = React.useMemo((): string[] | undefined => {
     if (conditionValues.length === 0) {
       return undefined
@@ -219,208 +215,58 @@ export const FilterItemValue = ({
 
   if (isSelectableAttribute) {
     if (isOnDemandSearch) {
-      if (isMultiSelection) {
-        return (
-          <div>
-            <SearchCombobox
-              multiple
-              options={onDemandSearchOptions}
-              isLoading={isSelectableOptionsLoading}
-              searchDelay={selection!.SearchDelay!}
-              minCharacters={selection?.MinCharacters}
-              placeholder="Search values"
-              displayValue={(option) => option.displayName}
-              value={selectedSelectionValues}
-              disabled={isDisabled}
-              onSearch={handleLookupSearch}
-              onChange={handleMultiSelectionValueChanged}
-            >
-              {(option) => (
-                <ComboboxOption value={option}>
-                  <ComboboxLabel>{option.displayName}</ComboboxLabel>
-                </ComboboxOption>
-              )}
-            </SearchCombobox>
-          </div>
-        )
-      }
-
       return (
-        <SearchCombobox
+        <OnDemandSearchValue
           options={onDemandSearchOptions}
           isLoading={isSelectableOptionsLoading}
           searchDelay={selection!.SearchDelay!}
           minCharacters={selection?.MinCharacters}
-          placeholder="Search value"
-          displayValue={(option) => option?.displayName}
-          value={selectedSingleLookupValue}
-          disabled={isDisabled}
+          isMultiSelection={isMultiSelection}
+          selectedValues={selectedSelectionValues}
+          selectedSingleValue={selectedSingleLookupValue}
+          isDisabled={isDisabled}
           onSearch={handleLookupSearch}
-          onChange={handleSingleLookupValueChanged}
-        >
-          {(option) => (
-            <ComboboxOption value={option}>
-              <ComboboxLabel>{option.displayName}</ComboboxLabel>
-            </ComboboxOption>
-          )}
-        </SearchCombobox>
-      )
-    }
-
-    if (isSelectableOptionsLoading) {
-      return (
-        <Input
-          disabled
-          type="text"
-          value="Loading values..."
-          onChange={handleConditionValueChanged}
+          onMultiChange={handleMultiSelectionValueChanged}
+          onSingleChange={handleSingleLookupValueChanged}
         />
       )
     }
 
-    if (selectableOptionsErrorMessage) {
+    if (
+      isSelectableOptionsLoading ||
+      selectableOptionsErrorMessage ||
+      selectableOptions.length > 0
+    ) {
       return (
-        <Input
-          disabled
-          type="text"
-          value={selectableOptionsErrorMessage}
-          onChange={handleConditionValueChanged}
+        <SelectableValue
+          options={selectableOptions}
+          isLoading={isSelectableOptionsLoading}
+          errorMessage={selectableOptionsErrorMessage}
+          isMultiSelection={isMultiSelection}
+          isLookupAttribute={isLookupAttribute}
+          isPicklistAttribute={isPicklistAttribute}
+          condition={normalizedSelectedFilterCondition}
+          selectedValues={selectedSelectionValues}
+          selectedSingleValue={selectedSingleLookupValue}
+          selectedConditionValue={selectedConditionValue}
+          isDisabled={isDisabled}
+          onMultiChange={handleMultiSelectionValueChanged}
+          onSingleChange={handleSingleLookupValueChanged}
+          onSelectionChange={handleSelectionValueChanged}
+          onInputChange={handleConditionValueChanged}
         />
       )
     }
-
-    if (selectableOptions.length > 0) {
-      if (isMultiSelection) {
-        return (
-          <div>
-            <Combobox
-              multiple
-              options={selectableOptions}
-              placeholder="Select values"
-              displayValue={(option) => option.displayName}
-              displayInputValue={(values) => values.map((option) => option.displayName).join(', ')}
-              value={selectedSelectionValues}
-              disabled={isDisabled}
-              onChange={handleMultiSelectionValueChanged}
-            >
-              {(option) => (
-                <ComboboxOption value={option}>
-                  <ComboboxLabel>{option.displayName}</ComboboxLabel>
-                </ComboboxOption>
-              )}
-            </Combobox>
-          </div>
-        )
-      }
-
-      if (isLookupAttribute) {
-        return (
-          <Combobox
-            options={selectableOptions}
-            placeholder="Select value"
-            displayValue={(option) => option?.displayName}
-            value={selectedSingleLookupValue}
-            disabled={isDisabled}
-            onChange={handleSingleLookupValueChanged}
-          >
-            {(option) => (
-              <ComboboxOption value={option}>
-                <ComboboxLabel>{option.displayName}</ComboboxLabel>
-              </ComboboxOption>
-            )}
-          </Combobox>
-        )
-      }
-
-      if (
-        isPicklistAttribute &&
-        (normalizedSelectedFilterCondition === 'in' ||
-          normalizedSelectedFilterCondition === 'not-in')
-      ) {
-        return (
-          <Input
-            type="text"
-            placeholder="Use comma separated values"
-            value={selectedConditionValue.toString()}
-            disabled={isDisabled}
-            onChange={handleConditionValueChanged}
-          />
-        )
-      }
-
-      return (
-        <Listbox
-          placeholder="Select value"
-          value={selectedConditionValue === '' ? null : selectedConditionValue}
-          disabled={isDisabled}
-          onChange={handleSelectionValueChanged}
-        >
-          {selectableOptions.map((option) => {
-            return (
-              <ListboxOption key={option.value} value={option.value}>
-                <ListboxLabel>{option.displayName}</ListboxLabel>
-              </ListboxOption>
-            )
-          })}
-        </Listbox>
-      )
-    }
-  }
-
-  if (selectedAttributeType === 'Boolean') {
-    return (
-      <Listbox
-        value={selectedConditionValue === '' ? null : selectedConditionValue}
-        disabled={isDisabled}
-        onChange={handleSelectionValueChanged}
-      >
-        <ListboxOption value="true">
-          <ListboxLabel>True</ListboxLabel>
-        </ListboxOption>
-        <ListboxOption value="false">
-          <ListboxLabel>False</ListboxLabel>
-        </ListboxOption>
-      </Listbox>
-    )
-  }
-
-  if (
-    numberAttributeTypes.has(selectedAttributeType ?? '') &&
-    normalizedSelectedFilterCondition !== 'in' &&
-    normalizedSelectedFilterCondition !== 'not-in'
-  ) {
-    return (
-      <Input
-        type="number"
-        value={selectedConditionValue.toString()}
-        disabled={isDisabled}
-        onChange={handleConditionValueChanged}
-      />
-    )
-  }
-
-  if (dateAttributeTypes.has(selectedAttributeType ?? '')) {
-    return (
-      <Input
-        type="date"
-        disabled={isDisabled}
-        value={selectedConditionValue.toString()}
-        onChange={handleConditionValueChanged}
-      />
-    )
   }
 
   return (
-    <Input
-      type="text"
-      placeholder={
-        normalizedSelectedFilterCondition === 'in' || normalizedSelectedFilterCondition === 'not-in'
-          ? 'Use comma separated values'
-          : 'Value'
-      }
-      value={selectedConditionValue.toString()}
-      disabled={isDisabled}
-      onChange={handleConditionValueChanged}
+    <ScalarValue
+      attributeType={selectedAttributeType}
+      condition={normalizedSelectedFilterCondition}
+      value={selectedConditionValue}
+      isDisabled={isDisabled}
+      onInputChange={handleConditionValueChanged}
+      onSelectionChange={handleSelectionValueChanged}
     />
   )
 }
